@@ -11,7 +11,8 @@ class JointScreen extends StatelessWidget {
       ),
       body: ListView.builder(
         itemCount: 3,
-        itemBuilder: (BuildContext context, int index) => const ArticleListCard(),
+        itemBuilder: (BuildContext context, int index) =>
+            const ArticleListCard(),
       ),
     );
   }
@@ -26,29 +27,53 @@ class ArticleListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {},
-      child: Card(
-        color: Theme.of(context).cardColor,
-        child: Column(
-          children: [
-            Container(
-              width: 200.w,
-              height: 100.h,
-            ),
-            Row(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Card(
+          color: Theme.of(context).cardColor,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
               children: [
-                Column(
-                  children: const [
-                    Text('タイトル'),
-                    Text('概要'),
-                    Text('#タグ'),
+                Container(
+                  color: Colors.blue,
+                  height: 150.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Column(
+                        children: const [
+                          Text(
+                            'タイトル',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '概要',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '#タグ',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.favorite,
+                    ),
                   ],
-                ),
-                const Icon(
-                  Icons.favorite,
-                ),
+                )
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
