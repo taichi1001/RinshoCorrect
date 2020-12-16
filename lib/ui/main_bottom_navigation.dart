@@ -17,17 +17,17 @@ class MainBottomNavigation extends StatelessWidget {
         child: bottomNavigationModel.getSelectedScreen(),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: const Icon(Icons.ac_unit),
+            icon: Icon(Icons.ac_unit),
             title: Text('関節'),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.pie_chart),
+            icon: Icon(Icons.pie_chart),
             title: Text('機能・性能'),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.input),
+            icon: Icon(Icons.input),
             title: Text('お気に入り'),
           ),
         ],

@@ -11,7 +11,7 @@ class JointScreen extends StatelessWidget {
       ),
       body: ListView.builder(
         itemCount: 3,
-        itemBuilder: (BuildContext context, int index) => ArticleListCard(),
+        itemBuilder: (BuildContext context, int index) => const ArticleListCard(),
       ),
     );
   }
@@ -37,13 +37,13 @@ class ArticleListCard extends StatelessWidget {
             Row(
               children: [
                 Column(
-                  children: [
+                  children: const [
                     Text('タイトル'),
                     Text('概要'),
                     Text('#タグ'),
                   ],
                 ),
-                Icon(
+                const Icon(
                   Icons.favorite,
                 ),
               ],

@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
           create: (context) => BottomNavigationModel(),
         ),
       ],
-      child: MaterialApp(
-        home: const MainBottomNavigation(),
+      child: const MaterialApp(
+        home: MainBottomNavigation(),
       ),
     );
   }
