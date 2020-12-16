@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class JointScreen extends StatelessWidget {
   const JointScreen({Key key}) : super(key: key);
@@ -36,8 +37,12 @@ class ArticleListCard extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  color: Colors.blue,
-                  height: 150.h,
+                  height: 125.h,
+                  child: FadeInImage.memoryNetwork(
+                    placeholder: kTransparentImage,
+                    image:
+                        'https://1.bp.blogspot.com/-ZOg0qAG4ewU/Xub_uw6q0DI/AAAAAAABZio/MshyuVBpHUgaOKJtL47LmVkCf5Vge6MQQCNcBGAsYHQ/s1600/pose_pien_uruuru_woman.png',
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,21 +50,28 @@ class ArticleListCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Column(
-                        children: const [
-                          Text(
-                            'タイトル',
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '股関節はうんち',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            '概要',
-                            style: TextStyle(fontSize: 14),
+                          const SizedBox(height: 8),
+                          Container(
+                            width: 200.w,
+                            child: const Text(
+                              '股関節はうんちだけどうんちじゃないよって話を書きます良かったら見てください',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              softWrap: false,
+                              style: TextStyle(fontSize: 14),
+                            ),
                           ),
-                          SizedBox(height: 8),
-                          Text(
+                          const SizedBox(height: 8),
+                          const Text(
                             '#タグ',
                             style: TextStyle(fontSize: 12),
                           ),
