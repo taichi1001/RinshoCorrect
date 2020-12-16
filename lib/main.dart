@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rinsho_collect/model/article_model.dart';
 import 'package:rinsho_collect/model/bottom_navigation_model.dart';
 import 'package:rinsho_collect/ui/main_bottom_navigation.dart';
 
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<BottomNavigationModel>(
           create: (context) => BottomNavigationModel(),
+        ),
+        ChangeNotifierProvider<ArticleModel>(
+          create: (context) => ArticleModel(),
         ),
       ],
       child: const MaterialApp(
