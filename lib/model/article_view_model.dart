@@ -20,7 +20,6 @@ class ArticleViewModel with ChangeNotifier {
       videoPlayerController: videoPlayerController,
       aspectRatio: 16 / 9,
       looping: true,
-      autoPlay: false,
       deviceOrientationsAfterFullScreen: [
         DeviceOrientation.portraitUp,
       ],

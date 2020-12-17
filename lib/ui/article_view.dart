@@ -24,10 +24,9 @@ class ArticleView extends StatelessWidget {
           ChangeNotifierProvider<ArticleViewModel>(
             create: (context) => ArticleViewModel(),
             builder: (context, baz) {
-              final _chewieController = context
-                  .select((ArticleViewModel model) => model.chewieController);
-              final _isLoaded =
-                  context.select((ArticleViewModel model) => model.isLoaded);
+              final _chewieController =
+                  context.select((ArticleViewModel model) => model.chewieController);
+              final _isLoaded = context.select((ArticleViewModel model) => model.isLoaded);
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -47,7 +46,7 @@ class ArticleView extends StatelessWidget {
                           )
                         : const SizedBox(height: 200),
                     Html(data: article.body),
-                    WebView(
+                    const WebView(
                       initialUrl: 'https://flutter.dev',
                     ),
                   ],

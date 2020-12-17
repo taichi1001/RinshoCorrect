@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/ui/article_view.dart';
@@ -10,40 +11,41 @@ class JointScreen extends StatelessWidget {
   const JointScreen({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final _list = context.select((ArticleModel model) => model.articleList);
-    final _isLoaded = context.select((ArticleModel model) => model.isLoaded);
     return Scaffold(
       appBar: AppBar(
         title: const Text('設定'),
       ),
-      body: _isLoaded
-          ? ListView.builder(
-              itemCount: _list.length,
-              itemBuilder: (BuildContext context, int index) => ArticleListCard(
-                article: _list[index],
-              ),
-            )
-          : const Text('load中'),
+      body: Selector<ArticleModel, Tuple2<List<Article>, bool>>(
+        selector: (context, ArticleModel model) => Tuple2(model.articleList, model.isLoaded),
+        builder: (context, data, child) => data.item2
+            ? ListView.builder(
+                itemCount: data.item1.length,
+                itemBuilder: (BuildContext context, int index) => Provider.value(
+                  value: data.item1[index],
+                  child: const ArticleListCard(),
+                ),
+              )
+            : child,
+        child: const Center(child: Text('Load中')),
+      ),
     );
   }
 }
 
 class ArticleListCard extends StatelessWidget {
   const ArticleListCard({
-    @required this.article,
     Key key,
   }) : super(key: key);
 
-  final Article article;
-
   @override
   Widget build(BuildContext context) {
+    final _article = context.watch<Article>();
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return ArticleView(article: article);
+              return ArticleView(article: _article);
             },
           ),
         );
@@ -60,7 +62,7 @@ class ArticleListCard extends StatelessWidget {
                   height: 125.h,
                   child: FadeInImage.memoryNetwork(
                     placeholder: kTransparentImage,
-                    image: article.eyecath.toString(),
+                    image: _article.eyecath.toString(),
                   ),
                 ),
                 Row(
@@ -73,7 +75,7 @@ class ArticleListCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            article.title,
+                            _article.title,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -83,7 +85,7 @@ class ArticleListCard extends StatelessWidget {
                           Container(
                             width: 200.w,
                             child: Text(
-                              article.subTitle,
+                              _article.subTitle,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               softWrap: false,

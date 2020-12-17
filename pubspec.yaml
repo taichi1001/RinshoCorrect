@@ -46,6 +46,8 @@ dependencies:
 
   webview_flutter: ^1.0.7
 
+  tuple: ^1.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
