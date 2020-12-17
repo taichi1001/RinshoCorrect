@@ -12,15 +12,15 @@ class ArticleViewModel with ChangeNotifier {
     _fetchAll();
   }
 
-  Future _fetchAll() async {
+  void _fetchAll() {
     isLoaded = false;
     videoPlayerController = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    );
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
     chewieController = ChewieController(
       videoPlayerController: videoPlayerController,
-      aspectRatio: 3 / 2,
+      aspectRatio: 16 / 9,
       looping: true,
+      autoPlay: false,
       deviceOrientationsAfterFullScreen: [
         DeviceOrientation.portraitUp,
       ],
@@ -41,5 +41,13 @@ class ArticleViewModel with ChangeNotifier {
       autoInitialize: true,
     );
     isLoaded = true;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    videoPlayerController.dispose();
+    chewieController.dispose();
+    super.dispose();
   }
 }

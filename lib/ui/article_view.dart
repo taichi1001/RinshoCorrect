@@ -3,9 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:chewie/chewie.dart';
-import 'package:chewie/src/chewie_player.dart';
 import 'package:rinsho_collect/model/article_view_model.dart';
-import 'package:video_player/video_player.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleView extends StatelessWidget {
   const ArticleView({
@@ -40,14 +39,17 @@ class ArticleView extends StatelessWidget {
                       data: article.abstract,
                     ),
                     _isLoaded
-                        ? const SizedBox(height: 200)
-                        : Container(
+                        ? Container(
                             height: 200,
                             child: Chewie(
                               controller: _chewieController,
                             ),
-                          ),
+                          )
+                        : const SizedBox(height: 200),
                     Html(data: article.body),
+                    WebView(
+                      initialUrl: 'https://flutter.dev',
+                    ),
                   ],
                 ),
               );
