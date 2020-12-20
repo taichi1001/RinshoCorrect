@@ -5,8 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:rinsho_collect/model/article_model.dart';
 import 'package:rinsho_collect/model/bottom_navigation_model.dart';
 import 'package:rinsho_collect/ui/main_bottom_navigation.dart';
+import 'globals.dart' as globals;
 
 void main() {
+  globals.article = ArticleModel();
+  globals.article.isLoaded;
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
     [
