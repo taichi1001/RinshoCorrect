@@ -37,18 +37,13 @@ class ArticleView extends StatelessWidget {
                     Html(
                       data: article.abstract,
                     ),
-                    _isLoaded
-                        ? Container(
-                            height: 200,
-                            child: Chewie(
-                              controller: _chewieController,
-                            ),
-                          )
-                        : const SizedBox(height: 200),
-                    Html(data: article.body),
-                    const WebView(
-                      initialUrl: 'https://flutter.dev',
+                    Container(
+                      height: 200,
+                      child: Chewie(
+                        controller: _chewieController,
+                      ),
                     ),
+                    Html(data: article.body),
                   ],
                 ),
               );
