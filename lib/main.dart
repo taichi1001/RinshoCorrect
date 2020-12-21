@@ -5,11 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:rinsho_collect/model/article_model.dart';
 import 'package:rinsho_collect/model/bottom_navigation_model.dart';
 import 'package:rinsho_collect/ui/main_bottom_navigation.dart';
-import 'globals.dart' as globals;
+import 'global.dart' as global;
 
 void main() {
-  globals.article = ArticleModel();
-  globals.article.isLoaded;
+  global.article = ArticleModel();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
     [
@@ -30,9 +29,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<BottomNavigationModel>(
           create: (context) => BottomNavigationModel(),
         ),
-        ChangeNotifierProvider<ArticleModel>(
-          create: (context) => ArticleModel(),
-        ),
+        ChangeNotifierProvider<ArticleModel>.value(value: global.article),
       ],
       child: const MaterialApp(
         home: MainBottomNavigation(),

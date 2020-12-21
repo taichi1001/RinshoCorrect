@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/entity/article.dart';
+import 'package:rinsho_collect/model/article_model.dart';
+import 'package:rinsho_collect/model/joint_screen_model.dart';
 import 'package:rinsho_collect/ui/article_view.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:rinsho_collect/model/article_model.dart';
 
 class JointScreen extends StatelessWidget {
   const JointScreen({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('設定'),
-      ),
-      body: Selector<ArticleModel, Tuple2<List<Article>, bool>>(
-        selector: (context, ArticleModel model) => Tuple2(model.articleList, model.isLoaded),
-        builder: (context, data, child) => data.item2
-            ? ListView.builder(
-                itemCount: data.item1.length,
-                itemBuilder: (BuildContext context, int index) => Provider.value(
-                  value: data.item1[index],
-                  child: const ArticleListCard(),
+    return ChangeNotifierProvider<JointScreenModel>(
+      create: (context) => JointScreenModel(),
+      builder: (context, _) {
+        final _articleList = context.select((JointScreenModel model) => model.showArticleList);
+        final _isLoaded = context.select((ArticleModel model) => model.isLoaded);
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('設定'),
+          ),
+          body: _isLoaded
+              ? ListView.builder(
+                  itemCount: _articleList.length,
+                  itemBuilder: (BuildContext context, int index) => Provider.value(
+                    value: _articleList[index],
+                    child: const ArticleListCard(),
+                  ),
+                )
+              : const Center(
+                  child: Text('Load中'),
                 ),
-              )
-            : child,
-        child: const Center(child: Text('Load中')),
-      ),
+        );
+      },
     );
   }
 }

@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rinsho_collect/entity/article.dart';
+import 'package:rinsho_collect/enum/joint.dart';
 
 class ArticleModel with ChangeNotifier {
   final List<Article> _articleList = [];
-  List<Article> get articleList => _articleList;
 
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
@@ -29,5 +29,14 @@ class ArticleModel with ChangeNotifier {
     _articleList.addAll(contents.map((content) => Article.fromJSON(content)));
     _isLoaded = true;
     notifyListeners();
+  }
+
+  List<Article> getArticleList(JointMode mode) {
+    final articles = [..._articleList];
+    if (mode == JointMode.all) {
+      return articles;
+    } else {
+      return null;
+    }
   }
 }

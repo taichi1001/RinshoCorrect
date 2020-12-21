@@ -20,15 +20,15 @@ class MainBottomNavigation extends StatelessWidget {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.ac_unit),
-            title: Text('関節'),
+            label: '関節',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.pie_chart),
-            title: Text('機能・性能'),
+            label: '機能・性能',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.input),
-            title: Text('お気に入り'),
+            label: 'お気に入り',
           ),
         ],
         type: BottomNavigationBarType.fixed,
