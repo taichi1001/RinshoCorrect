@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/entity/article.dart';
+import 'package:rinsho_collect/enum/sort_type.dart';
 import 'package:rinsho_collect/model/article_model.dart';
 import 'package:rinsho_collect/model/joint_screen_model.dart';
 import 'package:rinsho_collect/ui/article_view.dart';
@@ -11,29 +12,37 @@ class JointScreen extends StatelessWidget {
   const JointScreen({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<JointScreenModel>(
-      create: (context) => JointScreenModel(),
-      builder: (context, _) {
-        final _articleList = context.select((JointScreenModel model) => model.showArticleList);
-        final _isLoaded = context.select((ArticleModel model) => model.isLoaded);
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('設定'),
-          ),
-          body: _isLoaded
-              ? ListView.builder(
+    final _isLoaded = context.select((ArticleModel model) => model.isLoaded);
+    return _isLoaded
+        ? ChangeNotifierProvider<JointScreenModel>(
+            create: (context) => JointScreenModel(),
+            builder: (context, _) {
+              final _articleList = context
+                  .select((JointScreenModel model) => model.showArticleList);
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('設定'),
+                  leading: IconButton(
+                    icon: const Icon(Icons.ac_unit_outlined),
+                    onPressed: () {
+                      context.read<JointScreenModel>().makeShowArticleList();
+                    },
+                  ),
+                ),
+                body: ListView.builder(
                   itemCount: _articleList.length,
-                  itemBuilder: (BuildContext context, int index) => Provider.value(
+                  itemBuilder: (BuildContext context, int index) =>
+                      Provider.value(
                     value: _articleList[index],
                     child: const ArticleListCard(),
                   ),
-                )
-              : const Center(
-                  child: Text('Load中'),
                 ),
-        );
-      },
-    );
+              );
+            },
+          )
+        : const Center(
+            child: Text('Load中'),
+          );
   }
 }
 

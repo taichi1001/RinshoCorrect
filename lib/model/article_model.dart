@@ -35,6 +35,16 @@ class ArticleModel with ChangeNotifier {
     final articles = [..._articleList];
     if (mode == JointMode.all) {
       return articles;
+    } else if (mode != null) {
+      final List<Article> result = [];
+      for (final article in articles) {
+        for (final tag in article.tags) {
+          if (tag == mode.typeName) {
+            result.add(article);
+          }
+        }
+      }
+      return result;
     } else {
       return null;
     }
