@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final microCMSClient = Provider((ref) => MicroCMSClient());
+final microCMSClient = Provider.autoDispose((ref) => MicroCMSClient());
 
 class MicroCMSClient {
   Future getJsonList() => http.get(
