@@ -26,7 +26,7 @@ class ArticleModel with ChangeNotifier {
     );
     final List contents = jsonDecode(result.body)['contents'];
     _articleList.clear();
-    _articleList.addAll(contents.map((content) => Article.fromJSON(content)));
+    _articleList.addAll(contents.map((content) => Article.fromJson(content)));
     _isLoaded = true;
     notifyListeners();
   }

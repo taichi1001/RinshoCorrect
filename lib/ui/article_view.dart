@@ -4,7 +4,6 @@ import 'package:rinsho_collect/entity/article.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:chewie/chewie.dart';
 import 'package:rinsho_collect/model/article_view_model.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleView extends StatelessWidget {
   const ArticleView({
@@ -26,7 +25,6 @@ class ArticleView extends StatelessWidget {
             builder: (context, baz) {
               final _chewieController =
                   context.select((ArticleViewModel model) => model.chewieController);
-              final _isLoaded = context.select((ArticleViewModel model) => model.isLoaded);
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -35,7 +33,7 @@ class ArticleView extends StatelessWidget {
                     ),
                     Text(article.title),
                     Html(
-                      data: article.abstract,
+                      data: article.abst,
                     ),
                     Container(
                       height: 200,
