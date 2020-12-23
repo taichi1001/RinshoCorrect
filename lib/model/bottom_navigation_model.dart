@@ -5,7 +5,7 @@ import 'package:rinsho_collect/ui/favorite_screen.dart';
 
 class BottomNavigationModel with ChangeNotifier {
   final List<Widget> options = [
-    const JointScreen(),
+    JointScreen(),
     const FunctionsAndPerformanceScreen(),
     const FavoriteScreen(),
   ];

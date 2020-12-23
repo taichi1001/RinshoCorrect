@@ -7,48 +7,9 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class JointScreen extends StatelessWidget {
-  const JointScreen({Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    useEffect(() {
-      context.read(articleViewController).initState();
-      return;
-    }, []);
-    final _articles =
-        useProvider(articleViewController.state.select((value) => value.sortedArticles));
-
-    if (_articles == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('設定'),
-        leading: IconButton(
-          icon: const Icon(Icons.ac_unit_outlined),
-          onPressed: () {
-            context.read(articleViewController).changeSortOrder();
-          },
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: _articles.length,
-        itemBuilder: (context, index) => ProviderScope(
-          overrides: [
-            _currentArticle.overrideWithValue(_articles[index]),
-          ],
-          child: null,
-        ),
-      ),
-    );
-  }
-}
-
 final _currentArticle = ScopedProvider<Article>(null);
 
-class ArticleListCard extends StatelessWidget {
+class ArticleListCard extends HookWidget {
   const ArticleListCard({
     Key key,
   }) : super(key: key);
@@ -124,6 +85,44 @@ class ArticleListCard extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class JointScreen extends HookWidget {
+  const JointScreen({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    useEffect(() {
+      context.read(articleViewController).initState();
+      return;
+    }, []);
+    final _articles = useProvider(sortedArticles).state;
+
+    if (_articles == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('設定'),
+        leading: IconButton(
+          icon: const Icon(Icons.ac_unit_outlined),
+          onPressed: () {
+            context.read(articleViewController).changeSortType();
+          },
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: _articles.length,
+        itemBuilder: (context, index) => ProviderScope(
+          overrides: [
+            _currentArticle.overrideWithValue(_articles[index]),
+          ],
+          child: const ArticleListCard(),
         ),
       ),
     );

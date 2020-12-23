@@ -17,7 +17,7 @@ void main() {
     ],
   );
   return runApp(
-    const ProviderScope(child: MyApp()),
+    const MyApp(),
   );
 }
 
@@ -25,9 +25,11 @@ class MyApp extends StatelessWidget {
   const MyApp({key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      // home: MainBottomNavigation(),
-      home: JointScreen(),
+    return ProviderScope(
+      child: MaterialApp(
+        // home: MainBottomNavigation(),
+        home: JointScreen(),
+      ),
     );
   }
 }

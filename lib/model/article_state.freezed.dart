@@ -15,9 +15,12 @@ class _$ArticleStateTearOff {
 
 // ignore: unused_element
   _ArticleState call(
-      {List<Article> articles = null, SortType sort = SortType.asc}) {
+      {List<Article> articles = const <Article>[],
+      List<Article> sorted = const <Article>[],
+      SortType sort = SortType.asc}) {
     return _ArticleState(
       articles: articles,
+      sorted: sorted,
       sort: sort,
     );
   }
@@ -30,6 +33,7 @@ const $ArticleState = _$ArticleStateTearOff();
 /// @nodoc
 mixin _$ArticleState {
   List<Article> get articles;
+  List<Article> get sorted;
   SortType get sort;
 
   $ArticleStateCopyWith<ArticleState> get copyWith;
@@ -40,7 +44,7 @@ abstract class $ArticleStateCopyWith<$Res> {
   factory $ArticleStateCopyWith(
           ArticleState value, $Res Function(ArticleState) then) =
       _$ArticleStateCopyWithImpl<$Res>;
-  $Res call({List<Article> articles, SortType sort});
+  $Res call({List<Article> articles, List<Article> sorted, SortType sort});
 }
 
 /// @nodoc
@@ -54,11 +58,13 @@ class _$ArticleStateCopyWithImpl<$Res> implements $ArticleStateCopyWith<$Res> {
   @override
   $Res call({
     Object articles = freezed,
+    Object sorted = freezed,
     Object sort = freezed,
   }) {
     return _then(_value.copyWith(
       articles:
           articles == freezed ? _value.articles : articles as List<Article>,
+      sorted: sorted == freezed ? _value.sorted : sorted as List<Article>,
       sort: sort == freezed ? _value.sort : sort as SortType,
     ));
   }
@@ -71,7 +77,7 @@ abstract class _$ArticleStateCopyWith<$Res>
           _ArticleState value, $Res Function(_ArticleState) then) =
       __$ArticleStateCopyWithImpl<$Res>;
   @override
-  $Res call({List<Article> articles, SortType sort});
+  $Res call({List<Article> articles, List<Article> sorted, SortType sort});
 }
 
 /// @nodoc
@@ -87,11 +93,13 @@ class __$ArticleStateCopyWithImpl<$Res> extends _$ArticleStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object articles = freezed,
+    Object sorted = freezed,
     Object sort = freezed,
   }) {
     return _then(_ArticleState(
       articles:
           articles == freezed ? _value.articles : articles as List<Article>,
+      sorted: sorted == freezed ? _value.sorted : sorted as List<Article>,
       sort: sort == freezed ? _value.sort : sort as SortType,
     ));
   }
@@ -99,14 +107,21 @@ class __$ArticleStateCopyWithImpl<$Res> extends _$ArticleStateCopyWithImpl<$Res>
 
 /// @nodoc
 class _$_ArticleState extends _ArticleState {
-  _$_ArticleState({this.articles = null, this.sort = SortType.asc})
+  _$_ArticleState(
+      {this.articles = const <Article>[],
+      this.sorted = const <Article>[],
+      this.sort = SortType.asc})
       : assert(articles != null),
+        assert(sorted != null),
         assert(sort != null),
         super._();
 
-  @JsonKey(defaultValue: null)
+  @JsonKey(defaultValue: const <Article>[])
   @override
   final List<Article> articles;
+  @JsonKey(defaultValue: const <Article>[])
+  @override
+  final List<Article> sorted;
   @JsonKey(defaultValue: SortType.asc)
   @override
   final SortType sort;
@@ -118,14 +133,14 @@ class _$_ArticleState extends _ArticleState {
   List<Article> get sortedArticles {
     if (_didsortedArticles == false) {
       _didsortedArticles = true;
-      _sortedArticles = _sort();
+      _sortedArticles = articles;
     }
     return _sortedArticles;
   }
 
   @override
   String toString() {
-    return 'ArticleState(articles: $articles, sort: $sort, sortedArticles: $sortedArticles)';
+    return 'ArticleState(articles: $articles, sorted: $sorted, sort: $sort, sortedArticles: $sortedArticles)';
   }
 
   @override
@@ -135,6 +150,8 @@ class _$_ArticleState extends _ArticleState {
             (identical(other.articles, articles) ||
                 const DeepCollectionEquality()
                     .equals(other.articles, articles)) &&
+            (identical(other.sorted, sorted) ||
+                const DeepCollectionEquality().equals(other.sorted, sorted)) &&
             (identical(other.sort, sort) ||
                 const DeepCollectionEquality().equals(other.sort, sort)));
   }
@@ -143,6 +160,7 @@ class _$_ArticleState extends _ArticleState {
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(articles) ^
+      const DeepCollectionEquality().hash(sorted) ^
       const DeepCollectionEquality().hash(sort);
 
   @override
@@ -152,11 +170,15 @@ class _$_ArticleState extends _ArticleState {
 
 abstract class _ArticleState extends ArticleState {
   _ArticleState._() : super._();
-  factory _ArticleState({List<Article> articles, SortType sort}) =
-      _$_ArticleState;
+  factory _ArticleState(
+      {List<Article> articles,
+      List<Article> sorted,
+      SortType sort}) = _$_ArticleState;
 
   @override
   List<Article> get articles;
+  @override
+  List<Article> get sorted;
   @override
   SortType get sort;
   @override

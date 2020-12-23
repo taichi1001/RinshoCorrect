@@ -1,44 +1,41 @@
 import 'package:rinsho_collect/enum/sort_type.dart';
-import 'package:rinsho_collect/model/article_state.dart';
 import 'package:rinsho_collect/repository/article_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// enum SortOrder {
-//   ASC,
-//   DESC,
-// }
+import '../entity/article.dart';
 
-// final _sortOrder = StateProvider.autoDispose((ref) => SortOrder.ASC);
-// final _articles = StateProvider.autoDispose<List<Article>>((ref) => null);
+final _sortType = StateProvider.autoDispose((ref) => SortType.asc);
+final _articles = StateProvider.autoDispose<List<Article>>((ref) => null);
 
-// final sortedArticles = StateProvider.autoDispose((ref) {
-//   final List<Article> articles = ref.watch(_articles).state;
-//   final sortOrder = ref.watch(_sortOrder).state;
+final sortedArticles = StateProvider.autoDispose<List<Article>>((ref) {
+  final List<Article> articles = ref.watch(_articles).state;
+  final sortOrder = ref.watch(_sortType).state;
 
-//   if (sortOrder == SortOrder.ASC) {
-//     articles?.sort((a, b) => a.publishedAt.compareTo(b.publishedAt));
-//   } else {
-//     articles?.sort((a, b) => b.publishedAt.compareTo(a.publishedAt));
-//   }
-//   return articles;
-// });
+  if (sortOrder == SortType.asc) {
+    articles?.sort((a, b) => a.publishedAt.compareTo(b.publishedAt));
+  } else {
+    articles?.sort((a, b) => b.publishedAt.compareTo(a.publishedAt));
+  }
+  return articles;
+});
 
 final articleViewController =
-    StateNotifierProvider.autoDispose((ref) => ArticlesViewController(read: ref.read));
+    Provider.autoDispose((ref) => ArticlesViewController(read: ref.read));
 
-class ArticlesViewController extends StateNotifier<ArticleState> {
+class ArticlesViewController {
   ArticlesViewController({
     this.read,
-  }) : super(ArticleState());
+  });
 
   final Reader read;
 
   Future initState() async {
-    state.copyWith(articles: await read(articleRepository).getArticles());
+    read(_articles).state = await read(articleRepository).getArticles();
   }
 
-  void changeSortOrder() {
-    final sort = state.sort == SortType.asc ? SortType.desc : SortType.asc;
-    state.copyWith(sort: sort);
+  void changeSortType() {
+    final SortType sortType = read(_sortType).state;
+    read(_sortType).state =
+        sortType == SortType.asc ? SortType.desc : SortType.asc;
   }
 }
