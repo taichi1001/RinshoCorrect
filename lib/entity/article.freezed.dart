@@ -21,12 +21,12 @@ class _$ArticleTearOff {
       {String id,
       DateTime publishedAt,
       String title,
-      String subTitle,
-      @JsonKey(fromJson: _parseTags) List<String> tags,
+      @JsonKey(name: 'subtitle') String subTitle,
+      @JsonKey(name: 'tag', fromJson: _parseTags) List<String> tags,
       @JsonKey(name: 'abstract') String abst,
       String body,
-      Uri eyecath,
-      String videoURL}) {
+      @JsonKey(name: 'url', fromJson: _parseEyeCatch) Uri eyecatch,
+      @JsonKey(name: 'video') String videoURL}) {
     return _Article(
       id: id,
       publishedAt: publishedAt,
@@ -35,7 +35,7 @@ class _$ArticleTearOff {
       tags: tags,
       abst: abst,
       body: body,
-      eyecath: eyecath,
+      eyecatch: eyecatch,
       videoURL: videoURL,
     );
   }
@@ -55,13 +55,17 @@ mixin _$Article {
   String get id;
   DateTime get publishedAt;
   String get title;
+  @JsonKey(name: 'subtitle')
   String get subTitle;
-  @JsonKey(fromJson: _parseTags)
+  @JsonKey(name: 'tag', fromJson: _parseTags)
   List<String> get tags;
   @JsonKey(name: 'abstract')
   String get abst;
-  String get body;
-  Uri get eyecath;
+  String
+      get body; // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える
+  @JsonKey(name: 'url', fromJson: _parseEyeCatch)
+  Uri get eyecatch; // @JsonKey(name: 'video_abs') String videoAbs,
+  @JsonKey(name: 'video')
   String get videoURL;
 
   Map<String, dynamic> toJson();
@@ -76,12 +80,12 @@ abstract class $ArticleCopyWith<$Res> {
       {String id,
       DateTime publishedAt,
       String title,
-      String subTitle,
-      @JsonKey(fromJson: _parseTags) List<String> tags,
+      @JsonKey(name: 'subtitle') String subTitle,
+      @JsonKey(name: 'tag', fromJson: _parseTags) List<String> tags,
       @JsonKey(name: 'abstract') String abst,
       String body,
-      Uri eyecath,
-      String videoURL});
+      @JsonKey(name: 'url', fromJson: _parseEyeCatch) Uri eyecatch,
+      @JsonKey(name: 'video') String videoURL});
 }
 
 /// @nodoc
@@ -101,7 +105,7 @@ class _$ArticleCopyWithImpl<$Res> implements $ArticleCopyWith<$Res> {
     Object tags = freezed,
     Object abst = freezed,
     Object body = freezed,
-    Object eyecath = freezed,
+    Object eyecatch = freezed,
     Object videoURL = freezed,
   }) {
     return _then(_value.copyWith(
@@ -113,7 +117,7 @@ class _$ArticleCopyWithImpl<$Res> implements $ArticleCopyWith<$Res> {
       tags: tags == freezed ? _value.tags : tags as List<String>,
       abst: abst == freezed ? _value.abst : abst as String,
       body: body == freezed ? _value.body : body as String,
-      eyecath: eyecath == freezed ? _value.eyecath : eyecath as Uri,
+      eyecatch: eyecatch == freezed ? _value.eyecatch : eyecatch as Uri,
       videoURL: videoURL == freezed ? _value.videoURL : videoURL as String,
     ));
   }
@@ -128,12 +132,12 @@ abstract class _$ArticleCopyWith<$Res> implements $ArticleCopyWith<$Res> {
       {String id,
       DateTime publishedAt,
       String title,
-      String subTitle,
-      @JsonKey(fromJson: _parseTags) List<String> tags,
+      @JsonKey(name: 'subtitle') String subTitle,
+      @JsonKey(name: 'tag', fromJson: _parseTags) List<String> tags,
       @JsonKey(name: 'abstract') String abst,
       String body,
-      Uri eyecath,
-      String videoURL});
+      @JsonKey(name: 'url', fromJson: _parseEyeCatch) Uri eyecatch,
+      @JsonKey(name: 'video') String videoURL});
 }
 
 /// @nodoc
@@ -154,7 +158,7 @@ class __$ArticleCopyWithImpl<$Res> extends _$ArticleCopyWithImpl<$Res>
     Object tags = freezed,
     Object abst = freezed,
     Object body = freezed,
-    Object eyecath = freezed,
+    Object eyecatch = freezed,
     Object videoURL = freezed,
   }) {
     return _then(_Article(
@@ -166,7 +170,7 @@ class __$ArticleCopyWithImpl<$Res> extends _$ArticleCopyWithImpl<$Res>
       tags: tags == freezed ? _value.tags : tags as List<String>,
       abst: abst == freezed ? _value.abst : abst as String,
       body: body == freezed ? _value.body : body as String,
-      eyecath: eyecath == freezed ? _value.eyecath : eyecath as Uri,
+      eyecatch: eyecatch == freezed ? _value.eyecatch : eyecatch as Uri,
       videoURL: videoURL == freezed ? _value.videoURL : videoURL as String,
     ));
   }
@@ -180,12 +184,12 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       {this.id,
       this.publishedAt,
       this.title,
-      this.subTitle,
-      @JsonKey(fromJson: _parseTags) this.tags,
+      @JsonKey(name: 'subtitle') this.subTitle,
+      @JsonKey(name: 'tag', fromJson: _parseTags) this.tags,
       @JsonKey(name: 'abstract') this.abst,
       this.body,
-      this.eyecath,
-      this.videoURL});
+      @JsonKey(name: 'url', fromJson: _parseEyeCatch) this.eyecatch,
+      @JsonKey(name: 'video') this.videoURL});
 
   factory _$_Article.fromJson(Map<String, dynamic> json) =>
       _$_$_ArticleFromJson(json);
@@ -197,23 +201,26 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
   @override
   final String title;
   @override
+  @JsonKey(name: 'subtitle')
   final String subTitle;
   @override
-  @JsonKey(fromJson: _parseTags)
+  @JsonKey(name: 'tag', fromJson: _parseTags)
   final List<String> tags;
   @override
   @JsonKey(name: 'abstract')
   final String abst;
   @override
   final String body;
-  @override
-  final Uri eyecath;
-  @override
+  @override // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える
+  @JsonKey(name: 'url', fromJson: _parseEyeCatch)
+  final Uri eyecatch;
+  @override // @JsonKey(name: 'video_abs') String videoAbs,
+  @JsonKey(name: 'video')
   final String videoURL;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Article(id: $id, publishedAt: $publishedAt, title: $title, subTitle: $subTitle, tags: $tags, abst: $abst, body: $body, eyecath: $eyecath, videoURL: $videoURL)';
+    return 'Article(id: $id, publishedAt: $publishedAt, title: $title, subTitle: $subTitle, tags: $tags, abst: $abst, body: $body, eyecatch: $eyecatch, videoURL: $videoURL)';
   }
 
   @override
@@ -228,7 +235,7 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       ..add(DiagnosticsProperty('tags', tags))
       ..add(DiagnosticsProperty('abst', abst))
       ..add(DiagnosticsProperty('body', body))
-      ..add(DiagnosticsProperty('eyecath', eyecath))
+      ..add(DiagnosticsProperty('eyecatch', eyecatch))
       ..add(DiagnosticsProperty('videoURL', videoURL));
   }
 
@@ -252,9 +259,9 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
                 const DeepCollectionEquality().equals(other.abst, abst)) &&
             (identical(other.body, body) ||
                 const DeepCollectionEquality().equals(other.body, body)) &&
-            (identical(other.eyecath, eyecath) ||
+            (identical(other.eyecatch, eyecatch) ||
                 const DeepCollectionEquality()
-                    .equals(other.eyecath, eyecath)) &&
+                    .equals(other.eyecatch, eyecatch)) &&
             (identical(other.videoURL, videoURL) ||
                 const DeepCollectionEquality()
                     .equals(other.videoURL, videoURL)));
@@ -270,7 +277,7 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       const DeepCollectionEquality().hash(tags) ^
       const DeepCollectionEquality().hash(abst) ^
       const DeepCollectionEquality().hash(body) ^
-      const DeepCollectionEquality().hash(eyecath) ^
+      const DeepCollectionEquality().hash(eyecatch) ^
       const DeepCollectionEquality().hash(videoURL);
 
   @override
@@ -288,12 +295,12 @@ abstract class _Article implements Article {
       {String id,
       DateTime publishedAt,
       String title,
-      String subTitle,
-      @JsonKey(fromJson: _parseTags) List<String> tags,
+      @JsonKey(name: 'subtitle') String subTitle,
+      @JsonKey(name: 'tag', fromJson: _parseTags) List<String> tags,
       @JsonKey(name: 'abstract') String abst,
       String body,
-      Uri eyecath,
-      String videoURL}) = _$_Article;
+      @JsonKey(name: 'url', fromJson: _parseEyeCatch) Uri eyecatch,
+      @JsonKey(name: 'video') String videoURL}) = _$_Article;
 
   factory _Article.fromJson(Map<String, dynamic> json) = _$_Article.fromJson;
 
@@ -304,18 +311,21 @@ abstract class _Article implements Article {
   @override
   String get title;
   @override
+  @JsonKey(name: 'subtitle')
   String get subTitle;
   @override
-  @JsonKey(fromJson: _parseTags)
+  @JsonKey(name: 'tag', fromJson: _parseTags)
   List<String> get tags;
   @override
   @JsonKey(name: 'abstract')
   String get abst;
   @override
   String get body;
-  @override
-  Uri get eyecath;
-  @override
+  @override // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える
+  @JsonKey(name: 'url', fromJson: _parseEyeCatch)
+  Uri get eyecatch;
+  @override // @JsonKey(name: 'video_abs') String videoAbs,
+  @JsonKey(name: 'video')
   String get videoURL;
   @override
   _$ArticleCopyWith<_Article> get copyWith;

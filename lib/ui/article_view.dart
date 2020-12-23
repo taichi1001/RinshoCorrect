@@ -29,7 +29,7 @@ class ArticleView extends StatelessWidget {
                 child: Column(
                   children: [
                     Image.network(
-                      article.eyecath.toString(),
+                      article.eyecatch.toString(),
                     ),
                     Text(article.title),
                     Html(

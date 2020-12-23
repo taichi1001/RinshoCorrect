@@ -17,6 +17,10 @@ class ArticleListCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(_currentArticle);
+    ScreenUtil.init(
+      context,
+      designSize: const Size(375, 812), // iPhoneXsのサイズを基準に設定
+    );
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -39,7 +43,7 @@ class ArticleListCard extends HookWidget {
                   height: 125.h,
                   child: FadeInImage.memoryNetwork(
                     placeholder: kTransparentImage,
-                    image: _article.eyecath.toString(),
+                    image: _article.eyecatch.toString(),
                   ),
                 ),
                 Row(
@@ -51,11 +55,16 @@ class ArticleListCard extends HookWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            _article.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                          Container(
+                            width: 290.w,
+                            child: Text(
+                              _article.title,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 8),

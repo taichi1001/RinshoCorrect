@@ -10,17 +10,18 @@ abstract class Article with _$Article {
     String id,
     DateTime publishedAt,
     String title,
-    String subTitle,
-    @JsonKey(fromJson: _parseTags) List<String> tags,
+    @JsonKey(name: 'subtitle') String subTitle,
+    @JsonKey(name: 'tag', fromJson: _parseTags) List<String> tags,
     @JsonKey(name: 'abstract') String abst,
     String body,
-    Uri eyecath,
-    String videoURL,
+    // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える
+    @JsonKey(name: 'url', fromJson: _parseEyeCatch) Uri eyecatch,
+    // @JsonKey(name: 'video_abs') String videoAbs,
+    @JsonKey(name: 'video') String videoURL,
   }) = _Article;
   factory Article.fromJson(Map<String, dynamic> json) => _$ArticleFromJson(json);
 }
 
-List<String> _parseTags(value) {
-  final tagFromJson = value['tag'];
-  return List<String>.from(tagFromJson);
-}
+Uri _parseEyeCatch(value) => Uri.parse(value);
+
+List<String> _parseTags(value) => List<String>.from(value);
