@@ -14,7 +14,7 @@ _$_Article _$_$_ArticleFromJson(Map<String, dynamic> json) {
         : DateTime.parse(json['publishedAt'] as String),
     title: json['title'] as String,
     subTitle: json['subTitle'] as String,
-    tags: (json['tags'] as List)?.map((e) => e as String)?.toList(),
+    tags: _parseTags(json['tags']),
     abst: json['abstract'] as String,
     body: json['body'] as String,
     eyecath:

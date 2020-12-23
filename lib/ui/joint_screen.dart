@@ -1,48 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/entity/article.dart';
-import 'package:rinsho_collect/model/article_model.dart';
-import 'package:rinsho_collect/model/joint_screen_model.dart';
+import 'package:rinsho_collect/model/article_providers.dart';
 import 'package:rinsho_collect/ui/article_view.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class JointScreen extends StatelessWidget {
   const JointScreen({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final _isLoaded = context.select((ArticleModel model) => model.isLoaded);
-    return _isLoaded
-        ? ChangeNotifierProvider<JointScreenModel>(
-            create: (context) => JointScreenModel(),
-            builder: (context, _) {
-              final _articleList =
-                  context.select((JointScreenModel model) => model.showArticleList);
-              return Scaffold(
-                appBar: AppBar(
-                  title: const Text('設定'),
-                  leading: IconButton(
-                    icon: const Icon(Icons.ac_unit_outlined),
-                    onPressed: () {
-                      context.read<JointScreenModel>().makeShowArticleList();
-                    },
-                  ),
-                ),
-                body: ListView.builder(
-                  itemCount: _articleList.length,
-                  itemBuilder: (BuildContext context, int index) => Provider.value(
-                    value: _articleList[index],
-                    child: const ArticleListCard(),
-                  ),
-                ),
-              );
-            },
-          )
-        : const Center(
-            child: Text('Load中'),
-          );
+    useEffect(() {
+      context.read(articleViewController).initState();
+      return;
+    }, []);
+    final _articles =
+        useProvider(articleViewController.state.select((value) => value.sortedArticles));
+
+    if (_articles == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('設定'),
+        leading: IconButton(
+          icon: const Icon(Icons.ac_unit_outlined),
+          onPressed: () {
+            context.read(articleViewController).changeSortOrder();
+          },
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: _articles.length,
+        itemBuilder: (context, index) => ProviderScope(
+          overrides: [
+            _currentArticle.overrideWithValue(_articles[index]),
+          ],
+          child: null,
+        ),
+      ),
+    );
   }
 }
+
+final _currentArticle = ScopedProvider<Article>(null);
 
 class ArticleListCard extends StatelessWidget {
   const ArticleListCard({
@@ -51,7 +55,7 @@ class ArticleListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _article = context.watch<Article>();
+    final _article = useProvider(_currentArticle);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(

@@ -1,4 +1,4 @@
 enum SortType {
-  fromNewest,
-  fromOldest,
+  asc,
+  desc,
 }

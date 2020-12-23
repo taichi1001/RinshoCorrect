@@ -22,7 +22,7 @@ class _$ArticleTearOff {
       DateTime publishedAt,
       String title,
       String subTitle,
-      List<String> tags,
+      @JsonKey(fromJson: _parseTags) List<String> tags,
       @JsonKey(name: 'abstract') String abst,
       String body,
       Uri eyecath,
@@ -56,6 +56,7 @@ mixin _$Article {
   DateTime get publishedAt;
   String get title;
   String get subTitle;
+  @JsonKey(fromJson: _parseTags)
   List<String> get tags;
   @JsonKey(name: 'abstract')
   String get abst;
@@ -76,7 +77,7 @@ abstract class $ArticleCopyWith<$Res> {
       DateTime publishedAt,
       String title,
       String subTitle,
-      List<String> tags,
+      @JsonKey(fromJson: _parseTags) List<String> tags,
       @JsonKey(name: 'abstract') String abst,
       String body,
       Uri eyecath,
@@ -105,7 +106,8 @@ class _$ArticleCopyWithImpl<$Res> implements $ArticleCopyWith<$Res> {
   }) {
     return _then(_value.copyWith(
       id: id == freezed ? _value.id : id as String,
-      publishedAt: publishedAt == freezed ? _value.publishedAt : publishedAt as DateTime,
+      publishedAt:
+          publishedAt == freezed ? _value.publishedAt : publishedAt as DateTime,
       title: title == freezed ? _value.title : title as String,
       subTitle: subTitle == freezed ? _value.subTitle : subTitle as String,
       tags: tags == freezed ? _value.tags : tags as List<String>,
@@ -127,7 +129,7 @@ abstract class _$ArticleCopyWith<$Res> implements $ArticleCopyWith<$Res> {
       DateTime publishedAt,
       String title,
       String subTitle,
-      List<String> tags,
+      @JsonKey(fromJson: _parseTags) List<String> tags,
       @JsonKey(name: 'abstract') String abst,
       String body,
       Uri eyecath,
@@ -157,7 +159,8 @@ class __$ArticleCopyWithImpl<$Res> extends _$ArticleCopyWithImpl<$Res>
   }) {
     return _then(_Article(
       id: id == freezed ? _value.id : id as String,
-      publishedAt: publishedAt == freezed ? _value.publishedAt : publishedAt as DateTime,
+      publishedAt:
+          publishedAt == freezed ? _value.publishedAt : publishedAt as DateTime,
       title: title == freezed ? _value.title : title as String,
       subTitle: subTitle == freezed ? _value.subTitle : subTitle as String,
       tags: tags == freezed ? _value.tags : tags as List<String>,
@@ -178,13 +181,14 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       this.publishedAt,
       this.title,
       this.subTitle,
-      this.tags,
+      @JsonKey(fromJson: _parseTags) this.tags,
       @JsonKey(name: 'abstract') this.abst,
       this.body,
       this.eyecath,
       this.videoURL});
 
-  factory _$_Article.fromJson(Map<String, dynamic> json) => _$_$_ArticleFromJson(json);
+  factory _$_Article.fromJson(Map<String, dynamic> json) =>
+      _$_$_ArticleFromJson(json);
 
   @override
   final String id;
@@ -195,6 +199,7 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
   @override
   final String subTitle;
   @override
+  @JsonKey(fromJson: _parseTags)
   final List<String> tags;
   @override
   @JsonKey(name: 'abstract')
@@ -231,13 +236,16 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _Article &&
-            (identical(other.id, id) || const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.publishedAt, publishedAt) ||
-                const DeepCollectionEquality().equals(other.publishedAt, publishedAt)) &&
+                const DeepCollectionEquality()
+                    .equals(other.publishedAt, publishedAt)) &&
             (identical(other.title, title) ||
                 const DeepCollectionEquality().equals(other.title, title)) &&
             (identical(other.subTitle, subTitle) ||
-                const DeepCollectionEquality().equals(other.subTitle, subTitle)) &&
+                const DeepCollectionEquality()
+                    .equals(other.subTitle, subTitle)) &&
             (identical(other.tags, tags) ||
                 const DeepCollectionEquality().equals(other.tags, tags)) &&
             (identical(other.abst, abst) ||
@@ -245,9 +253,11 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
             (identical(other.body, body) ||
                 const DeepCollectionEquality().equals(other.body, body)) &&
             (identical(other.eyecath, eyecath) ||
-                const DeepCollectionEquality().equals(other.eyecath, eyecath)) &&
+                const DeepCollectionEquality()
+                    .equals(other.eyecath, eyecath)) &&
             (identical(other.videoURL, videoURL) ||
-                const DeepCollectionEquality().equals(other.videoURL, videoURL)));
+                const DeepCollectionEquality()
+                    .equals(other.videoURL, videoURL)));
   }
 
   @override
@@ -264,7 +274,8 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       const DeepCollectionEquality().hash(videoURL);
 
   @override
-  _$ArticleCopyWith<_Article> get copyWith => __$ArticleCopyWithImpl<_Article>(this, _$identity);
+  _$ArticleCopyWith<_Article> get copyWith =>
+      __$ArticleCopyWithImpl<_Article>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -278,7 +289,7 @@ abstract class _Article implements Article {
       DateTime publishedAt,
       String title,
       String subTitle,
-      List<String> tags,
+      @JsonKey(fromJson: _parseTags) List<String> tags,
       @JsonKey(name: 'abstract') String abst,
       String body,
       Uri eyecath,
@@ -295,6 +306,7 @@ abstract class _Article implements Article {
   @override
   String get subTitle;
   @override
+  @JsonKey(fromJson: _parseTags)
   List<String> get tags;
   @override
   @JsonKey(name: 'abstract')

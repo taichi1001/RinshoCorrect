@@ -11,12 +11,11 @@ class JointScreenModel with ChangeNotifier {
     makeShowArticleList();
   }
 
-  final List<Article> _articleList =
-      global.article.getArticleList(JointMode.all);
+  final List<Article> _articleList = global.article.getArticleList(JointMode.all);
 
   List<Article> _showArticleList;
 
-  SortType sortType = SortType.fromNewest;
+  SortType sortType = SortType.asc;
 
   List<Article> get showArticleList => _showArticleList;
 
@@ -27,10 +26,10 @@ class JointScreenModel with ChangeNotifier {
     FilterType filter = FilterType.all,
     List<String> words,
   }) {
-    if (sortType == SortType.fromNewest) {
-      sortType = SortType.fromOldest;
-    } else if (sortType == SortType.fromOldest) {
-      sortType = SortType.fromNewest;
+    if (sortType == SortType.asc) {
+      sortType = SortType.asc;
+    } else if (sortType == SortType.desc) {
+      sortType = SortType.desc;
     }
     final sort = sortType;
     _showArticleList = [..._articleList];
@@ -54,10 +53,10 @@ class JointScreenModel with ChangeNotifier {
 
   void _sortArticleList(SortType sort) {
     switch (sort) {
-      case SortType.fromNewest:
+      case SortType.asc:
         _showArticleList = SortArticles.fromNewest(_showArticleList);
         break;
-      case SortType.fromOldest:
+      case SortType.desc:
         _showArticleList = SortArticles.fromOldest(_showArticleList);
         break;
       default:
