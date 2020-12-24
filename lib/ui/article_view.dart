@@ -23,8 +23,8 @@ class ArticleView extends StatelessWidget {
           ChangeNotifierProvider<ArticleViewModel>(
             create: (context) => ArticleViewModel(),
             builder: (context, baz) {
-              final _chewieController =
-                  context.select((ArticleViewModel model) => model.chewieController);
+              final _chewieController = context
+                  .select((ArticleViewModel model) => model.chewieController);
               return SingleChildScrollView(
                 child: Column(
                   children: [

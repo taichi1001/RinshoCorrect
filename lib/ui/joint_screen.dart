@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/entity/article.dart';
-import 'package:rinsho_collect/model/article_providers.dart';
+import 'package:rinsho_collect/enum/joint.dart';
+import 'package:rinsho_collect/model/all_article_providers.dart';
+import 'package:rinsho_collect/model/articlestest.dart';
 import 'package:rinsho_collect/ui/article_view.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -17,10 +19,6 @@ class ArticleListCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(_currentArticle);
-    ScreenUtil.init(
-      context,
-      designSize: const Size(375, 812), // iPhoneXsのサイズを基準に設定
-    );
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -69,7 +67,7 @@ class ArticleListCard extends HookWidget {
                           ),
                           const SizedBox(height: 8),
                           Container(
-                            width: 200.w,
+                            width: 290.w,
                             child: Text(
                               _article.subTitle,
                               overflow: TextOverflow.ellipsis,
@@ -105,7 +103,7 @@ class JointScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(articleViewController).initState();
+      context.read(articlesController).fetch();
       return;
     }, []);
     final _articles = useProvider(sortedArticles).state;
@@ -124,6 +122,16 @@ class JointScreen extends HookWidget {
             context.read(articleViewController).changeSortType();
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.accessibility),
+            onPressed: () {
+              context
+                  .read(articleViewController)
+                  .changeJointMode(JointMode.kneeJoint);
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: _articles.length,
@@ -131,7 +139,9 @@ class JointScreen extends HookWidget {
           overrides: [
             _currentArticle.overrideWithValue(_articles[index]),
           ],
-          child: const ArticleListCard(),
+          child: ArticleListCard(
+            key: ObjectKey(_articles[index]),
+          ),
         ),
       ),
     );
