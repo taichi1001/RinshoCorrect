@@ -101,10 +101,6 @@ class FunctionsAndPerformanceScreen extends HookWidget {
   const FunctionsAndPerformanceScreen({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    // useEffect(() {
-    //   context.read(articlesController).fetch();
-    //   return;
-    // }, []);
     final _articles = useProvider(sortedArticles).state;
 
     if (_articles == null) {

@@ -106,13 +106,7 @@ class JointScreen extends HookWidget {
       context.read(articlesController).fetch();
       return;
     }, []);
-    final _articles = useProvider(sortedArticles).state;
 
-    if (_articles == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('設定'),
@@ -126,22 +120,36 @@ class JointScreen extends HookWidget {
           IconButton(
             icon: const Icon(Icons.accessibility),
             onPressed: () {
-              context
-                  .read(articleViewController)
-                  .changeJointMode(JointMode.kneeJoint);
+              context.read(articleViewController).changeJointMode(JointMode.kneeJoint);
             },
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _articles.length,
-        itemBuilder: (context, index) => ProviderScope(
-          overrides: [
-            _currentArticle.overrideWithValue(_articles[index]),
-          ],
-          child: ArticleListCard(
-            key: ObjectKey(_articles[index]),
-          ),
+      body: const _ArticlesListView(),
+    );
+  }
+}
+
+class _ArticlesListView extends HookWidget {
+  const _ArticlesListView({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final _articles = useProvider(sortedArticles).state;
+
+    if (_articles == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: _articles.length,
+      itemBuilder: (context, index) => ProviderScope(
+        overrides: [
+          _currentArticle.overrideWithValue(_articles[index]),
+        ],
+        child: ArticleListCard(
+          key: ObjectKey(_articles[index]),
         ),
       ),
     );
