@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:rinsho_collect/model/bottom_navigation_model.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class MainBottomNavigation extends StatelessWidget {
+class MainBottomNavigation extends HookWidget {
   const MainBottomNavigation({key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final bottomNavigationModel = Provider.of<BottomNavigationModel>(context, listen: true);
+    final _selectedIndex = useProvider(bottomNavigationController
+        .select((controller) => controller.selectedIndex));
+    final _selectedView = useProvider(bottomNavigationController
+        .select((controller) => controller.selectedView));
     ScreenUtil.init(
       context,
       designSize: const Size(375, 812), // iPhoneXsのサイズを基準に設定
     );
     return Scaffold(
       body: Center(
-        child: bottomNavigationModel.getSelectedScreen(),
+        child: _selectedView,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -32,10 +36,10 @@ class MainBottomNavigation extends StatelessWidget {
           ),
         ],
         type: BottomNavigationBarType.fixed,
-        currentIndex: bottomNavigationModel.selectedIndex,
+        currentIndex: _selectedIndex,
         selectedItemColor: Theme.of(context).accentColor,
         onTap: (index) {
-          bottomNavigationModel.change(index);
+          context.read(bottomNavigationController).change(index);
         },
       ),
     );

@@ -1,59 +1,109 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/entity/article.dart';
-import 'package:rinsho_collect/enum/sort_type.dart';
-import 'package:rinsho_collect/model/article_model.dart';
-import 'package:rinsho_collect/model/joint_screen_model.dart';
+import 'package:rinsho_collect/enum/joint.dart';
+import 'package:rinsho_collect/model/all_article_providers.dart';
+import 'package:rinsho_collect/model/articles_controller.dart';
 import 'package:rinsho_collect/ui/article_view.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 
-class JointScreen extends StatelessWidget {
+class JointScreen extends HookWidget {
   const JointScreen({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final _isLoaded = context.select((ArticleModel model) => model.isLoaded);
-    return _isLoaded
-        ? ChangeNotifierProvider<JointScreenModel>(
-            create: (context) => JointScreenModel(),
-            builder: (context, _) {
-              final _articleList = context
-                  .select((JointScreenModel model) => model.showArticleList);
-              return Scaffold(
-                appBar: AppBar(
-                  title: const Text('設定'),
-                  leading: IconButton(
-                    icon: const Icon(Icons.ac_unit_outlined),
-                    onPressed: () {
-                      context.read<JointScreenModel>().makeShowArticleList();
-                    },
-                  ),
-                ),
-                body: ListView.builder(
-                  itemCount: _articleList.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      Provider.value(
-                    value: _articleList[index],
-                    child: const ArticleListCard(),
-                  ),
-                ),
-              );
+    useEffect(() {
+      context.read(articlesController).fetch();
+      return;
+    }, []);
+
+    return DefaultTabController(
+      length: JointMode.values.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('設定'),
+          leading: IconButton(
+            icon: const Icon(Icons.ac_unit_outlined),
+            onPressed: () {
+              context.read(jointScreenController).changeSortType();
             },
-          )
-        : const Center(
-            child: Text('Load中'),
-          );
+          ),
+          bottom: TabBar(
+            isScrollable: true,
+            indicator: BubbleTabIndicator(
+              indicatorHeight: 25.0,
+              indicatorColor: Colors.blueAccent,
+              tabBarIndicatorSize: TabBarIndicatorSize.tab,
+            ),
+            tabs: [
+              for (final value in JointMode.values)
+                Tab(child: Text(value.typeName)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            for (final value in JointMode.values)
+              _ArticlesListView(mode: value),
+          ],
+        ),
+      ),
+    );
   }
 }
 
-class ArticleListCard extends StatelessWidget {
-  const ArticleListCard({
+class _ArticlesListView extends HookWidget {
+  const _ArticlesListView({
+    @required this.mode,
+    Key key,
+  }) : super(key: key);
+
+  final JointMode mode;
+
+  @override
+  Widget build(BuildContext context) {
+    final _articles = useProvider(sortedArticles(mode)).state;
+
+    if (_articles == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return AnimationLimiter(
+      key: ObjectKey(useProvider(sortType).state),
+      child: ListView.builder(
+        itemCount: _articles.length,
+        itemBuilder: (context, index) => ProviderScope(
+          overrides: [
+            currentArticle.overrideWithValue(_articles[index]),
+          ],
+          child: const AnimationConfiguration.synchronized(
+            duration: Duration(milliseconds: 600),
+            child: FadeInAnimation(
+              child: _ArticleCard(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+final currentArticle = ScopedProvider<Article>(null);
+
+class _ArticleCard extends HookWidget {
+  const _ArticleCard({
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _article = context.watch<Article>();
+    final _article = useProvider(currentArticle);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -72,48 +122,24 @@ class ArticleListCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                Container(
-                  height: 125.h,
-                  child: FadeInImage.memoryNetwork(
-                    placeholder: kTransparentImage,
-                    image: _article.eyecath.toString(),
-                  ),
-                ),
+                SizedBox(height: 125.h, child: const _EyeCatch()),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Column(
+                    Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            _article.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
                           const SizedBox(height: 8),
-                          Container(
-                            width: 200.w,
-                            child: Text(
-                              _article.subTitle,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              softWrap: false,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ),
+                          SizedBox(width: 290.w, child: const _Title()),
+                          const SizedBox(height: 8),
+                          SizedBox(width: 290.w, child: const _SubTitle()),
                           const SizedBox(height: 8),
                           const Text(
                             '#タグ',
                             style: TextStyle(fontSize: 12),
                           ),
-                        ],
-                      ),
-                    ),
+                        ]),
                     const Icon(
                       Icons.favorite,
                     ),
@@ -124,6 +150,47 @@ class ArticleListCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _EyeCatch extends HookWidget {
+  const _EyeCatch({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return FadeInImage.memoryNetwork(
+      placeholder: kTransparentImage,
+      image: useProvider(currentArticle).eyecatch.toString(),
+    );
+  }
+}
+
+class _Title extends HookWidget {
+  const _Title({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      useProvider(currentArticle).title,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class _SubTitle extends HookWidget {
+  const _SubTitle({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      useProvider(currentArticle).subTitle,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+      softWrap: false,
+      style: const TextStyle(fontSize: 14),
     );
   }
 }
