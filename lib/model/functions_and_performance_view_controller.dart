@@ -2,7 +2,7 @@ import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/sort_type.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rinsho_collect/util/filter_articles.dart';
-import 'package:rinsho_collect/model/articlestest.dart';
+import 'package:rinsho_collect/model/articles_controller.dart';
 
 import '../entity/article.dart';
 
@@ -25,10 +25,10 @@ final sortedArticles = StateProvider.autoDispose<List<Article>>((ref) {
 });
 
 final articleViewController =
-    Provider((ref) => ArticlesViewController(read: ref.read));
+    Provider((ref) => FunctionsAndPerformanceViewController(read: ref.read));
 
-class ArticlesViewController {
-  ArticlesViewController({
+class FunctionsAndPerformanceViewController {
+  FunctionsAndPerformanceViewController({
     this.read,
   });
 

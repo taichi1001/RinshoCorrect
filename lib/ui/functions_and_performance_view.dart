@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/entity/article.dart';
-import 'package:rinsho_collect/model/articlestest.dart';
-import 'package:rinsho_collect/model/test_providers.dart';
+import 'package:rinsho_collect/model/functions_and_performance_view_controller.dart';
 import 'package:rinsho_collect/ui/article_view.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -97,8 +96,8 @@ class _ArticleListCard extends HookWidget {
   }
 }
 
-class FunctionsAndPerformanceScreen extends HookWidget {
-  const FunctionsAndPerformanceScreen({Key key}) : super(key: key);
+class FunctionsAndPerformanceView extends HookWidget {
+  const FunctionsAndPerformanceView({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final _articles = useProvider(sortedArticles).state;

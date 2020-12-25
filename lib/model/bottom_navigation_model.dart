@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rinsho_collect/ui/joint_screen.dart';
-import 'package:rinsho_collect/ui/functions_and_performance_screen.dart';
+import 'package:rinsho_collect/ui/functions_and_performance_view.dart';
 import 'package:rinsho_collect/ui/favorite_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -15,7 +15,7 @@ class BottomNavigationController extends ChangeNotifier {
 
   final List<Widget> views = [
     const JointScreen(),
-    const FunctionsAndPerformanceScreen(),
+    const FunctionsAndPerformanceView(),
     const FavoriteScreen(),
   ];
 
