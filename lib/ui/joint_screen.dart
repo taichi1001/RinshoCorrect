@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/enum/joint.dart';
-import 'package:rinsho_collect/model/all_article_providers.dart';
+import 'package:rinsho_collect/model/joint_screen_controller.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
 import 'package:rinsho_collect/ui/article_view.dart';
 import 'package:transparent_image/transparent_image.dart';

@@ -35,23 +35,32 @@ dependencies:
 
   flutter_screenutil: ^3.1.0
 
+  # URIから画像を取得
   transparent_image: ^1.0.0
 
+  # WebAPIへのアクセス
   http: ^0.12.2
 
+  # html形式のstringを画面に表示
   flutter_html: ^1.1.1
 
+  # 動画表示
   chewie: ^0.12.0
   video_player: ^1.0.1
 
+  # Web画面を表示
   webview_flutter: ^1.0.7
 
-  tuple: ^1.0.3
-
+  # listviewのアニメーション
   flutter_staggered_animations: ^0.1.2
 
+  # タブのインジケーターを丸くする
   bubble_tab_indicator: ^0.1.4
 
+  # 下から引っ張って出てくるやつ
+  sliding_sheet: ^0.4.1
+
+  # RiverPod関連
   flutter_hooks: ^0.15.0
   hooks_riverpod: ^0.12.1
   freezed_annotation: ^0.12.0
