@@ -21,35 +21,39 @@ class JointScreen extends HookWidget {
       return;
     }, []);
 
-    return DefaultTabController(
-      length: JointMode.values.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('設定'),
-          leading: IconButton(
-            icon: const Icon(Icons.ac_unit_outlined),
-            onPressed: () {
-              context.read(jointScreenController).changeSortType();
-            },
-          ),
-          bottom: TabBar(
-            isScrollable: true,
-            indicator: BubbleTabIndicator(
-              indicatorHeight: 25.0,
-              indicatorColor: Colors.blueAccent,
-              tabBarIndicatorSize: TabBarIndicatorSize.tab,
+    return Theme(
+      data: ThemeData(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
+      child: DefaultTabController(
+        length: JointMode.values.length,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('設定'),
+            leading: IconButton(
+              icon: const Icon(Icons.ac_unit_outlined),
+              onPressed: () {
+                context.read(jointScreenController).changeSortType();
+              },
             ),
-            tabs: [
-              for (final value in JointMode.values)
-                Tab(child: Text(value.typeName)),
+            bottom: TabBar(
+              isScrollable: true,
+              indicator: const BubbleTabIndicator(
+                indicatorHeight: 25,
+                indicatorColor: Colors.blueAccent,
+                tabBarIndicatorSize: TabBarIndicatorSize.tab,
+              ),
+              tabs: [
+                for (final value in JointMode.values) Tab(child: Text(value.typeName)),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              for (final value in JointMode.values) _ArticlesListView(mode: value),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            for (final value in JointMode.values)
-              _ArticlesListView(mode: value),
-          ],
         ),
       ),
     );
@@ -127,19 +131,17 @@ class _ArticleCard extends HookWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 8),
-                          SizedBox(width: 290.w, child: const _Title()),
-                          const SizedBox(height: 8),
-                          SizedBox(width: 290.w, child: const _SubTitle()),
-                          const SizedBox(height: 8),
-                          const Text(
-                            '#タグ',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ]),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      const SizedBox(height: 8),
+                      SizedBox(width: 290.w, child: const _Title()),
+                      const SizedBox(height: 8),
+                      SizedBox(width: 290.w, child: const _SubTitle()),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '#タグ',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ]),
                     const Icon(
                       Icons.favorite,
                     ),
