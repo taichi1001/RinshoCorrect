@@ -5,8 +5,8 @@ import 'package:http/http.dart';
 import 'package:rinsho_collect/client/micro_cms.dart';
 import 'package:rinsho_collect/entity/article.dart';
 
-final articleRepository = Provider.autoDispose<ArticleRepository>(
-    (ref) => ArticleRepositoryImpl(ref.read));
+final articleRepository =
+    Provider.autoDispose<ArticleRepository>((ref) => ArticleRepositoryImpl(ref.read));
 
 abstract class ArticleRepository {
   Future<List<Article>> getArticles();
@@ -20,7 +20,7 @@ class ArticleRepositoryImpl implements ArticleRepository {
   @override
   Future<List<Article>> getArticles() async {
     final MicroCMSClient prefs = read(microCMSClient);
-    final Response result = await prefs.getJsonList() ?? [];
+    final Response result = await prefs.getArticleList() ?? [];
     final List contents = jsonDecode(result.body)['contents'];
     return contents.map((json) => Article.fromJson(json)).toList();
   }

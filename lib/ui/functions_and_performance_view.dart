@@ -111,7 +111,7 @@ class FunctionsAndPerformanceView extends HookWidget {
       appBar: AppBar(
         title: const Text('設定'),
         leading: IconButton(
-          icon: const Icon(Icons.ac_unit_outlined),
+          icon: const Icon(Icons.access_alarm),
           onPressed: () {
             context.read(articleViewController).changeSortType();
           },

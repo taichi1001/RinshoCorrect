@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:rinsho_collect/ui/joint_screen.dart';
-import 'package:rinsho_collect/ui/functions_and_performance_view.dart';
 import 'package:rinsho_collect/ui/favorite_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rinsho_collect/ui/terminology_list_screen.dart';
 
-final bottomNavigationController = ChangeNotifierProvider.autoDispose(
-    (ref) => BottomNavigationController(read: ref.read));
+final bottomNavigationController =
+    ChangeNotifierProvider.autoDispose((ref) => BottomNavigationController(read: ref.read));
 
 class BottomNavigationController extends ChangeNotifier {
   BottomNavigationController({
@@ -15,7 +15,7 @@ class BottomNavigationController extends ChangeNotifier {
 
   final List<Widget> views = [
     const JointScreen(),
-    const FunctionsAndPerformanceView(),
+    const TerminologyListScreen(),
     const FavoriteScreen(),
   ];
 

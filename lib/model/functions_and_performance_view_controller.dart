@@ -14,7 +14,7 @@ final sortedArticles = StateProvider.autoDispose<List<Article>>((ref) {
   final sortType = ref.watch(_sortType).state;
   final jointMode = ref.watch(_jointMode).state;
 
-  final selectArticles = FilterArticles.getModeArticleList(articles, jointMode);
+  final selectArticles = FilterArticles.getJointModeArticleList(articles, jointMode);
 
   if (sortType == SortType.asc) {
     selectArticles?.sort((a, b) => a.publishedAt.compareTo(b.publishedAt));
@@ -36,7 +36,6 @@ class FunctionsAndPerformanceViewController {
 
   void changeSortType() {
     final SortType sortType = read(_sortType).state;
-    read(_sortType).state =
-        sortType == SortType.asc ? SortType.desc : SortType.asc;
+    read(_sortType).state = sortType == SortType.asc ? SortType.desc : SortType.asc;
   }
 }

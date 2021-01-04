@@ -13,10 +13,13 @@ _$_Article _$_$_ArticleFromJson(Map<String, dynamic> json) {
     title: json['title'] as String,
     subTitle: json['subtitle'] as String,
     tags: _parseTags(json['tag']),
+    symptomDisorder: _parseSymptomDisorder(json['symptom_disorder']),
     abst: json['abstract'] as String,
     body: json['body'] as String,
     eyecatch: _parseEyeCatch(json['eyecatch']['url']),
-    videoURL: json['video'] as String,
+    videoURL: _parseVideoURL(json['video'] as String),
+    videoAbs: json['video_abs'] as String,
+    glossary: _parseGlossary(json['glossary']),
   );
 }
 
@@ -26,8 +29,11 @@ Map<String, dynamic> _$_$_ArticleToJson(_$_Article instance) => <String, dynamic
       'title': instance.title,
       'subtitle': instance.subTitle,
       'tag': instance.tags,
+      'symptom_disorder': instance.symptomDisorder,
       'abstract': instance.abst,
       'body': instance.body,
       'url': instance.eyecatch?.toString(),
       'video': instance.videoURL,
+      'video_abs': instance.videoAbs,
+      'glossary': instance.glossary,
     };

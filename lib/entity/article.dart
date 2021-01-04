@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:rinsho_collect/entity/term.dart';
 
 part 'article.freezed.dart';
 part 'article.g.dart';
@@ -12,12 +13,15 @@ abstract class Article with _$Article {
     String title,
     @JsonKey(name: 'subtitle') String subTitle,
     @JsonKey(name: 'tag', fromJson: _parseTags) List<String> tags,
+    @JsonKey(name: 'symptom_disorder', fromJson: _parseSymptomDisorder)
+        List<String> symptomDisorder,
     @JsonKey(name: 'abstract') String abst,
     String body,
     // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える
     @JsonKey(name: 'url', fromJson: _parseEyeCatch) Uri eyecatch,
-    // @JsonKey(name: 'video_abs') String videoAbs,
-    @JsonKey(name: 'video') String videoURL,
+    @JsonKey(name: 'video', fromJson: _parseVideoURL) String videoURL,
+    @JsonKey(name: 'video_abs') String videoAbs,
+    @JsonKey(fromJson: _parseGlossary) List<Term> glossary,
   }) = _Article;
   factory Article.fromJson(Map<String, dynamic> json) => _$ArticleFromJson(json);
 }
@@ -25,3 +29,24 @@ abstract class Article with _$Article {
 Uri _parseEyeCatch(value) => Uri.parse(value);
 
 List<String> _parseTags(value) => List<String>.from(value);
+
+List<String> _parseSymptomDisorder(value) => List<String>.from(value);
+
+String _parseVideoURL(String value) {
+  if (value == null) {
+    return null;
+  } else {
+    final splitURL = value?.split('/');
+    final videoId = splitURL[splitURL.length - 2];
+    return 'https://drive.google.com/uc?id=$videoId';
+  }
+}
+
+List<Term> _parseGlossary(value) {
+  final terms = List<Map<String, dynamic>>.from(value);
+  final List<Term> list = [];
+  for (final term in terms) {
+    list.add(Term.fromJson(term));
+  }
+  return list;
+}

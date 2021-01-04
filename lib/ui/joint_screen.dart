@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rinsho_collect/entity/article.dart';
-import 'package:rinsho_collect/enum/joint.dart';
-import 'package:rinsho_collect/model/joint_screen_controller.dart';
-import 'package:rinsho_collect/model/articles_controller.dart';
-import 'package:rinsho_collect/ui/article_view.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:rinsho_collect/entity/article.dart';
+import 'package:rinsho_collect/enum/joint.dart';
+import 'package:rinsho_collect/enum/symptom_disorder.dart';
+import 'package:rinsho_collect/model/joint_screen_controller.dart';
+import 'package:rinsho_collect/model/articles_controller.dart';
+import 'package:rinsho_collect/model/article_view_controller.dart';
+import 'package:rinsho_collect/ui/article_view.dart';
 
 class JointScreen extends HookWidget {
   const JointScreen({Key key}) : super(key: key);
@@ -21,22 +23,32 @@ class JointScreen extends HookWidget {
       return;
     }, []);
 
+    final _displayMode = useProvider(displayMode).state;
+
     return Theme(
       data: ThemeData(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
       child: DefaultTabController(
-        length: JointMode.values.length,
+        length: _displayMode ? JointMode.values.length : SymptomDisorder.values.length,
         child: Scaffold(
           appBar: AppBar(
             title: const Text('設定'),
             leading: IconButton(
-              icon: const Icon(Icons.ac_unit_outlined),
+              icon: const Icon(Icons.ac_unit),
               onPressed: () {
                 context.read(jointScreenController).changeSortType();
               },
             ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.deck),
+                onPressed: () {
+                  context.read(jointScreenController).changeDisplayMode();
+                },
+              )
+            ],
             bottom: TabBar(
               isScrollable: true,
               indicator: const BubbleTabIndicator(
@@ -44,15 +56,27 @@ class JointScreen extends HookWidget {
                 indicatorColor: Colors.blueAccent,
                 tabBarIndicatorSize: TabBarIndicatorSize.tab,
               ),
-              tabs: [
-                for (final value in JointMode.values) Tab(child: Text(value.typeName)),
-              ],
+              tabs: _displayMode
+                  ? [for (final value in JointMode.values) Tab(child: Text(value.typeName))]
+                  : [for (final value in SymptomDisorder.values) Tab(child: Text(value.typeName))],
             ),
           ),
           body: TabBarView(
-            children: [
-              for (final value in JointMode.values) _ArticlesListView(mode: value),
-            ],
+            children: _displayMode
+                ? [
+                    for (final value in JointMode.values)
+                      _ArticlesListView(
+                        key: PageStorageKey(value),
+                        jointMode: value,
+                      ),
+                  ]
+                : [
+                    for (final value in SymptomDisorder.values)
+                      _ArticlesListView(
+                        key: PageStorageKey(value),
+                        symptomDisorder: value,
+                      ),
+                  ],
           ),
         ),
       ),
@@ -62,15 +86,22 @@ class JointScreen extends HookWidget {
 
 class _ArticlesListView extends HookWidget {
   const _ArticlesListView({
-    @required this.mode,
+    this.jointMode,
+    this.symptomDisorder,
     Key key,
   }) : super(key: key);
 
-  final JointMode mode;
+  final JointMode jointMode;
+  final SymptomDisorder symptomDisorder;
 
   @override
   Widget build(BuildContext context) {
-    final _articles = useProvider(sortedArticles(mode)).state;
+    List<Article> _articles;
+    if (jointMode != null) {
+      _articles = useProvider(sortedJointArticles(jointMode)).state;
+    } else {
+      _articles = useProvider(sortedSymptomDisorderArticles(symptomDisorder)).state;
+    }
 
     if (_articles == null) {
       return const Center(
@@ -109,14 +140,17 @@ class _ArticleCard extends HookWidget {
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: () async {
+        await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return ArticleView(article: _article);
+              return ArticleView(
+                article: _article,
+              );
             },
           ),
         );
+        await context.read(chewieController).state?.pause();
       },
       child: Padding(
         padding: const EdgeInsets.all(8),

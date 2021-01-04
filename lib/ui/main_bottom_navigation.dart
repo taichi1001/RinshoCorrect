@@ -8,10 +8,10 @@ class MainBottomNavigation extends HookWidget {
   const MainBottomNavigation({key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final _selectedIndex = useProvider(bottomNavigationController
-        .select((controller) => controller.selectedIndex));
-    final _selectedView = useProvider(bottomNavigationController
-        .select((controller) => controller.selectedView));
+    final _selectedIndex =
+        useProvider(bottomNavigationController.select((controller) => controller.selectedIndex));
+    final _selectedView =
+        useProvider(bottomNavigationController.select((controller) => controller.selectedView));
     ScreenUtil.init(
       context,
       designSize: const Size(375, 812), // iPhoneXsのサイズを基準に設定
@@ -24,11 +24,11 @@ class MainBottomNavigation extends HookWidget {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.ac_unit),
-            label: '関節',
+            label: '記事',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.pie_chart),
-            label: '機能・性能',
+            label: '単語',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.input),

@@ -4,8 +4,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final microCMSClient = Provider.autoDispose((ref) => MicroCMSClient());
 
 class MicroCMSClient {
-  Future getJsonList() => http.get(
+  Future getArticleList() => http.get(
         'https://rinshotest.microcms.io/api/v1/article',
+        headers: {'X-API-KEY': '3b36eb63-bfa1-493e-91be-64543308ba3c'},
+      );
+
+  Future getGlossary() => http.get(
+        'https://rinshotest.microcms.io/api/v1/glossary',
         headers: {'X-API-KEY': '3b36eb63-bfa1-493e-91be-64543308ba3c'},
       );
 }
