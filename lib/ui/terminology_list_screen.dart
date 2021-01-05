@@ -14,6 +14,19 @@ class TerminologyListScreen extends HookWidget {
       return;
     }, []);
 
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('用語'),
+      ),
+      body: const _TerminologyList(),
+    );
+  }
+}
+
+class _TerminologyList extends HookWidget {
+  const _TerminologyList({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
     final _terminologies = useProvider(sortedTerminologies).state;
 
     if (_terminologies == null) {
@@ -22,18 +35,13 @@ class TerminologyListScreen extends HookWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('用語'),
-      ),
-      body: ListView.builder(
-        itemCount: _terminologies.length,
-        itemBuilder: (context, index) => ProviderScope(
-          overrides: [
-            currentTerminology.overrideWithValue(_terminologies[index]),
-          ],
-          child: const _TerminologyCard(),
-        ),
+    return ListView.builder(
+      itemCount: _terminologies.length,
+      itemBuilder: (context, index) => ProviderScope(
+        overrides: [
+          currentTerminology.overrideWithValue(_terminologies[index]),
+        ],
+        child: const _TerminologyCard(),
       ),
     );
   }

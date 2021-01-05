@@ -34,7 +34,7 @@ class JointScreen extends HookWidget {
         length: _displayMode ? JointMode.values.length : SymptomDisorder.values.length,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('設定'),
+            title: const Text('記事'),
             leading: IconButton(
               icon: const Icon(Icons.ac_unit),
               onPressed: () {
@@ -114,9 +114,7 @@ class _ArticlesListView extends HookWidget {
       child: ListView.builder(
         itemCount: _articles.length,
         itemBuilder: (context, index) => ProviderScope(
-          overrides: [
-            currentArticle.overrideWithValue(_articles[index]),
-          ],
+          overrides: [currentArticle.overrideWithValue(_articles[index])],
           child: const AnimationConfiguration.synchronized(
             duration: Duration(milliseconds: 600),
             child: FadeInAnimation(
@@ -144,8 +142,9 @@ class _ArticleCard extends HookWidget {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return ArticleView(
-                article: _article,
+              return ProviderScope(
+                overrides: [article.overrideWithValue(_article)],
+                child: const ArticleView(),
               );
             },
           ),

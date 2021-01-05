@@ -10,17 +10,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:chewie/chewie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+final article = ScopedProvider<Article>(null);
+
 class ArticleView extends HookWidget {
   const ArticleView({
-    @required this.article,
     Key key,
   }) : super(key: key);
 
-  final Article article;
   @override
   Widget build(BuildContext context) {
+    final _article = useProvider(article);
     useEffect(() {
-      context.read(articleViewController).init(article.videoURL);
+      context.read(articleViewController).init(_article.videoURL);
       return;
     }, []);
 
@@ -51,14 +52,10 @@ class ArticleView extends HookWidget {
         builder: (context, state) {
           return GestureDetector(
             onTap: () => controller.collapse(),
-            child: Container(
-              // height: 400,
-              // color: Colors.red,
-              child: _Glossary(article: article),
-            ),
+            child: const _Glossary(),
           );
         },
-        body: _Body(article: article),
+        body: const _Body(),
       ),
     );
   }
@@ -66,20 +63,17 @@ class ArticleView extends HookWidget {
 
 class _Glossary extends HookWidget {
   const _Glossary({
-    @required this.article,
     Key key,
   }) : super(key: key);
-  final Article article;
 
   @override
   Widget build(BuildContext context) {
+    final _article = useProvider(article);
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: article.glossary.length,
+      itemCount: _article.glossary.length,
       itemBuilder: (context, index) => ProviderScope(
-        overrides: [
-          currentTerm.overrideWithValue(article.glossary[index]),
-        ],
+        overrides: [currentTerm.overrideWithValue(_article.glossary[index])],
         child: const _GlossaryTile(),
       ),
     );
@@ -155,14 +149,12 @@ Future _showAsBottomSheet(BuildContext context, Term term) async {
 
 class _Body extends HookWidget {
   const _Body({
-    @required this.article,
     Key key,
   }) : super(key: key);
 
-  final Article article;
-
   @override
   Widget build(BuildContext context) {
+    final _article = useProvider(article);
     final _chewieController = useProvider(chewieController).state;
     final _isLoading = useProvider(isLoading).state;
 
@@ -170,34 +162,12 @@ class _Body extends HookWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              article.title,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const Divider(
-            height: 16,
-            thickness: 1,
-          ),
           const Padding(
-            padding: EdgeInsets.only(left: 8, right: 8),
-            child: Text(
-              '概要',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            padding: EdgeInsets.all(8),
+            child: _Title(),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8),
-            child: Html(
-              data: article.abst,
-            ),
-          ),
+          const Divider(height: 16, thickness: 1),
+          const _Abstract(),
           Container(
             height: 200,
             child: _isLoading && _chewieController != null
@@ -216,7 +186,7 @@ class _Body extends HookWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8, right: 8),
             child: Html(
-              data: article.videoAbs,
+              data: _article.videoAbs,
             ),
           ),
           const Padding(
@@ -226,7 +196,7 @@ class _Body extends HookWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
-          Html(data: article.body),
+          Html(data: _article.body),
           const Padding(
             padding: EdgeInsets.only(top: 8, left: 8, right: 8),
             child: Text(
@@ -242,13 +212,12 @@ class _Body extends HookWidget {
             ),
           ),
           RaisedButton(
-            onPressed: () => _launchURL(
+            onPressed: () => launchURL(
               'https://twitter.com/shiita93781732?s=11',
               secondUrl: 'https://twitter.com/riscait',
             ),
             child: const Text('Twitterを開く'),
           ),
-
           SizedBox(height: 56.h),
         ],
       ),
@@ -256,7 +225,45 @@ class _Body extends HookWidget {
   }
 }
 
-Future _launchURL(String url, {String secondUrl}) async {
+class _Title extends HookWidget {
+  const _Title({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      useProvider(article).title,
+      style: const TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class _Abstract extends HookWidget {
+  const _Abstract({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 8, right: 8),
+          child: Text(
+            '概要',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8, right: 8),
+          child: Html(
+            data: useProvider(article).abst,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+Future launchURL(String url, {String secondUrl}) async {
   if (await canLaunch(url)) {
     await launch(url, universalLinksOnly: true);
   } else if (secondUrl != null && await canLaunch(secondUrl)) {
