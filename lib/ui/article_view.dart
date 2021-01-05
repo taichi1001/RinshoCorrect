@@ -4,6 +4,7 @@ import 'package:rinsho_collect/entity/term.dart';
 import 'package:rinsho_collect/model/article_view_controller.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rinsho_collect/ui/parts/term_view.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -43,7 +44,7 @@ class ArticleView extends HookWidget {
             onTap: () => controller.expand(),
             child: Container(
               height: 56.h,
-              color: Colors.green,
+              color: Colors.indigo,
               alignment: Alignment.center,
               child: const Text('This is the header'),
             ),
@@ -74,7 +75,10 @@ class _Glossary extends HookWidget {
       itemCount: _article.glossary.length,
       itemBuilder: (context, index) => ProviderScope(
         overrides: [currentTerm.overrideWithValue(_article.glossary[index])],
-        child: const _GlossaryTile(),
+        child: const Padding(
+          padding: EdgeInsets.only(left: 8, right: 8),
+          child: _GlossaryTile(),
+        ),
       ),
     );
   }
@@ -89,11 +93,17 @@ class _GlossaryTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _currentTerm = useProvider(currentTerm);
-    return TextButton(
-      onPressed: () {
-        _showAsBottomSheet(context, _currentTerm);
-      },
-      child: Text(_currentTerm.term),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: () {
+            _showAsBottomSheet(context, _currentTerm);
+          },
+          child: Text(_currentTerm.term),
+        ),
+      ],
     );
   }
 }
@@ -114,30 +124,9 @@ Future _showAsBottomSheet(BuildContext context, Term term) async {
             color: Colors.white,
             child: Container(
               height: 300.h,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: Text(
-                      term.term,
-                      style: const TextStyle(
-                        color: Colors.indigoAccent,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const Divider(
-                    height: 16,
-                    thickness: 1,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Html(data: term.detail),
-                  ),
-                ],
+              child: ProviderScope(
+                overrides: [viewTerm.overrideWithValue(term)],
+                child: const TermView(),
               ),
             ),
           );
@@ -154,72 +143,27 @@ class _Body extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _article = useProvider(article);
-    final _chewieController = useProvider(chewieController).state;
-    final _isLoading = useProvider(isLoading).state;
-
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(8),
-            child: _Title(),
-          ),
-          const Divider(height: 16, thickness: 1),
-          const _Abstract(),
-          Container(
-            height: 200,
-            child: _isLoading && _chewieController != null
-                ? Chewie(
-                    controller: _chewieController,
-                  )
-                : const Center(child: CircularProgressIndicator()),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 8, left: 8, right: 8),
-            child: Text(
-              '動画解説',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8),
-            child: Html(
-              data: _article.videoAbs,
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 8, left: 8, right: 8),
-            child: Text(
-              'アプローチの背景',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Html(data: _article.body),
-          const Padding(
-            padding: EdgeInsets.only(top: 8, left: 8, right: 8),
-            child: Text(
-              '文献',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 8, left: 8, right: 8),
-            child: Text(
-              '著者',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          RaisedButton(
-            onPressed: () => launchURL(
-              'https://twitter.com/shiita93781732?s=11',
-              secondUrl: 'https://twitter.com/riscait',
-            ),
-            child: const Text('Twitterを開く'),
-          ),
-          SizedBox(height: 56.h),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _Title(),
+            const SizedBox(height: 8),
+            const Divider(height: 16, thickness: 1),
+            const _Abstract(),
+            const SizedBox(height: 8),
+            const _Video(),
+            const SizedBox(height: 8),
+            const _Background(),
+            const SizedBox(height: 8),
+            const _Document(),
+            const SizedBox(height: 8),
+            const _Author(),
+            SizedBox(height: 56.h),
+          ],
+        ),
       ),
     );
   }
@@ -244,19 +188,99 @@ class _Abstract extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 8, right: 8),
-          child: Text(
-            '概要',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+        const Text(
+          '概要',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8),
-          child: Html(
-            data: useProvider(article).abst,
+        Html(
+          data: useProvider(article).abst,
+        ),
+      ],
+    );
+  }
+}
+
+class _Video extends HookWidget {
+  const _Video({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final _chewieController = useProvider(chewieController).state;
+    final _isLoading = useProvider(isLoading).state;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 200,
+          child: _isLoading && _chewieController != null
+              ? Chewie(
+                  controller: _chewieController,
+                )
+              : const Center(child: CircularProgressIndicator()),
+        ),
+        const Text(
+          '動画解説',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        Html(
+          data: useProvider(article).videoAbs,
+        ),
+      ],
+    );
+  }
+}
+
+class _Background extends HookWidget {
+  const _Background({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'アプローチの背景',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        Html(data: useProvider(article).body),
+      ],
+    );
+  }
+}
+
+class _Document extends HookWidget {
+  const _Document({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        Text(
+          '文献',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+}
+
+class _Author extends HookWidget {
+  const _Author({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '著者',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        RaisedButton(
+          onPressed: () => launchURL(
+            'https://twitter.com/shiita93781732',
+            secondUrl: 'https://twitter.com/riscait',
           ),
+          child: const Text('Twitterを開く'),
         ),
       ],
     );

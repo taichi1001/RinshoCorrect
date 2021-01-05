@@ -31,7 +31,9 @@ class JointScreen extends HookWidget {
         highlightColor: Colors.transparent,
       ),
       child: DefaultTabController(
-        length: _displayMode ? JointMode.values.length : SymptomDisorder.values.length,
+        length: _displayMode
+            ? JointMode.values.length
+            : SymptomDisorder.values.length,
         child: Scaffold(
           appBar: AppBar(
             title: const Text('記事'),
@@ -57,8 +59,14 @@ class JointScreen extends HookWidget {
                 tabBarIndicatorSize: TabBarIndicatorSize.tab,
               ),
               tabs: _displayMode
-                  ? [for (final value in JointMode.values) Tab(child: Text(value.typeName))]
-                  : [for (final value in SymptomDisorder.values) Tab(child: Text(value.typeName))],
+                  ? [
+                      for (final value in JointMode.values)
+                        Tab(child: Text(value.typeName))
+                    ]
+                  : [
+                      for (final value in SymptomDisorder.values)
+                        Tab(child: Text(value.typeName))
+                    ],
             ),
           ),
           body: TabBarView(
@@ -100,7 +108,8 @@ class _ArticlesListView extends HookWidget {
     if (jointMode != null) {
       _articles = useProvider(sortedJointArticles(jointMode)).state;
     } else {
-      _articles = useProvider(sortedSymptomDisorderArticles(symptomDisorder)).state;
+      _articles =
+          useProvider(sortedSymptomDisorderArticles(symptomDisorder)).state;
     }
 
     if (_articles == null) {
@@ -164,17 +173,19 @@ class _ArticleCard extends HookWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      const SizedBox(height: 8),
-                      SizedBox(width: 290.w, child: const _Title()),
-                      const SizedBox(height: 8),
-                      SizedBox(width: 290.w, child: const _SubTitle()),
-                      const SizedBox(height: 8),
-                      const Text(
-                        '#タグ',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ]),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          SizedBox(width: 290.w, child: const _Title()),
+                          const SizedBox(height: 8),
+                          SizedBox(width: 290.w, child: const _SubTitle()),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '#タグ',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ]),
                     const Icon(
                       Icons.favorite,
                     ),

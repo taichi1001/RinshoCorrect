@@ -23,7 +23,8 @@ abstract class Article with _$Article {
     @JsonKey(name: 'video_abs') String videoAbs,
     @JsonKey(fromJson: _parseGlossary) List<Term> glossary,
   }) = _Article;
-  factory Article.fromJson(Map<String, dynamic> json) => _$ArticleFromJson(json);
+  factory Article.fromJson(Map<String, dynamic> json) =>
+      _$ArticleFromJson(json);
 }
 
 Uri _parseEyeCatch(value) => Uri.parse(value);
@@ -44,9 +45,5 @@ String _parseVideoURL(String value) {
 
 List<Term> _parseGlossary(value) {
   final terms = List<Map<String, dynamic>>.from(value);
-  final List<Term> list = [];
-  for (final term in terms) {
-    list.add(Term.fromJson(term));
-  }
-  return list;
+  return terms.map((json) => Term.fromJson(json)).toList();
 }

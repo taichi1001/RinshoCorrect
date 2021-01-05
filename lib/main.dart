@@ -19,10 +19,10 @@ class MyApp extends StatelessWidget {
   const MyApp({key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const ProviderScope(
+    return ProviderScope(
       child: MaterialApp(
-        // theme: ThemeData(primaryColor: Colors.white),
-        home: MainBottomNavigation(),
+        theme: ThemeData(primarySwatch: Colors.yellow),
+        home: const MainBottomNavigation(),
       ),
     );
   }
