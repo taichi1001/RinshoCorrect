@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/entity/term.dart';
-import 'package:rinsho_collect/model/article_view_controller.dart';
+import 'package:rinsho_collect/model/article_screen_controller.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/ui/parts/term_view.dart';
@@ -13,8 +13,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 final article = ScopedProvider<Article>(null);
 
-class ArticleView extends HookWidget {
-  const ArticleView({
+class ArticleScreen extends HookWidget {
+  const ArticleScreen({
     Key key,
   }) : super(key: key);
 
@@ -22,7 +22,7 @@ class ArticleView extends HookWidget {
   Widget build(BuildContext context) {
     final _article = useProvider(article);
     useEffect(() {
-      context.read(articleViewController).init(_article.videoURL);
+      context.read(articleScreenController).init(_article.videoURL);
       return;
     }, []);
 

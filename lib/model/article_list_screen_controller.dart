@@ -1,3 +1,4 @@
+import 'package:rinsho_collect/enum/display_mode.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/sort_type.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,12 +9,13 @@ import 'package:rinsho_collect/model/articles_controller.dart';
 
 final sortType = StateProvider((ref) => SortType.asc);
 
-final displayMode = StateProvider((ref) => true);
+final displayMode = StateProvider((ref) => DisplayMode.joint);
 
 final sortedJointArticles = StateProvider.autoDispose.family<List<Article>, JointMode>((ref, mode) {
-  final articles = ref.watch(globalArticles).state;
-  final sort = ref.watch(sortType).state;
+  var articles = ref.watch(globalArticles).state;
+  articles = articles?.where((article) => article.tags.isNotEmpty)?.toList();
   final selectArticles = FilterArticles.getJointModeArticleList(articles, mode);
+  final sort = ref.watch(sortType).state;
 
   if (sort == SortType.asc) {
     selectArticles?.sort((a, b) => a.publishedAt.compareTo(b.publishedAt));
@@ -25,9 +27,10 @@ final sortedJointArticles = StateProvider.autoDispose.family<List<Article>, Join
 
 final sortedSymptomDisorderArticles =
     StateProvider.autoDispose.family<List<Article>, SymptomDisorder>((ref, mode) {
-  final articles = ref.watch(globalArticles).state;
-  final sort = ref.watch(sortType).state;
+  var articles = ref.watch(globalArticles).state;
+  articles = articles?.where((article) => article.symptomDisorder.isNotEmpty)?.toList();
   final selectArticles = FilterArticles.getSymptomDisorderArticleList(articles, mode);
+  final sort = ref.watch(sortType).state;
 
   if (sort == SortType.asc) {
     selectArticles?.sort((a, b) => a.publishedAt.compareTo(b.publishedAt));
@@ -37,29 +40,11 @@ final sortedSymptomDisorderArticles =
   return selectArticles;
 });
 
-final jointScreenController = Provider.autoDispose((ref) => JointScreenController(read: ref.read));
+final articleListScreenController =
+    Provider.autoDispose((ref) => ArticleListScreenController(read: ref.read));
 
-class Test2 {
-  bool displayMode = true;
-  SortType sortType = SortType.asc;
-}
-
-final testProvider = StateNotifierProvider((ref) => Test());
-
-class Test extends StateNotifier<Test2> {
-  Test() : super(Test2());
-
-  void changeSortType() {
-    state.sortType = state.sortType == SortType.asc ? SortType.desc : SortType.asc;
-  }
-
-  void changeDisplayMode() {
-    state.displayMode = state.displayMode == true ? false : true;
-  }
-}
-
-class JointScreenController {
-  JointScreenController({
+class ArticleListScreenController {
+  ArticleListScreenController({
     this.read,
   });
 
@@ -72,6 +57,7 @@ class JointScreenController {
 
   void changeDisplayMode() {
     final mode = read(displayMode).state;
-    read(displayMode).state = mode == true ? false : true;
+    read(displayMode).state =
+        mode == DisplayMode.joint ? DisplayMode.symptomDisorder : DisplayMode.joint;
   }
 }

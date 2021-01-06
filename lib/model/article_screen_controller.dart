@@ -9,10 +9,10 @@ final isLoading = StateProvider((ref) => false);
 
 final chewieController = StateProvider<ChewieController>((ref) => null);
 
-final articleViewController = Provider((ref) => ArticleViewController(read: ref.read));
+final articleScreenController = Provider((ref) => ArticleScreenController(read: ref.read));
 
-class ArticleViewController {
-  ArticleViewController({
+class ArticleScreenController {
+  ArticleScreenController({
     this.read,
   });
 

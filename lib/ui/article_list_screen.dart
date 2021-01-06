@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rinsho_collect/enum/display_mode.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,13 +9,13 @@ import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
-import 'package:rinsho_collect/model/joint_screen_controller.dart';
+import 'package:rinsho_collect/model/article_list_screen_controller.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
-import 'package:rinsho_collect/model/article_view_controller.dart';
-import 'package:rinsho_collect/ui/article_view.dart';
+import 'package:rinsho_collect/model/article_screen_controller.dart';
+import 'package:rinsho_collect/ui/article_screen.dart';
 
-class JointScreen extends HookWidget {
-  const JointScreen({Key key}) : super(key: key);
+class ArticleListScreen extends HookWidget {
+  const ArticleListScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,30 +25,27 @@ class JointScreen extends HookWidget {
     }, []);
 
     final _displayMode = useProvider(displayMode).state;
-
     return Theme(
       data: ThemeData(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
       child: DefaultTabController(
-        length: _displayMode
-            ? JointMode.values.length
-            : SymptomDisorder.values.length,
+        length: _getTabs(_displayMode).length,
         child: Scaffold(
           appBar: AppBar(
             title: const Text('記事'),
             leading: IconButton(
               icon: const Icon(Icons.ac_unit),
               onPressed: () {
-                context.read(jointScreenController).changeSortType();
+                context.read(articleListScreenController).changeSortType();
               },
             ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.deck),
                 onPressed: () {
-                  context.read(jointScreenController).changeDisplayMode();
+                  context.read(articleListScreenController).changeDisplayMode();
                 },
               )
             ],
@@ -58,37 +56,47 @@ class JointScreen extends HookWidget {
                 indicatorColor: Colors.blueAccent,
                 tabBarIndicatorSize: TabBarIndicatorSize.tab,
               ),
-              tabs: _displayMode
-                  ? [
-                      for (final value in JointMode.values)
-                        Tab(child: Text(value.typeName))
-                    ]
-                  : [
-                      for (final value in SymptomDisorder.values)
-                        Tab(child: Text(value.typeName))
-                    ],
+              tabs: _getTabs(_displayMode),
             ),
           ),
           body: TabBarView(
-            children: _displayMode
-                ? [
-                    for (final value in JointMode.values)
-                      _ArticlesListView(
-                        key: PageStorageKey(value),
-                        jointMode: value,
-                      ),
-                  ]
-                : [
-                    for (final value in SymptomDisorder.values)
-                      _ArticlesListView(
-                        key: PageStorageKey(value),
-                        symptomDisorder: value,
-                      ),
-                  ],
+            children: _getTabBatView(_displayMode),
           ),
         ),
       ),
     );
+  }
+
+  List<Tab> _getTabs(DisplayMode mode) {
+    if (mode == DisplayMode.joint) {
+      return [for (final value in JointMode.values) Tab(child: Text(value.typeName))];
+    } else if (mode == DisplayMode.symptomDisorder) {
+      return [for (final value in SymptomDisorder.values) Tab(child: Text(value.typeName))];
+    } else {
+      return [];
+    }
+  }
+
+  List<Widget> _getTabBatView(DisplayMode mode) {
+    if (mode == DisplayMode.joint) {
+      return [
+        for (final value in JointMode.values)
+          _ArticlesListView(
+            key: PageStorageKey(value),
+            jointMode: value,
+          ),
+      ];
+    } else if (mode == DisplayMode.symptomDisorder) {
+      return [
+        for (final value in SymptomDisorder.values)
+          _ArticlesListView(
+            key: PageStorageKey(value),
+            symptomDisorder: value,
+          ),
+      ];
+    } else {
+      return [];
+    }
   }
 }
 
@@ -108,8 +116,7 @@ class _ArticlesListView extends HookWidget {
     if (jointMode != null) {
       _articles = useProvider(sortedJointArticles(jointMode)).state;
     } else {
-      _articles =
-          useProvider(sortedSymptomDisorderArticles(symptomDisorder)).state;
+      _articles = useProvider(sortedSymptomDisorderArticles(symptomDisorder)).state;
     }
 
     if (_articles == null) {
@@ -153,7 +160,7 @@ class _ArticleCard extends HookWidget {
             builder: (context) {
               return ProviderScope(
                 overrides: [article.overrideWithValue(_article)],
-                child: const ArticleView(),
+                child: const ArticleScreen(),
               );
             },
           ),
@@ -173,19 +180,17 @@ class _ArticleCard extends HookWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 8),
-                          SizedBox(width: 290.w, child: const _Title()),
-                          const SizedBox(height: 8),
-                          SizedBox(width: 290.w, child: const _SubTitle()),
-                          const SizedBox(height: 8),
-                          const Text(
-                            '#タグ',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ]),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      const SizedBox(height: 8),
+                      SizedBox(width: 290.w, child: const _Title()),
+                      const SizedBox(height: 8),
+                      SizedBox(width: 290.w, child: const _SubTitle()),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '#タグ',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ]),
                     const Icon(
                       Icons.favorite,
                     ),

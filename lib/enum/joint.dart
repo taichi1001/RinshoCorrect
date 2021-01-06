@@ -6,6 +6,7 @@ enum JointMode {
   shoulderJoint,
   handJoint,
   spine,
+  higherBrainFunctions,
 }
 
 extension TypeExtension on JointMode {
@@ -17,6 +18,7 @@ extension TypeExtension on JointMode {
     JointMode.shoulderJoint: '肩関節',
     JointMode.handJoint: '手関節',
     JointMode.spine: '脊椎',
+    JointMode.higherBrainFunctions: '高次脳機能'
   };
 
   String get typeName => typeNames[this];

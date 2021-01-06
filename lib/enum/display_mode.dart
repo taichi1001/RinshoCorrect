@@ -1,0 +1,4 @@
+enum DisplayMode {
+  joint,
+  symptomDisorder,
+}
