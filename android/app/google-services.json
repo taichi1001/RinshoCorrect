@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "757400052917",
+    "project_id": "rinsho-correct",
+    "storage_bucket": "rinsho-correct.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757400052917:android:d8b472386c909fcdc7cafc",
+        "android_client_info": {
+          "package_name": "com.taichi1001.RinshoCorrect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757400052917-af84varok3u34ps6evn9rj7utcsea1ts.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9jiJ02hBG7xZBsSUb4rXZQVidWQremWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757400052917-af84varok3u34ps6evn9rj7utcsea1ts.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "757400052917-2okjlhj89fe16pacvv6dsdaqe7mjjnhg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.taichi1001.RinshoCorrect"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

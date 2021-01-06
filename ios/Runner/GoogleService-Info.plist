@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>757400052917-2okjlhj89fe16pacvv6dsdaqe7mjjnhg.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.757400052917-2okjlhj89fe16pacvv6dsdaqe7mjjnhg</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCcNIvZP7_J-6oaBh7pDs5SJpVSz1eKKR8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>757400052917</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.taichi1001.RinshoCorrect</string>
+	<key>PROJECT_ID</key>
+	<string>rinsho-correct</string>
+	<key>STORAGE_BUCKET</key>
+	<string>rinsho-correct.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:757400052917:ios:c8fe623325d4c572c7cafc</string>
+</dict>
+</plist>

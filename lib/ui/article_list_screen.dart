@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
@@ -47,7 +48,9 @@ class ArticleListScreen extends HookWidget {
                 onPressed: () {
                   context.read(articleListScreenController).changeDisplayMode();
                 },
-              )
+              ),
+              IconButton(
+                  icon: Icon(Icons.close), onPressed: () async => FirebaseAuth.instance.signOut())
             ],
             bottom: TabBar(
               isScrollable: true,
