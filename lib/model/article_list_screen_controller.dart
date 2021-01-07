@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/sort_type.dart';
@@ -59,5 +62,22 @@ class ArticleListScreenController {
     final mode = read(displayMode).state;
     read(displayMode).state =
         mode == DisplayMode.joint ? DisplayMode.symptomDisorder : DisplayMode.joint;
+  }
+
+  Future incrementSubscribers(String id) async {
+    // final user = FirebaseAuth.instance.currentUser;
+    final subscriber = await FirebaseFirestore.instance.collection('articles').doc(id).get();
+    if (subscriber.data() == null) {
+      unawaited(
+        FirebaseFirestore.instance.collection('articles').doc(id).set({'subscriber': 1}),
+      );
+    } else {
+      unawaited(
+        FirebaseFirestore.instance
+            .collection('articles')
+            .doc(id)
+            .update({'subscriber': FieldValue.increment(1)}),
+      );
+    }
   }
 }

@@ -161,6 +161,7 @@ class _ArticleCard extends HookWidget {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
+              context.read(articleListScreenController).incrementSubscribers(_article.id);
               return ProviderScope(
                 overrides: [article.overrideWithValue(_article)],
                 child: const ArticleScreen(),
@@ -185,9 +186,9 @@ class _ArticleCard extends HookWidget {
                   children: [
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       const SizedBox(height: 8),
-                      SizedBox(width: 290.w, child: const _Title()),
+                      const _Title(),
                       const SizedBox(height: 8),
-                      SizedBox(width: 290.w, child: const _SubTitle()),
+                      const _SubTitle(),
                       const SizedBox(height: 8),
                       const Text(
                         '#タグ',
