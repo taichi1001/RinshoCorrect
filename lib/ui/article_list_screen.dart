@@ -11,7 +11,6 @@ import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
 import 'package:rinsho_collect/model/article_list_screen_controller.dart';
-import 'package:rinsho_collect/model/articles_controller.dart';
 import 'package:rinsho_collect/model/article_screen_controller.dart';
 import 'package:rinsho_collect/ui/article_screen.dart';
 
@@ -21,7 +20,7 @@ class ArticleListScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(articlesController).fetch();
+      context.read(articleListScreenController).fetchSubscribers();
       return;
     }, []);
 
@@ -49,8 +48,6 @@ class ArticleListScreen extends HookWidget {
                   context.read(articleListScreenController).changeDisplayMode();
                 },
               ),
-              IconButton(
-                  icon: Icon(Icons.close), onPressed: () async => FirebaseAuth.instance.signOut())
             ],
             bottom: TabBar(
               isScrollable: true,
@@ -156,6 +153,7 @@ class _ArticleCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
+    final _count = useProvider(currentTest(_article.id)).state;
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context).push(
@@ -185,10 +183,12 @@ class _ArticleCard extends HookWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      // if (snapshot.hasData) Text(snapshot.data.toString()) else const Text('0'),
+                      if (_count != null) Text(_count.toString()) else const Text(''),
                       const SizedBox(height: 8),
-                      const _Title(),
+                      SizedBox(width: 290.w, child: const _Title()),
                       const SizedBox(height: 8),
-                      const _SubTitle(),
+                      SizedBox(width: 290.w, child: const _SubTitle()),
                       const SizedBox(height: 8),
                       const Text(
                         '#タグ',

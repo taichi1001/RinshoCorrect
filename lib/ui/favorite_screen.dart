@@ -6,10 +6,10 @@ class FavoriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('お気に入り'),
+        title: const Text('ブックマーク'),
       ),
       body: const Center(
-        child: Text('お気に入り'),
+        child: Text('ブックマーク'),
       ),
     );
   }

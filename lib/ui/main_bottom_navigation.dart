@@ -28,11 +28,11 @@ class MainBottomNavigation extends HookWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.pie_chart),
-            label: '単語',
+            label: '用語',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.input),
-            label: 'お気に入り',
+            label: 'ブックマーク',
           ),
         ],
         type: BottomNavigationBarType.fixed,

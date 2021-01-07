@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:rinsho_collect/client/micro_cms.dart';

@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/sort_type.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
+import 'package:rinsho_collect/repository/subcribers_repository.dart';
 import 'package:rinsho_collect/util/filter_articles.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
 
@@ -43,6 +41,13 @@ final sortedSymptomDisorderArticles =
   return selectArticles;
 });
 
+final _test = StateProvider<List<Subscribes>>((ref) => null);
+
+final currentTest = StateProvider.family<int, String>((ref, id) {
+  final test = ref.watch(_test).state;
+  return test.where((element) => element.id == id).toList()[0].count;
+});
+
 final articleListScreenController =
     Provider.autoDispose((ref) => ArticleListScreenController(read: ref.read));
 
@@ -65,19 +70,10 @@ class ArticleListScreenController {
   }
 
   Future incrementSubscribers(String id) async {
-    // final user = FirebaseAuth.instance.currentUser;
-    final subscriber = await FirebaseFirestore.instance.collection('articles').doc(id).get();
-    if (subscriber.data() == null) {
-      unawaited(
-        FirebaseFirestore.instance.collection('articles').doc(id).set({'subscriber': 1}),
-      );
-    } else {
-      unawaited(
-        FirebaseFirestore.instance
-            .collection('articles')
-            .doc(id)
-            .update({'subscriber': FieldValue.increment(1)}),
-      );
-    }
+    await read(subscribersRepository).incrementSubscribers(id);
+  }
+
+  Future fetchSubscribers() async {
+    read(_test).state = await read(subscribersRepository).getSubscribers();
   }
 }
