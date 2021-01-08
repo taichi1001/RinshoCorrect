@@ -93,18 +93,31 @@ class ArticleListScreenController {
 
   void changeIsFavorite(String id) {
     Favorite updateFavorite;
-    print('a');
-    read(_favoriteList).state = read(_favoriteList).state.map((favorite) {
-      if (favorite.id == id) {
-        if (favorite.isFavorite) {
-          return updateFavorite = Favorite(id: id, isFavorite: false);
-        } else {
-          return updateFavorite = Favorite(id: id, isFavorite: true);
-        }
+    final favoriteList = read(_favoriteList).state;
+    final target = favoriteList.firstWhere((favorite) => favorite.id == id, orElse: () => null);
+    if (target != null) {
+      if (read(_favoriteList).state.isNotEmpty) {
+        read(_favoriteList).state = favoriteList.map((favorite) {
+          if (favorite.id == id) {
+            if (favorite.isFavorite) {
+              return updateFavorite = Favorite(id: id, isFavorite: false);
+            } else {
+              return updateFavorite = Favorite(id: id, isFavorite: true);
+            }
+          } else {
+            return updateFavorite = Favorite(id: favorite.id, isFavorite: favorite.isFavorite);
+          }
+        }).toList();
       } else {
-        return updateFavorite = Favorite(id: id, isFavorite: true);
+        updateFavorite = Favorite(id: id, isFavorite: true);
+        read(_favoriteList).state = [updateFavorite];
       }
-    }).toList();
-    read(subscribersRepository).changeIsFavorite(updateFavorite);
+      read(subscribersRepository).changeIsFavorite(updateFavorite);
+    } else {
+      updateFavorite = Favorite(id: id, isFavorite: true);
+      favoriteList.add(updateFavorite);
+      read(_favoriteList).state = favoriteList;
+      read(subscribersRepository).changeIsFavorite(updateFavorite);
+    }
   }
 }

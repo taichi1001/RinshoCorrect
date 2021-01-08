@@ -181,15 +181,15 @@ class _ArticleCard extends HookWidget {
               children: [
                 SizedBox(height: 125.h, child: const _EyeCatch()),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       if (_count != null) Text(_count.toString()) else const Text(''),
                       const SizedBox(height: 8),
-                      SizedBox(width: 290.w, child: const _Title()),
+                      SizedBox(width: 270.w, child: const _Title()),
                       const SizedBox(height: 8),
-                      SizedBox(width: 290.w, child: const _SubTitle()),
+                      SizedBox(width: 270.w, child: const _SubTitle()),
                       const SizedBox(height: 8),
                       const Text(
                         '#タグ',
