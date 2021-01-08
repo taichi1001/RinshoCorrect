@@ -45,7 +45,17 @@ final _test = StateProvider<List<Subscribes>>((ref) => null);
 
 final currentTest = StateProvider.family<int, String>((ref, id) {
   final test = ref.watch(_test).state;
-  return test.where((element) => element.id == id).toList()[0].count;
+  final result = test?.firstWhere((element) => element.id == id, orElse: () => null)?.count;
+  return result ?? 0;
+});
+
+final _favoriteList = StateProvider<List<Favorite>>((ref) => null);
+
+final currentFavorite = StateProvider.family<bool, String>((ref, id) {
+  final favoriteList = ref.watch(_favoriteList).state;
+  final result =
+      favoriteList?.firstWhere((favorite) => favorite.id == id, orElse: () => null)?.isFavorite;
+  return result ?? false;
 });
 
 final articleListScreenController =
@@ -75,5 +85,26 @@ class ArticleListScreenController {
 
   Future fetchSubscribers() async {
     read(_test).state = await read(subscribersRepository).getSubscribers();
+  }
+
+  Future fetchFavoriteList() async {
+    read(_favoriteList).state = await read(subscribersRepository).getFavoriteList();
+  }
+
+  void changeIsFavorite(String id) {
+    Favorite updateFavorite;
+    print('a');
+    read(_favoriteList).state = read(_favoriteList).state.map((favorite) {
+      if (favorite.id == id) {
+        if (favorite.isFavorite) {
+          return updateFavorite = Favorite(id: id, isFavorite: false);
+        } else {
+          return updateFavorite = Favorite(id: id, isFavorite: true);
+        }
+      } else {
+        return updateFavorite = Favorite(id: id, isFavorite: true);
+      }
+    }).toList();
+    read(subscribersRepository).changeIsFavorite(updateFavorite);
   }
 }

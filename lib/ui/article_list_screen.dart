@@ -21,6 +21,7 @@ class ArticleListScreen extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       context.read(articleListScreenController).fetchSubscribers();
+      context.read(articleListScreenController).fetchFavoriteList();
       return;
     }, []);
 
@@ -154,6 +155,7 @@ class _ArticleCard extends HookWidget {
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
     final _count = useProvider(currentTest(_article.id)).state;
+    final _isFavorite = useProvider(currentFavorite(_article.id)).state;
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context).push(
@@ -183,7 +185,6 @@ class _ArticleCard extends HookWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      // if (snapshot.hasData) Text(snapshot.data.toString()) else const Text('0'),
                       if (_count != null) Text(_count.toString()) else const Text(''),
                       const SizedBox(height: 8),
                       SizedBox(width: 290.w, child: const _Title()),
@@ -195,9 +196,20 @@ class _ArticleCard extends HookWidget {
                         style: TextStyle(fontSize: 12),
                       ),
                     ]),
-                    const Icon(
-                      Icons.favorite,
-                    ),
+                    if (_isFavorite)
+                      IconButton(
+                        icon: const Icon(Icons.favorite, color: Colors.red),
+                        color: Colors.red,
+                        onPressed: () =>
+                            context.read(articleListScreenController).changeIsFavorite(_article.id),
+                      )
+                    else
+                      IconButton(
+                        icon: const Icon(Icons.favorite, color: Colors.grey),
+                        color: Colors.grey,
+                        onPressed: () =>
+                            context.read(articleListScreenController).changeIsFavorite(_article.id),
+                      )
                   ],
                 )
               ],

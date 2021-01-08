@@ -4,24 +4,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pedantic/pedantic.dart';
 
 final subscribersRepository =
-    Provider.autoDispose<SubscribersRepository>((ref) => SubscribersRepositoryImpl(ref.read));
+    Provider.autoDispose<FirebaseRepository>((ref) => FirebaseRepositoryImpl(ref.read));
 
-abstract class SubscribersRepository {
+abstract class FirebaseRepository {
   Future incrementSubscribers(String id);
-  Future getSubscribers();
+  Future<List<Subscribes>> getSubscribers();
+  Future<List<Favorite>> getFavoriteList();
+  void changeIsFavorite(Favorite favorite);
 }
 
-class SubscribersRepositoryImpl implements SubscribersRepository {
-  SubscribersRepositoryImpl(this.read);
+class FirebaseRepositoryImpl implements FirebaseRepository {
+  FirebaseRepositoryImpl(this.read);
   final Reader read;
 
   @override
   Future incrementSubscribers(String id) async {
-    // final user = FirebaseAuth.instance.currentUser;
     final subscriber = await FirebaseFirestore.instance.collection('articles').doc(id).get();
     if (subscriber.data() == null) {
       unawaited(
-        FirebaseFirestore.instance.collection('articles').doc(id).set({'count': 1}),
+        FirebaseFirestore.instance.collection('articles').doc(id).set({'count': 1, 'id': id}),
       );
     } else {
       unawaited(
@@ -41,10 +42,41 @@ class SubscribersRepositoryImpl implements SubscribersRepository {
         .map((data) => Subscribes(id: data['id'], count: data['count']))
         .toList();
   }
+
+  @override
+  Future<List<Favorite>> getFavoriteList() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final ref = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user.uid)
+        .collection('favorite')
+        .get();
+    return ref.docs
+        .map((doc) => doc.data())
+        .map((doc) => Favorite(id: doc['id'], isFavorite: doc['isFavorite']))
+        .toList();
+  }
+
+  @override
+  void changeIsFavorite(Favorite favorite) {
+    final user = FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(user.uid)
+        .collection('favorite')
+        .doc(favorite.id)
+        .set({'id': favorite.id, 'isFavorite': favorite.isFavorite});
+  }
 }
 
 class Subscribes {
   String id;
   int count;
   Subscribes({this.id, this.count});
+}
+
+class Favorite {
+  Favorite({this.id, this.isFavorite});
+  String id;
+  bool isFavorite;
 }
