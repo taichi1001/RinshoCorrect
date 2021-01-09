@@ -12,10 +12,22 @@ final sortType = StateProvider((ref) => SortType.asc);
 
 final displayMode = StateProvider((ref) => DisplayMode.joint);
 
-final sortedJointArticles = StateProvider.autoDispose.family<List<Article>, JointMode>((ref, mode) {
+final sortedFavoriteJointArticles =
+    StateProvider.autoDispose.family<List<Article>, JointMode>((ref, mode) {
   var articles = ref.watch(globalArticles).state;
   articles = articles?.where((article) => article.tags.isNotEmpty)?.toList();
-  final selectArticles = FilterArticles.getJointModeArticleList(articles, mode);
+  final favoriteList = ref.watch(_favoriteList).state;
+  final List<Article> favoriteArticles = [];
+  if (favoriteList != null) {
+    for (final favorite in favoriteList) {
+      for (final article in articles) {
+        if (favorite.id == article.id && favorite.isFavorite == true) {
+          favoriteArticles.add(article);
+        }
+      }
+    }
+  }
+  final selectArticles = FilterArticles.getJointModeArticleList(favoriteArticles, mode);
   final sort = ref.watch(sortType).state;
 
   if (sort == SortType.asc) {
@@ -26,11 +38,22 @@ final sortedJointArticles = StateProvider.autoDispose.family<List<Article>, Join
   return selectArticles;
 });
 
-final sortedSymptomDisorderArticles =
+final sortedFavoriteSymptomDisorderArticles =
     StateProvider.autoDispose.family<List<Article>, SymptomDisorder>((ref, mode) {
   var articles = ref.watch(globalArticles).state;
   articles = articles?.where((article) => article.symptomDisorder.isNotEmpty)?.toList();
-  final selectArticles = FilterArticles.getSymptomDisorderArticleList(articles, mode);
+  final favoriteList = ref.watch(_favoriteList).state;
+  final List<Article> favoriteArticles = [];
+  if (favoriteList != null) {
+    for (final favorite in favoriteList) {
+      for (final article in articles) {
+        if (favorite.id == article.id && favorite.isFavorite == true) {
+          favoriteArticles.add(article);
+        }
+      }
+    }
+  }
+  final selectArticles = FilterArticles.getSymptomDisorderArticleList(favoriteArticles, mode);
   final sort = ref.watch(sortType).state;
 
   if (sort == SortType.asc) {
@@ -58,11 +81,11 @@ final currentFavorite = StateProvider.family<bool, String>((ref, id) {
   return result ?? false;
 });
 
-final articleListScreenController =
-    Provider.autoDispose((ref) => ArticleListScreenController(read: ref.read));
+final favoriteScreenController =
+    Provider.autoDispose((ref) => FavoriteScreenController(read: ref.read));
 
-class ArticleListScreenController {
-  ArticleListScreenController({
+class FavoriteScreenController {
+  FavoriteScreenController({
     this.read,
   });
 
@@ -95,7 +118,7 @@ class ArticleListScreenController {
     final favoriteList = read(_favoriteList).state;
     final target = favoriteList.firstWhere((favorite) => favorite.id == id, orElse: () => null);
     if (favoriteList.isEmpty || target == null) {
-      _newFavorite(id, true, favoriteList);
+      _addNewFavorite(id, true, favoriteList);
       return;
     }
     final updateFavorite = target.isFavorite
@@ -107,7 +130,7 @@ class ArticleListScreenController {
     read(firebaseRepository).changeIsFavorite(updateFavorite);
   }
 
-  void _newFavorite(String id, bool isFavorite, List<Favorite> list) {
+  void _addNewFavorite(String id, bool isFavorite, List<Favorite> list) {
     final updateFavorite = Favorite(id: id, isFavorite: isFavorite);
     list.add(updateFavorite);
     read(_favoriteList).state = list;

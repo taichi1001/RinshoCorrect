@@ -69,7 +69,8 @@ dependencies:
 
   url_launcher: ^5.7.10
 
-  pedantic: ^1.9.2
+  pull_to_refresh: ^1.6.3
+  
 
   # RiverPod関連
   flutter_hooks: ^0.15.0

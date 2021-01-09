@@ -1,6 +1,6 @@
 import 'package:rinsho_collect/entity/term.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rinsho_collect/repository/glossary_repository.dart';
+import 'package:rinsho_collect/repository/micro_cms_repository.dart';
 
 final _terminologies = StateProvider<List<Term>>((ref) => null);
 
@@ -20,6 +20,6 @@ class TerminologyScreenController {
   final Reader read;
 
   Future fetch() async {
-    read(_terminologies).state = await read(glossaryRepository).getGlossary();
+    read(_terminologies).state = await read(microCMSRepository).getGlossary();
   }
 }

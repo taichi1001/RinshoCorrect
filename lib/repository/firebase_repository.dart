@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pedantic/pedantic.dart';
 
-final subscribersRepository =
+final firebaseRepository =
     Provider.autoDispose<FirebaseRepository>((ref) => FirebaseRepositoryImpl(ref.read));
 
 abstract class FirebaseRepository {

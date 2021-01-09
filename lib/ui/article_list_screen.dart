@@ -1,12 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
+import 'package:rinsho_collect/model/articles_controller.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
@@ -85,6 +87,7 @@ class ArticleListScreen extends HookWidget {
           _ArticlesListView(
             key: PageStorageKey(value),
             jointMode: value,
+            refreshController: RefreshController(),
           ),
       ];
     } else if (mode == DisplayMode.symptomDisorder) {
@@ -93,6 +96,7 @@ class ArticleListScreen extends HookWidget {
           _ArticlesListView(
             key: PageStorageKey(value),
             symptomDisorder: value,
+            refreshController: RefreshController(),
           ),
       ];
     } else {
@@ -103,6 +107,7 @@ class ArticleListScreen extends HookWidget {
 
 class _ArticlesListView extends HookWidget {
   const _ArticlesListView({
+    @required this.refreshController,
     this.jointMode,
     this.symptomDisorder,
     Key key,
@@ -110,6 +115,14 @@ class _ArticlesListView extends HookWidget {
 
   final JointMode jointMode;
   final SymptomDisorder symptomDisorder;
+  final RefreshController refreshController;
+
+  Future _onRefresh(BuildContext context) async {
+    await context.read(articlesController).fetch();
+    await context.read(articleListScreenController).fetchSubscribers();
+    await context.read(articleListScreenController).fetchFavoriteList();
+    refreshController.refreshCompleted();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,14 +141,19 @@ class _ArticlesListView extends HookWidget {
 
     return AnimationLimiter(
       key: ObjectKey(useProvider(sortType).state),
-      child: ListView.builder(
-        itemCount: _articles.length,
-        itemBuilder: (context, index) => ProviderScope(
-          overrides: [currentArticle.overrideWithValue(_articles[index])],
-          child: const AnimationConfiguration.synchronized(
-            duration: Duration(milliseconds: 600),
-            child: FadeInAnimation(
-              child: _ArticleCard(),
+      child: SmartRefresher(
+        header: const ClassicHeader(),
+        controller: refreshController,
+        onRefresh: () => _onRefresh(context),
+        child: ListView.builder(
+          itemCount: _articles.length,
+          itemBuilder: (context, index) => ProviderScope(
+            overrides: [currentArticle.overrideWithValue(_articles[index])],
+            child: const AnimationConfiguration.synchronized(
+              duration: Duration(milliseconds: 600),
+              child: FadeInAnimation(
+                child: _ArticleCard(),
+              ),
             ),
           ),
         ),
