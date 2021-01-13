@@ -8,6 +8,7 @@ final firebaseRepository =
 
 abstract class FirebaseRepository {
   Future incrementSubscribers(String id);
+  Future incrementFavorite(Favorite favorite);
   Future<List<Subscribes>> getSubscribers();
   Future<List<Favorite>> getFavoriteList();
   void changeIsFavorite(Favorite favorite);
@@ -19,17 +20,31 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
 
   @override
   Future incrementSubscribers(String id) async {
-    final subscriber = await FirebaseFirestore.instance.collection('articles').doc(id).get();
-    if (subscriber.data() == null) {
+    await specifiedArticleUnregistered(id);
+    unawaited(
+      FirebaseFirestore.instance
+          .collection('articles')
+          .doc(id)
+          .update({'count': FieldValue.increment(1)}),
+    );
+  }
+
+  @override
+  Future incrementFavorite(Favorite favorite) async {
+    await specifiedArticleUnregistered(favorite.id);
+    if (favorite.isFavorite) {
       unawaited(
-        FirebaseFirestore.instance.collection('articles').doc(id).set({'count': 1, 'id': id}),
+        FirebaseFirestore.instance
+            .collection('articles')
+            .doc(favorite.id)
+            .update({'favorite': FieldValue.increment(1)}),
       );
     } else {
       unawaited(
         FirebaseFirestore.instance
             .collection('articles')
-            .doc(id)
-            .update({'count': FieldValue.increment(1)}),
+            .doc(favorite.id)
+            .update({'favorite': FieldValue.increment(-1)}),
       );
     }
   }
@@ -66,6 +81,17 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
         .collection('favorite')
         .doc(favorite.id)
         .set({'id': favorite.id, 'isFavorite': favorite.isFavorite});
+    incrementFavorite(favorite);
+  }
+
+  Future specifiedArticleUnregistered(String id) async {
+    final subscriber = await FirebaseFirestore.instance.collection('articles').doc(id).get();
+    if (subscriber.data() == null) {
+      await FirebaseFirestore.instance
+          .collection('articles')
+          .doc(id)
+          .set({'id': id, 'count': 0, 'favorite': 0});
+    }
   }
 }
 

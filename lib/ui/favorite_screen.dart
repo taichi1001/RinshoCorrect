@@ -25,43 +25,37 @@ class FavoriteScreen extends HookWidget {
     }, []);
 
     final _displayMode = useProvider(displayMode).state;
-    return Theme(
-      data: ThemeData(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-      ),
-      child: DefaultTabController(
-        length: _getTabs(_displayMode).length,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('記事'),
-            leading: IconButton(
-              icon: const Icon(Icons.ac_unit),
+    return DefaultTabController(
+      length: _getTabs(_displayMode).length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('記事'),
+          leading: IconButton(
+            icon: const Icon(Icons.ac_unit),
+            onPressed: () {
+              context.read(favoriteScreenController).changeSortType();
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.deck),
               onPressed: () {
-                context.read(favoriteScreenController).changeSortType();
+                context.read(favoriteScreenController).changeDisplayMode();
               },
             ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.deck),
-                onPressed: () {
-                  context.read(favoriteScreenController).changeDisplayMode();
-                },
-              ),
-            ],
-            bottom: TabBar(
-              isScrollable: true,
-              indicator: const BubbleTabIndicator(
-                indicatorHeight: 25,
-                indicatorColor: Colors.blueAccent,
-                tabBarIndicatorSize: TabBarIndicatorSize.tab,
-              ),
-              tabs: _getTabs(_displayMode),
+          ],
+          bottom: TabBar(
+            isScrollable: true,
+            indicator: const BubbleTabIndicator(
+              indicatorHeight: 25,
+              indicatorColor: Colors.blueAccent,
+              tabBarIndicatorSize: TabBarIndicatorSize.tab,
             ),
+            tabs: _getTabs(_displayMode),
           ),
-          body: TabBarView(
-            children: _getTabBatView(_displayMode),
-          ),
+        ),
+        body: TabBarView(
+          children: _getTabBatView(_displayMode),
         ),
       ),
     );

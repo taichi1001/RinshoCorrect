@@ -71,6 +71,7 @@ dependencies:
 
   pull_to_refresh: ^1.6.3
   
+  flappy_search_bar: ^1.7.2
 
   # RiverPod関連
   flutter_hooks: ^0.15.0
