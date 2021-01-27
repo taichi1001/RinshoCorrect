@@ -145,7 +145,7 @@ class _Body extends HookWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -194,6 +194,7 @@ class _Abstract extends HookWidget {
           '概要',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
+        const Divider(thickness: 1, endIndent: 350),
         Html(
           data: useProvider(article).abst,
         ),
@@ -213,19 +214,20 @@ class _Video extends HookWidget {
       children: [
         Container(
           height: 200,
+          color: Colors.black,
           child: _isLoading && _chewieController != null
               ? Chewie(
                   controller: _chewieController,
                 )
               : const Center(child: CircularProgressIndicator()),
         ),
-        const Text(
-          '動画解説',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        Html(
-          data: useProvider(article).videoAbs,
-        ),
+        // const Text(
+        //   '動画解説',
+        //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        // ),
+        // Html(
+        //   data: useProvider(article).videoAbs,
+        // ),
       ],
     );
   }
@@ -242,6 +244,7 @@ class _Background extends HookWidget {
           'アプローチの背景',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
+        const Divider(thickness: 1, endIndent: 350),
         Html(data: useProvider(article).body),
       ],
     );
@@ -259,6 +262,7 @@ class _Document extends HookWidget {
           '文献',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
+        Divider(thickness: 1, endIndent: 350),
       ],
     );
   }
@@ -275,6 +279,7 @@ class _Author extends HookWidget {
           '著者',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
+        const Divider(thickness: 1, endIndent: 350),
         RaisedButton(
           onPressed: () => launchURL(
             'https://twitter.com/shiita93781732',
