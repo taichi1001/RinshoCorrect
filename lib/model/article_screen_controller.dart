@@ -53,7 +53,7 @@ class ArticleScreenController {
           bufferedColor: Colors.lightGreen,
         ),
         placeholder: Container(
-          color: Colors.grey,
+          color: Colors.black,
         ),
         autoInitialize: true,
       ),
