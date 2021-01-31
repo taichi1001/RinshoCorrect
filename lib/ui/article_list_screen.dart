@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
@@ -49,6 +50,12 @@ class ArticleListScreen extends HookWidget {
                 icon: const Icon(Icons.deck),
                 onPressed: () {
                   context.read(articleListScreenController).changeDisplayMode();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.rotate_90_degrees_ccw_sharp),
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
                 },
               ),
             ],
