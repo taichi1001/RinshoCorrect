@@ -74,6 +74,10 @@ dependencies:
   
   flappy_search_bar: ^1.7.2
 
+  font_awesome_flutter: ^8.11.0
+
+  sliver_tools: ^0.1.10+1
+
   # RiverPod関連
   flutter_hooks: ^0.15.0
   hooks_riverpod: ^0.12.1

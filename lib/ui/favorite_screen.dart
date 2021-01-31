@@ -182,8 +182,6 @@ class _ArticleCard extends HookWidget {
                       const SizedBox(height: 8),
                       SizedBox(width: 270.w, child: const _Title()),
                       const SizedBox(height: 8),
-                      SizedBox(width: 270.w, child: const _SubTitle()),
-                      const SizedBox(height: 8),
                       const Text(
                         '#タグ',
                         style: TextStyle(fontSize: 12),
@@ -237,20 +235,6 @@ class _Title extends HookWidget {
         fontSize: 16,
         fontWeight: FontWeight.bold,
       ),
-    );
-  }
-}
-
-class _SubTitle extends HookWidget {
-  const _SubTitle({Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      useProvider(currentArticle).subTitle,
-      overflow: TextOverflow.ellipsis,
-      maxLines: 1,
-      softWrap: false,
-      style: const TextStyle(fontSize: 14),
     );
   }
 }

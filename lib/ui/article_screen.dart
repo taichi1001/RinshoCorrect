@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/style.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/entity/term.dart';
 import 'package:rinsho_collect/model/article_screen_controller.dart';
@@ -10,6 +11,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:chewie/chewie.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 final article = ScopedProvider<Article>(null);
 
@@ -28,35 +31,50 @@ class ArticleScreen extends HookWidget {
 
     final controller = SheetController();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('詳細'),
-      ),
-      body: SlidingSheet(
-        controller: controller,
-        elevation: 8,
-        cornerRadius: 16,
-        snapSpec: SnapSpec(
-          snappings: [56.h, 300.h, 700.h],
-          positioning: SnapPositioning.pixelOffset,
+      // appBar: AppBar(
+      //   title: const Text('詳細'),
+      // ),
+      body: SafeArea(
+        bottom: false,
+        child: SlidingSheet(
+          controller: controller,
+          elevation: 8,
+          cornerRadius: 16,
+          snapSpec: SnapSpec(
+            snappings: [56.h, 300.h, 700.h],
+            positioning: SnapPositioning.pixelOffset,
+          ),
+          headerBuilder: (context, state) {
+            return GestureDetector(
+              onTap: () => controller.expand(),
+              child: Container(
+                height: 56.h,
+                color: Color(0xFFA7D0BE),
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.school_outlined),
+                    const SizedBox(width: 8),
+                    const Text(
+                      '専門用語解説',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          builder: (context, state) {
+            return GestureDetector(
+              onTap: () => controller.collapse(),
+              child: const _Glossary(),
+            );
+          },
+          body: const _Body(),
         ),
-        headerBuilder: (context, state) {
-          return GestureDetector(
-            onTap: () => controller.expand(),
-            child: Container(
-              height: 56.h,
-              color: Colors.indigo,
-              alignment: Alignment.center,
-              child: const Text('This is the header'),
-            ),
-          );
-        },
-        builder: (context, state) {
-          return GestureDetector(
-            onTap: () => controller.collapse(),
-            child: const _Glossary(),
-          );
-        },
-        body: const _Body(),
       ),
     );
   }
@@ -143,6 +161,8 @@ class _Body extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _article = useProvider(article);
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -151,7 +171,41 @@ class _Body extends HookWidget {
           children: [
             const _Title(),
             const SizedBox(height: 8),
-            const Divider(height: 16, thickness: 1),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(_article.author),
+                    const SizedBox(width: 16),
+                    Text(_article.publishedAt.toIso8601String()),
+                    const SizedBox(width: 16),
+                  ],
+                ),
+                Icon(Icons.bookmark_border_outlined),
+              ],
+            ),
+            const SizedBox(height: 8),
+
+            Row(
+              children: [
+                Icon(Icons.public),
+                const SizedBox(width: 16),
+                IconButton(
+                  icon: Icon(FontAwesomeIcons.twitter),
+                  onPressed: () {
+                    launchURL(
+                      _article.twitter,
+                      secondUrl: 'https://twitter.com/riscait',
+                    );
+                  },
+                ),
+                const SizedBox(width: 16),
+                Icon(FontAwesomeIcons.instagram),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // const Divider(height: 16, thickness: 1),
             const _Abstract(),
             const SizedBox(height: 8),
             const _Video(),
@@ -160,7 +214,6 @@ class _Body extends HookWidget {
             const SizedBox(height: 8),
             const _Document(),
             const SizedBox(height: 8),
-            const _Author(),
             SizedBox(height: 56.h),
           ],
         ),
@@ -176,7 +229,7 @@ class _Title extends HookWidget {
     return Text(
       useProvider(article).title,
       style: const TextStyle(
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
     );
@@ -192,12 +245,16 @@ class _Abstract extends HookWidget {
       children: [
         const Text(
           '概要',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        const Divider(thickness: 1, endIndent: 350),
-        Html(
-          data: useProvider(article).abst,
-        ),
+        const Divider(thickness: 1, endIndent: 100),
+        Html(data: useProvider(article).abstract, style: {
+          'ul': Style(
+            fontSize: const FontSize(14),
+            padding: EdgeInsets.zero,
+            margin: EdgeInsets.zero,
+          ),
+        }),
       ],
     );
   }
@@ -242,10 +299,17 @@ class _Background extends HookWidget {
       children: [
         const Text(
           'アプローチの背景',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        const Divider(thickness: 1, endIndent: 350),
-        Html(data: useProvider(article).body),
+        const Divider(thickness: 1, endIndent: 100),
+        Html(
+          data: useProvider(article).body,
+          style: {
+            'p': Style(
+              fontSize: const FontSize(14),
+            ),
+          },
+        ),
       ],
     );
   }
@@ -260,33 +324,9 @@ class _Document extends HookWidget {
       children: const [
         Text(
           '文献',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        Divider(thickness: 1, endIndent: 350),
-      ],
-    );
-  }
-}
-
-class _Author extends HookWidget {
-  const _Author({Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          '著者',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const Divider(thickness: 1, endIndent: 350),
-        RaisedButton(
-          onPressed: () => launchURL(
-            'https://twitter.com/shiita93781732',
-            secondUrl: 'https://twitter.com/riscait',
-          ),
-          child: const Text('Twitterを開く'),
-        ),
+        Divider(thickness: 1, endIndent: 100),
       ],
     );
   }
