@@ -161,14 +161,14 @@ class _Body extends HookWidget {
     final _article = useProvider(article);
 
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _Title(),
-            const SizedBox(height: 8),
-            Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _Title(),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
@@ -182,8 +182,11 @@ class _Body extends HookWidget {
                 const Icon(Icons.bookmark_border_outlined),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Row(
               children: [
                 const Icon(Icons.public),
                 const SizedBox(width: 16),
@@ -200,20 +203,20 @@ class _Body extends HookWidget {
                 const Icon(FontAwesomeIcons.instagram),
               ],
             ),
-            const SizedBox(height: 16),
-            const _Abstract(),
-            const SizedBox(height: 8),
-            const _ApprochTarget(),
-            const SizedBox(height: 8),
-            const _Video(),
-            const SizedBox(height: 16),
-            const _Background(),
-            const SizedBox(height: 8),
-            const _Document(),
-            const SizedBox(height: 8),
-            SizedBox(height: 56.h),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+          const _Abstract(),
+          const SizedBox(height: 8),
+          const _ApprochTarget(),
+          const SizedBox(height: 8),
+          const _Video(),
+          const SizedBox(height: 16),
+          const _Background(),
+          const SizedBox(height: 8),
+          const _Document(),
+          const SizedBox(height: 8),
+          SizedBox(height: 56.h),
+        ],
       ),
     );
   }
@@ -223,11 +226,14 @@ class _Title extends HookWidget {
   const _Title({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Text(
-      useProvider(article).title,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+      child: Text(
+        useProvider(article).title,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -240,9 +246,12 @@ class _Abstract extends HookWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '概要',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        const Padding(
+          padding: EdgeInsets.only(left: 16, right: 16),
+          child: Text(
+            '概要',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         ),
         const Divider(thickness: 1, endIndent: 100),
         Html(data: useProvider(article).abstract, style: {
@@ -264,9 +273,12 @@ class _ApprochTarget extends HookWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'アプローチ対象',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        const Padding(
+          padding: EdgeInsets.only(left: 16, right: 16),
+          child: Text(
+            'アプローチ対象',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         ),
         const Divider(thickness: 1, endIndent: 100),
         Html(data: useProvider(article).approchTarget, style: {
@@ -287,19 +299,27 @@ class _Video extends HookWidget {
   Widget build(BuildContext context) {
     final _chewieController = useProvider(chewieController).state;
     final _isLoading = useProvider(isLoading).state;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 200,
-          color: Colors.black,
-          child: _isLoading && _chewieController != null
-              ? Chewie(
-                  controller: _chewieController,
-                )
-              : const Center(child: CircularProgressIndicator()),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'アプローチ動画',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const Divider(thickness: 1, endIndent: 100),
+          Container(
+            height: 200,
+            color: Colors.black,
+            child: _isLoading && _chewieController != null
+                ? Chewie(
+                    controller: _chewieController,
+                  )
+                : const Center(child: CircularProgressIndicator()),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -308,23 +328,26 @@ class _Background extends HookWidget {
   const _Background({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'アプローチの背景',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        const Divider(thickness: 1, endIndent: 100),
-        Html(
-          data: useProvider(article).body,
-          style: {
-            'p': Style(
-              fontSize: const FontSize(14),
-            ),
-          },
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'アプローチの背景',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const Divider(thickness: 1, endIndent: 100),
+          Html(
+            data: useProvider(article).body,
+            style: {
+              'p': Style(
+                fontSize: const FontSize(14),
+              ),
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -336,9 +359,12 @@ class _Document extends HookWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '参考文献',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        const Padding(
+          padding: EdgeInsets.only(left: 16, right: 16),
+          child: Text(
+            '参考文献',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         ),
         const Divider(thickness: 1, endIndent: 100),
         Html(
