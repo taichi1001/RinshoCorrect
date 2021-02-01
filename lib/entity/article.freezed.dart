@@ -26,6 +26,8 @@ class _$ArticleTearOff {
       @JsonKey(name: 'symptom_disorder', fromJson: _parseSymptomDisorder)
           List<String> symptomDisorder,
       String abstract,
+      @JsonKey(name: 'approch_target')
+          String approchTarget,
       String body,
       @JsonKey(name: 'url', fromJson: _parseEyeCatch)
           Uri eyecatch,
@@ -45,6 +47,7 @@ class _$ArticleTearOff {
       tags: tags,
       symptomDisorder: symptomDisorder,
       abstract: abstract,
+      approchTarget: approchTarget,
       body: body,
       eyecatch: eyecatch,
       videoURL: videoURL,
@@ -77,6 +80,8 @@ mixin _$Article {
   @JsonKey(name: 'symptom_disorder', fromJson: _parseSymptomDisorder)
   List<String> get symptomDisorder;
   String get abstract;
+  @JsonKey(name: 'approch_target')
+  String get approchTarget;
   String
       get body; // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える
   @JsonKey(name: 'url', fromJson: _parseEyeCatch)
@@ -108,6 +113,8 @@ abstract class $ArticleCopyWith<$Res> {
       @JsonKey(name: 'symptom_disorder', fromJson: _parseSymptomDisorder)
           List<String> symptomDisorder,
       String abstract,
+      @JsonKey(name: 'approch_target')
+          String approchTarget,
       String body,
       @JsonKey(name: 'url', fromJson: _parseEyeCatch)
           Uri eyecatch,
@@ -138,6 +145,7 @@ class _$ArticleCopyWithImpl<$Res> implements $ArticleCopyWith<$Res> {
     Object tags = freezed,
     Object symptomDisorder = freezed,
     Object abstract = freezed,
+    Object approchTarget = freezed,
     Object body = freezed,
     Object eyecatch = freezed,
     Object videoURL = freezed,
@@ -158,6 +166,9 @@ class _$ArticleCopyWithImpl<$Res> implements $ArticleCopyWith<$Res> {
           ? _value.symptomDisorder
           : symptomDisorder as List<String>,
       abstract: abstract == freezed ? _value.abstract : abstract as String,
+      approchTarget: approchTarget == freezed
+          ? _value.approchTarget
+          : approchTarget as String,
       body: body == freezed ? _value.body : body as String,
       eyecatch: eyecatch == freezed ? _value.eyecatch : eyecatch as Uri,
       videoURL: videoURL == freezed ? _value.videoURL : videoURL as String,
@@ -186,6 +197,8 @@ abstract class _$ArticleCopyWith<$Res> implements $ArticleCopyWith<$Res> {
       @JsonKey(name: 'symptom_disorder', fromJson: _parseSymptomDisorder)
           List<String> symptomDisorder,
       String abstract,
+      @JsonKey(name: 'approch_target')
+          String approchTarget,
       String body,
       @JsonKey(name: 'url', fromJson: _parseEyeCatch)
           Uri eyecatch,
@@ -217,6 +230,7 @@ class __$ArticleCopyWithImpl<$Res> extends _$ArticleCopyWithImpl<$Res>
     Object tags = freezed,
     Object symptomDisorder = freezed,
     Object abstract = freezed,
+    Object approchTarget = freezed,
     Object body = freezed,
     Object eyecatch = freezed,
     Object videoURL = freezed,
@@ -237,6 +251,9 @@ class __$ArticleCopyWithImpl<$Res> extends _$ArticleCopyWithImpl<$Res>
           ? _value.symptomDisorder
           : symptomDisorder as List<String>,
       abstract: abstract == freezed ? _value.abstract : abstract as String,
+      approchTarget: approchTarget == freezed
+          ? _value.approchTarget
+          : approchTarget as String,
       body: body == freezed ? _value.body : body as String,
       eyecatch: eyecatch == freezed ? _value.eyecatch : eyecatch as Uri,
       videoURL: videoURL == freezed ? _value.videoURL : videoURL as String,
@@ -264,6 +281,8 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       @JsonKey(name: 'symptom_disorder', fromJson: _parseSymptomDisorder)
           this.symptomDisorder,
       this.abstract,
+      @JsonKey(name: 'approch_target')
+          this.approchTarget,
       this.body,
       @JsonKey(name: 'url', fromJson: _parseEyeCatch)
           this.eyecatch,
@@ -295,6 +314,9 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
   @override
   final String abstract;
   @override
+  @JsonKey(name: 'approch_target')
+  final String approchTarget;
+  @override
   final String body;
   @override // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える
   @JsonKey(name: 'url', fromJson: _parseEyeCatch)
@@ -318,7 +340,7 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Article(id: $id, publishedAt: $publishedAt, title: $title, tags: $tags, symptomDisorder: $symptomDisorder, abstract: $abstract, body: $body, eyecatch: $eyecatch, videoURL: $videoURL, glossary: $glossary, author: $author, twitter: $twitter, instagram: $instagram, webURL: $webURL, references: $references)';
+    return 'Article(id: $id, publishedAt: $publishedAt, title: $title, tags: $tags, symptomDisorder: $symptomDisorder, abstract: $abstract, approchTarget: $approchTarget, body: $body, eyecatch: $eyecatch, videoURL: $videoURL, glossary: $glossary, author: $author, twitter: $twitter, instagram: $instagram, webURL: $webURL, references: $references)';
   }
 
   @override
@@ -332,6 +354,7 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       ..add(DiagnosticsProperty('tags', tags))
       ..add(DiagnosticsProperty('symptomDisorder', symptomDisorder))
       ..add(DiagnosticsProperty('abstract', abstract))
+      ..add(DiagnosticsProperty('approchTarget', approchTarget))
       ..add(DiagnosticsProperty('body', body))
       ..add(DiagnosticsProperty('eyecatch', eyecatch))
       ..add(DiagnosticsProperty('videoURL', videoURL))
@@ -362,6 +385,9 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
             (identical(other.abstract, abstract) ||
                 const DeepCollectionEquality()
                     .equals(other.abstract, abstract)) &&
+            (identical(other.approchTarget, approchTarget) ||
+                const DeepCollectionEquality()
+                    .equals(other.approchTarget, approchTarget)) &&
             (identical(other.body, body) ||
                 const DeepCollectionEquality().equals(other.body, body)) &&
             (identical(other.eyecatch, eyecatch) ||
@@ -397,6 +423,7 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       const DeepCollectionEquality().hash(tags) ^
       const DeepCollectionEquality().hash(symptomDisorder) ^
       const DeepCollectionEquality().hash(abstract) ^
+      const DeepCollectionEquality().hash(approchTarget) ^
       const DeepCollectionEquality().hash(body) ^
       const DeepCollectionEquality().hash(eyecatch) ^
       const DeepCollectionEquality().hash(videoURL) ^
@@ -427,6 +454,8 @@ abstract class _Article implements Article {
       @JsonKey(name: 'symptom_disorder', fromJson: _parseSymptomDisorder)
           List<String> symptomDisorder,
       String abstract,
+      @JsonKey(name: 'approch_target')
+          String approchTarget,
       String body,
       @JsonKey(name: 'url', fromJson: _parseEyeCatch)
           Uri eyecatch,
@@ -456,6 +485,9 @@ abstract class _Article implements Article {
   List<String> get symptomDisorder;
   @override
   String get abstract;
+  @override
+  @JsonKey(name: 'approch_target')
+  String get approchTarget;
   @override
   String get body;
   @override // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える

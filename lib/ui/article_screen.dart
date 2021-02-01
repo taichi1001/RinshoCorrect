@@ -31,9 +31,6 @@ class ArticleScreen extends HookWidget {
 
     final controller = SheetController();
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('詳細'),
-      // ),
       body: SafeArea(
         bottom: false,
         child: SlidingSheet(
@@ -49,14 +46,14 @@ class ArticleScreen extends HookWidget {
               onTap: () => controller.expand(),
               child: Container(
                 height: 56.h,
-                color: Color(0xFFA7D0BE),
+                color: const Color(0xFFA7D0BE),
                 alignment: Alignment.center,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(Icons.school_outlined),
-                    const SizedBox(width: 8),
-                    const Text(
+                    SizedBox(width: 8),
+                    Text(
                       '専門用語解説',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -182,17 +179,16 @@ class _Body extends HookWidget {
                     const SizedBox(width: 16),
                   ],
                 ),
-                Icon(Icons.bookmark_border_outlined),
+                const Icon(Icons.bookmark_border_outlined),
               ],
             ),
             const SizedBox(height: 8),
-
             Row(
               children: [
-                Icon(Icons.public),
+                const Icon(Icons.public),
                 const SizedBox(width: 16),
                 IconButton(
-                  icon: Icon(FontAwesomeIcons.twitter),
+                  icon: const Icon(FontAwesomeIcons.twitter),
                   onPressed: () {
                     launchURL(
                       _article.twitter,
@@ -201,15 +197,16 @@ class _Body extends HookWidget {
                   },
                 ),
                 const SizedBox(width: 16),
-                Icon(FontAwesomeIcons.instagram),
+                const Icon(FontAwesomeIcons.instagram),
               ],
             ),
             const SizedBox(height: 16),
-            // const Divider(height: 16, thickness: 1),
             const _Abstract(),
             const SizedBox(height: 8),
-            const _Video(),
+            const _ApprochTarget(),
             const SizedBox(height: 8),
+            const _Video(),
+            const SizedBox(height: 16),
             const _Background(),
             const SizedBox(height: 8),
             const _Document(),
@@ -260,6 +257,30 @@ class _Abstract extends HookWidget {
   }
 }
 
+class _ApprochTarget extends HookWidget {
+  const _ApprochTarget({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'アプローチ対象',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const Divider(thickness: 1, endIndent: 100),
+        Html(data: useProvider(article).approchTarget, style: {
+          'ul': Style(
+            fontSize: const FontSize(14),
+            padding: EdgeInsets.zero,
+            margin: EdgeInsets.zero,
+          ),
+        }),
+      ],
+    );
+  }
+}
+
 class _Video extends HookWidget {
   const _Video({Key key}) : super(key: key);
   @override
@@ -278,13 +299,6 @@ class _Video extends HookWidget {
                 )
               : const Center(child: CircularProgressIndicator()),
         ),
-        // const Text(
-        //   '動画解説',
-        //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        // ),
-        // Html(
-        //   data: useProvider(article).videoAbs,
-        // ),
       ],
     );
   }
@@ -321,12 +335,20 @@ class _Document extends HookWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        Text(
-          '文献',
+      children: [
+        const Text(
+          '参考文献',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        Divider(thickness: 1, endIndent: 100),
+        const Divider(thickness: 1, endIndent: 100),
+        Html(
+          data: useProvider(article).references,
+          style: {
+            'p': Style(
+              fontSize: const FontSize(14),
+            ),
+          },
+        ),
       ],
     );
   }

@@ -15,6 +15,7 @@ abstract class Article with _$Article {
     @JsonKey(name: 'symptom_disorder', fromJson: _parseSymptomDisorder)
         List<String> symptomDisorder,
     String abstract,
+    @JsonKey(name: 'approch_target') String approchTarget,
     String body,
     // article.g.dartのeyecatchの欄を eyecatch: _parseEyeCatch(json['eyecatch']['url'])に書き換える
     @JsonKey(name: 'url', fromJson: _parseEyeCatch) Uri eyecatch,

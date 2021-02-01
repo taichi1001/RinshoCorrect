@@ -60,27 +60,28 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // 実行部分
-    // _signInWithGoogle();
+    _signInAnonymously();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
-          // child: CircularProgressIndicator(),
-          child: RaisedButton(
-        onPressed: () async {
-          try {
-            final userCredential = await _signInWithGoogle();
-          } on FirebaseAuthException catch (e) {
-            print('FirebaseAuthException');
-            print('${e.code}');
-          } on Exception catch (e) {
-            print('Other Exception');
-            print('${e.toString()}');
-          }
-        },
-      )),
+        child: CircularProgressIndicator(),
+        //     child: RaisedButton(
+        //   onPressed: () async {
+        //     try {
+        //       final userCredential = await _signInWithGoogle();
+        //     } on FirebaseAuthException catch (e) {
+        //       print('FirebaseAuthException');
+        //       print('${e.code}');
+        //     } on Exception catch (e) {
+        //       print('Other Exception');
+        //       print('${e.toString()}');
+        //     }
+        //   },
+        // )),
+      ),
     );
   }
 }
