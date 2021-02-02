@@ -68,15 +68,23 @@ dependencies:
 
   animations: ^1.1.2
 
+  # URLをブラウザで開く
   url_launcher: ^5.7.10
 
+  # 引っ張って更新するやつ
   pull_to_refresh: ^1.6.3
   
+  # 検索バー
   flappy_search_bar: ^1.7.2
 
+  # アイコン詰め合わせ
   font_awesome_flutter: ^8.11.0
 
+  # sliverのやつ（いらない？）
   sliver_tools: ^0.1.10+1
+
+  # 文の先頭に縦線引くやつ
+  blockquote: ^0.0.1
 
   # RiverPod関連
   flutter_hooks: ^0.15.0

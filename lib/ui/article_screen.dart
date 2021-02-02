@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/style.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/entity/term.dart';
 import 'package:rinsho_collect/model/article_screen_controller.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/html_parser.dart';
+import 'package:flutter_html/style.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/ui/parts/term_view.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -12,7 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:chewie/chewie.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sliver_tools/sliver_tools.dart';
+import 'package:blockquote/blockquote.dart';
 
 final article = ScopedProvider<Article>(null);
 
@@ -282,7 +283,7 @@ class _ApprochTarget extends HookWidget {
         ),
         const Divider(thickness: 1, endIndent: 100),
         Html(data: useProvider(article).approchTarget, style: {
-          'ul': Style(
+          'li': Style(
             fontSize: const FontSize(14),
             padding: EdgeInsets.zero,
             margin: EdgeInsets.zero,
@@ -340,9 +341,22 @@ class _Background extends HookWidget {
           const Divider(thickness: 1, endIndent: 100),
           Html(
             data: useProvider(article).body,
+            customRender: {
+              'blockquote': (RenderContext context, Widget child, attributes, _) {
+                return BlockQuote(
+                  blockColor: const Color(0xFFA7D0BE),
+                  childPadding: EdgeInsets.zero,
+                  outerPadding: EdgeInsets.zero,
+                  child: child,
+                );
+              },
+            },
             style: {
               'p': Style(
                 fontSize: const FontSize(14),
+              ),
+              'blockquote': Style(
+                margin: const EdgeInsets.only(left: 16, right: 16),
               ),
             },
           ),
