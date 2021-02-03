@@ -9,18 +9,18 @@ import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
-import 'package:rinsho_collect/model/favorite_screen_controller.dart';
+import 'package:rinsho_collect/model/bookmark_screen_controller.dart';
 import 'package:rinsho_collect/model/article_screen_controller.dart';
 import 'package:rinsho_collect/ui/article_screen.dart';
 
-class FavoriteScreen extends HookWidget {
-  const FavoriteScreen({Key key}) : super(key: key);
+class BookmarkScreen extends HookWidget {
+  const BookmarkScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(favoriteScreenController).fetchSubscribers();
-      context.read(favoriteScreenController).fetchFavoriteList();
+      context.read(bookmarkScreenController).fetchSubscribers();
+      context.read(bookmarkScreenController).fetchBookmarkList();
       return;
     }, []);
 
@@ -33,14 +33,14 @@ class FavoriteScreen extends HookWidget {
           leading: IconButton(
             icon: const Icon(Icons.ac_unit),
             onPressed: () {
-              context.read(favoriteScreenController).changeSortType();
+              context.read(bookmarkScreenController).changeSortType();
             },
           ),
           actions: [
             IconButton(
               icon: const Icon(Icons.deck),
               onPressed: () {
-                context.read(favoriteScreenController).changeDisplayMode();
+                context.read(bookmarkScreenController).changeDisplayMode();
               },
             ),
           ],
@@ -108,9 +108,9 @@ class _ArticlesListView extends HookWidget {
   Widget build(BuildContext context) {
     List<Article> _articles;
     if (jointMode != null) {
-      _articles = useProvider(sortedFavoriteJointArticles(jointMode)).state;
+      _articles = useProvider(sortedBookmarkJointArticles(jointMode)).state;
     } else {
-      _articles = useProvider(sortedFavoriteSymptomDisorderArticles(symptomDisorder)).state;
+      _articles = useProvider(sortedBookmarkSymptomDisorderArticles(symptomDisorder)).state;
     }
 
     if (_articles == null) {
@@ -148,13 +148,13 @@ class _ArticleCard extends HookWidget {
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
     final _count = useProvider(currentTest(_article.id)).state;
-    final _isFavorite = useProvider(currentFavorite(_article.id)).state;
+    final _isBookmark = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              context.read(favoriteScreenController).incrementSubscribers(_article.id);
+              context.read(bookmarkScreenController).incrementSubscribers(_article.id);
               return ProviderScope(
                 overrides: [article.overrideWithValue(_article)],
                 child: const ArticleScreen(),
@@ -187,19 +187,19 @@ class _ArticleCard extends HookWidget {
                         style: TextStyle(fontSize: 12),
                       ),
                     ]),
-                    if (_isFavorite)
+                    if (_isBookmark)
                       IconButton(
-                        icon: const Icon(Icons.favorite, color: Colors.red),
+                        icon: const Icon(Icons.bookmark, color: Colors.red),
                         color: Colors.red,
                         onPressed: () =>
-                            context.read(favoriteScreenController).changeIsFavorite(_article.id),
+                            context.read(bookmarkScreenController).changeIsBookmark(_article.id),
                       )
                     else
                       IconButton(
-                        icon: const Icon(Icons.favorite, color: Colors.grey),
+                        icon: const Icon(Icons.bookmark, color: Colors.grey),
                         color: Colors.grey,
                         onPressed: () =>
-                            context.read(favoriteScreenController).changeIsFavorite(_article.id),
+                            context.read(bookmarkScreenController).changeIsBookmark(_article.id),
                       )
                   ],
                 )

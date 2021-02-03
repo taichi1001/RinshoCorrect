@@ -39,10 +39,8 @@ analyzer:
     # see https://github.com/dart-lang/sdk/issues/28463
     - "lib/i18n/messages_*.dart"
     - "lib/src/http/**"
-    - lib/entity/article.freezed.dart
-    - lib/entity/article.g.dart
-    - lib/entity/term.freezed.dart
-    - lib/entity/term.g.dart
+    - lib/entity/*.freezed.dart
+    - lib/entity/*.g.dart
 
 linter:
   rules:

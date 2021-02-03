@@ -2,16 +2,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:rinsho_collect/entity/bookmark.dart';
 
 final firebaseRepository =
     Provider.autoDispose<FirebaseRepository>((ref) => FirebaseRepositoryImpl(ref.read));
 
 abstract class FirebaseRepository {
   Future incrementSubscribers(String id);
-  Future incrementFavorite(Favorite favorite);
+  Future incrementBookmark(Bookmark bookmark);
   Future<List<Subscribes>> getSubscribers();
-  Future<List<Favorite>> getFavoriteList();
-  void changeIsFavorite(Favorite favorite);
+  Future<List<Bookmark>> getBookmarkList();
+  void changeIsBookmark(Bookmark bookmark);
 }
 
 class FirebaseRepositoryImpl implements FirebaseRepository {
@@ -30,21 +31,21 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   }
 
   @override
-  Future incrementFavorite(Favorite favorite) async {
-    await specifiedArticleUnregistered(favorite.id);
-    if (favorite.isFavorite) {
+  Future incrementBookmark(Bookmark bookmark) async {
+    await specifiedArticleUnregistered(bookmark.id);
+    if (bookmark.isBookmark) {
       unawaited(
         FirebaseFirestore.instance
             .collection('articles')
-            .doc(favorite.id)
-            .update({'favorite': FieldValue.increment(1)}),
+            .doc(bookmark.id)
+            .update({'bookmark': FieldValue.increment(1)}),
       );
     } else {
       unawaited(
         FirebaseFirestore.instance
             .collection('articles')
-            .doc(favorite.id)
-            .update({'favorite': FieldValue.increment(-1)}),
+            .doc(bookmark.id)
+            .update({'bookmark': FieldValue.increment(-1)}),
       );
     }
   }
@@ -59,29 +60,29 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   }
 
   @override
-  Future<List<Favorite>> getFavoriteList() async {
+  Future<List<Bookmark>> getBookmarkList() async {
     final user = FirebaseAuth.instance.currentUser;
     final ref = await FirebaseFirestore.instance
         .collection('user')
         .doc(user.uid)
-        .collection('favorite')
+        .collection('bookmark')
         .get();
     return ref.docs
         .map((doc) => doc.data())
-        .map((doc) => Favorite(id: doc['id'], isFavorite: doc['isFavorite']))
+        .map((doc) => Bookmark(id: doc['id'], isBookmark: doc['isBookmark']))
         .toList();
   }
 
   @override
-  void changeIsFavorite(Favorite favorite) {
+  void changeIsBookmark(Bookmark bookmark) {
     final user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection('user')
         .doc(user.uid)
-        .collection('favorite')
-        .doc(favorite.id)
-        .set({'id': favorite.id, 'isFavorite': favorite.isFavorite});
-    incrementFavorite(favorite);
+        .collection('bookmark')
+        .doc(bookmark.id)
+        .set({'id': bookmark.id, 'isBookmark': bookmark.isBookmark});
+    incrementBookmark(bookmark);
   }
 
   Future specifiedArticleUnregistered(String id) async {
@@ -90,7 +91,7 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
       await FirebaseFirestore.instance
           .collection('articles')
           .doc(id)
-          .set({'id': id, 'count': 0, 'favorite': 0});
+          .set({'id': id, 'count': 0, 'bookmark': 0});
     }
   }
 }
@@ -101,8 +102,8 @@ class Subscribes {
   Subscribes({this.id, this.count});
 }
 
-class Favorite {
-  Favorite({this.id, this.isFavorite});
-  String id;
-  bool isFavorite;
-}
+// class Favorite {
+//   Favorite({this.id, this.isFavorite});
+//   String id;
+//   bool isFavorite;
+// }

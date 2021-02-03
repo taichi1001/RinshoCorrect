@@ -3,8 +3,10 @@ import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/sort_type.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rinsho_collect/entity/article.dart';
+import 'package:rinsho_collect/entity/bookmark.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
 import 'package:rinsho_collect/repository/firebase_repository.dart';
+import 'package:rinsho_collect/repository/bookmark_repository.dart';
 import 'package:rinsho_collect/util/filter_articles.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
 
@@ -49,12 +51,12 @@ final currentTest = StateProvider.family<int, String>((ref, id) {
   return result ?? 0;
 });
 
-final _favoriteList = StateProvider<List<Favorite>>((ref) => null);
+final _favoriteList = StateProvider<List<Bookmark>>((ref) => null);
 
 final currentFavorite = StateProvider.family<bool, String>((ref, id) {
   final favoriteList = ref.watch(_favoriteList).state;
   final result =
-      favoriteList?.firstWhere((favorite) => favorite.id == id, orElse: () => null)?.isFavorite;
+      favoriteList?.firstWhere((favorite) => favorite.id == id, orElse: () => null)?.isBookmark;
   return result ?? false;
 });
 
@@ -88,7 +90,8 @@ class ArticleListScreenController {
   }
 
   Future fetchFavoriteList() async {
-    read(_favoriteList).state = await read(firebaseRepository).getFavoriteList();
+    // read(_favoriteList).state = await read(firebaseRepository).getFavoriteList();
+    read(_favoriteList).state = await read(bookmarkRepository).getAll();
   }
 
   void changeIsFavorite(String id) {
@@ -98,19 +101,21 @@ class ArticleListScreenController {
       _newFavorite(id, true, favoriteList);
       return;
     }
-    final updateFavorite = target.isFavorite
-        ? Favorite(id: id, isFavorite: false)
-        : Favorite(id: id, isFavorite: true);
+    final updateBookmark = target.isBookmark
+        ? Bookmark(id: id, isBookmark: false)
+        : Bookmark(id: id, isBookmark: true);
     final targetIndex = favoriteList.indexWhere((favorite) => favorite.id == id);
-    favoriteList[targetIndex] = updateFavorite;
+    favoriteList[targetIndex] = updateBookmark;
     read(_favoriteList).state = favoriteList;
-    read(firebaseRepository).changeIsFavorite(updateFavorite);
+    read(bookmarkRepository).update(updateBookmark);
+    // read(firebaseRepository).incrementFavorite(updateBookmark);
   }
 
-  void _newFavorite(String id, bool isFavorite, List<Favorite> list) {
-    final updateFavorite = Favorite(id: id, isFavorite: isFavorite);
-    list.add(updateFavorite);
+  void _newFavorite(String id, bool isBookmark, List<Bookmark> list) {
+    final updateBookmark = Bookmark(id: id, isBookmark: isBookmark);
+    list.add(updateBookmark);
     read(_favoriteList).state = list;
-    read(firebaseRepository).changeIsFavorite(updateFavorite);
+    read(bookmarkRepository).update(updateBookmark);
+    // read(firebaseRepository).incrementFavorite(updateBookmark);
   }
 }
