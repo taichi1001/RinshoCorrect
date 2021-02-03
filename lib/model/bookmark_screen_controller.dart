@@ -6,6 +6,7 @@ import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/entity/bookmark.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
 import 'package:rinsho_collect/repository/firebase_repository.dart';
+import 'package:rinsho_collect/repository/bookmark_repository.dart';
 import 'package:rinsho_collect/util/filter_articles.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
 
@@ -112,14 +113,15 @@ class BookmarkScreenController {
   }
 
   Future fetchBookmarkList() async {
-    read(_bookmarkList).state = await read(firebaseRepository).getBookmarkList();
+    // read(_bookmarkList).state = await read(firebaseRepository).getBookmarkList();
+    read(_bookmarkList).state = await read(bookmarkRepository).getAll();
   }
 
   void changeIsBookmark(String id) {
     final bookmarkList = read(_bookmarkList).state;
     final target = bookmarkList.firstWhere((bookmark) => bookmark.id == id, orElse: () => null);
     if (bookmarkList.isEmpty || target == null) {
-      _addNewBookmark(id, true, bookmarkList);
+      _newBookmark(id, true, bookmarkList);
       return;
     }
     final updateBookmark = target.isBookmark
@@ -128,13 +130,15 @@ class BookmarkScreenController {
     final targetIndex = bookmarkList.indexWhere((bookmark) => bookmark.id == id);
     bookmarkList[targetIndex] = updateBookmark;
     read(_bookmarkList).state = bookmarkList;
-    read(firebaseRepository).changeIsBookmark(updateBookmark);
+    read(bookmarkRepository).update(updateBookmark);
+    read(firebaseRepository).incrementBookmark(updateBookmark);
   }
 
-  void _addNewBookmark(String id, bool isBookmark, List<Bookmark> list) {
+  void _newBookmark(String id, bool isBookmark, List<Bookmark> list) {
     final updateBookmark = Bookmark(id: id, isBookmark: isBookmark);
     list.add(updateBookmark);
     read(_bookmarkList).state = list;
-    read(firebaseRepository).changeIsBookmark(updateBookmark);
+    read(bookmarkRepository).create(updateBookmark);
+    read(firebaseRepository).incrementBookmark(updateBookmark);
   }
 }

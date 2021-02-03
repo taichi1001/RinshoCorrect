@@ -51,12 +51,12 @@ final currentTest = StateProvider.family<int, String>((ref, id) {
   return result ?? 0;
 });
 
-final _favoriteList = StateProvider<List<Bookmark>>((ref) => null);
+final _bookmarkList = StateProvider<List<Bookmark>>((ref) => null);
 
-final currentFavorite = StateProvider.family<bool, String>((ref, id) {
-  final favoriteList = ref.watch(_favoriteList).state;
+final currentBookmark = StateProvider.family<bool, String>((ref, id) {
+  final bookmarkList = ref.watch(_bookmarkList).state;
   final result =
-      favoriteList?.firstWhere((favorite) => favorite.id == id, orElse: () => null)?.isBookmark;
+      bookmarkList?.firstWhere((favorite) => favorite.id == id, orElse: () => null)?.isBookmark;
   return result ?? false;
 });
 
@@ -89,33 +89,33 @@ class ArticleListScreenController {
     read(_test).state = await read(firebaseRepository).getSubscribers();
   }
 
-  Future fetchFavoriteList() async {
+  Future fetchBookmarkList() async {
     // read(_favoriteList).state = await read(firebaseRepository).getFavoriteList();
-    read(_favoriteList).state = await read(bookmarkRepository).getAll();
+    read(_bookmarkList).state = await read(bookmarkRepository).getAll();
   }
 
-  void changeIsFavorite(String id) {
-    final favoriteList = read(_favoriteList).state;
-    final target = favoriteList.firstWhere((favorite) => favorite.id == id, orElse: () => null);
-    if (favoriteList.isEmpty || target == null) {
-      _newFavorite(id, true, favoriteList);
+  void changeIsBookmark(String id) {
+    final bookmarkList = read(_bookmarkList).state;
+    final target = bookmarkList.firstWhere((bookmark) => bookmark.id == id, orElse: () => null);
+    if (bookmarkList.isEmpty || target == null) {
+      _newBookmark(id, true, bookmarkList);
       return;
     }
     final updateBookmark = target.isBookmark
         ? Bookmark(id: id, isBookmark: false)
         : Bookmark(id: id, isBookmark: true);
-    final targetIndex = favoriteList.indexWhere((favorite) => favorite.id == id);
-    favoriteList[targetIndex] = updateBookmark;
-    read(_favoriteList).state = favoriteList;
+    final targetIndex = bookmarkList.indexWhere((bookmark) => bookmark.id == id);
+    bookmarkList[targetIndex] = updateBookmark;
+    read(_bookmarkList).state = bookmarkList;
     read(bookmarkRepository).update(updateBookmark);
-    // read(firebaseRepository).incrementFavorite(updateBookmark);
+    read(firebaseRepository).incrementBookmark(updateBookmark);
   }
 
-  void _newFavorite(String id, bool isBookmark, List<Bookmark> list) {
+  void _newBookmark(String id, bool isBookmark, List<Bookmark> list) {
     final updateBookmark = Bookmark(id: id, isBookmark: isBookmark);
     list.add(updateBookmark);
-    read(_favoriteList).state = list;
-    read(bookmarkRepository).update(updateBookmark);
-    // read(firebaseRepository).incrementFavorite(updateBookmark);
+    read(_bookmarkList).state = list;
+    read(bookmarkRepository).create(updateBookmark);
+    read(firebaseRepository).incrementBookmark(updateBookmark);
   }
 }

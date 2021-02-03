@@ -356,7 +356,7 @@ class _Background extends HookWidget {
                 fontSize: const FontSize(14),
               ),
               'blockquote': Style(
-                margin: const EdgeInsets.only(left: 16, right: 16),
+                margin: const EdgeInsets.only(left: 8, right: 8),
               ),
             },
           ),

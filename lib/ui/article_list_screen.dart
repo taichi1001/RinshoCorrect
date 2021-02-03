@@ -24,7 +24,7 @@ class ArticleListScreen extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       context.read(articleListScreenController).fetchSubscribers();
-      context.read(articleListScreenController).fetchFavoriteList();
+      context.read(articleListScreenController).fetchBookmarkList();
       return;
     }, []);
 
@@ -121,7 +121,7 @@ class _ArticlesListView extends HookWidget {
   Future _onRefresh(BuildContext context) async {
     await context.read(articlesController).fetch();
     await context.read(articleListScreenController).fetchSubscribers();
-    await context.read(articleListScreenController).fetchFavoriteList();
+    await context.read(articleListScreenController).fetchBookmarkList();
     refreshController.refreshCompleted();
   }
 
@@ -174,7 +174,7 @@ class _ArticleCard extends HookWidget {
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
     final _count = useProvider(currentTest(_article.id)).state;
-    final _isFavorite = useProvider(currentFavorite(_article.id)).state;
+    final _isFavorite = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context).push(
@@ -218,14 +218,14 @@ class _ArticleCard extends HookWidget {
                         icon: const Icon(Icons.favorite, color: Colors.red),
                         color: Colors.red,
                         onPressed: () =>
-                            context.read(articleListScreenController).changeIsFavorite(_article.id),
+                            context.read(articleListScreenController).changeIsBookmark(_article.id),
                       )
                     else
                       IconButton(
                         icon: const Icon(Icons.favorite, color: Colors.grey),
                         color: Colors.grey,
                         onPressed: () =>
-                            context.read(articleListScreenController).changeIsFavorite(_article.id),
+                            context.read(articleListScreenController).changeIsBookmark(_article.id),
                       )
                   ],
                 )
