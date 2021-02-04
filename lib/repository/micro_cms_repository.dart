@@ -10,7 +10,8 @@ final microCMSRepository =
     Provider.autoDispose<MicroCMSRepository>((ref) => MicroCMSRepositoryImpl(ref.read));
 
 abstract class MicroCMSRepository {
-  Future<List<Article>> getArticles();
+  Future<List<Article>> getArticleListContents();
+  Future<Article> getArticleContents(String id);
   Future<List<Term>> getGlossary();
 }
 
@@ -19,11 +20,19 @@ class MicroCMSRepositoryImpl implements MicroCMSRepository {
   MicroCMSRepositoryImpl(this.read);
 
   @override
-  Future<List<Article>> getArticles() async {
+  Future<List<Article>> getArticleListContents() async {
     final MicroCMSClient prefs = read(microCMSClient);
-    final Response result = await prefs.getArticleList() ?? [];
+    final Response result = await prefs.getArticlesListContents() ?? [];
     final List contents = jsonDecode(result.body)['contents'];
     return contents.map((json) => Article.fromJson(json)).toList();
+  }
+
+  @override
+  Future<Article> getArticleContents(String id) async {
+    final MicroCMSClient prefs = read(microCMSClient);
+    final Response result = await prefs.getArticleContents(id);
+    final contents = jsonDecode(result.body);
+    return Article.fromJson(contents);
   }
 
   @override

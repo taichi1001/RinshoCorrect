@@ -30,11 +30,26 @@ abstract class Article with _$Article {
   factory Article.fromJson(Map<String, dynamic> json) => _$ArticleFromJson(json);
 }
 
-Uri _parseEyeCatch(value) => Uri.parse(value);
+Uri _parseEyeCatch(value) {
+  if (value == null) {
+    return null;
+  }
+  return Uri.parse(value);
+}
 
-List<String> _parseTags(value) => List<String>.from(value);
+List<String> _parseTags(value) {
+  if (value == null) {
+    return null;
+  }
+  return List<String>.from(value);
+}
 
-List<String> _parseSymptomDisorder(value) => List<String>.from(value);
+List<String> _parseSymptomDisorder(value) {
+  if (value == null) {
+    return null;
+  }
+  return List<String>.from(value);
+}
 
 String _parseVideoURL(String value) {
   if (value == null) {
@@ -47,6 +62,10 @@ String _parseVideoURL(String value) {
 }
 
 List<Term> _parseGlossary(value) {
-  final terms = List<Map<String, dynamic>>.from(value);
-  return terms.map((json) => Term.fromJson(json)).toList();
+  if (value == null) {
+    return null;
+  } else {
+    final terms = List<Map<String, dynamic>>.from(value);
+    return terms.map((json) => Term.fromJson(json)).toList();
+  }
 }

@@ -14,7 +14,7 @@ final sortType = StateProvider((ref) => SortType.asc);
 
 final displayMode = StateProvider((ref) => DisplayMode.joint);
 
-final sortedJointArticles = StateProvider.autoDispose.family<List<Article>, JointMode>((ref, mode) {
+final sortedJointArticles = StateProvider.family<List<Article>, JointMode>((ref, mode) {
   var articles = ref.watch(globalArticles).state;
   articles = articles?.where((article) => article.tags.isNotEmpty)?.toList();
   final selectArticles = FilterArticles.getJointModeArticleList(articles, mode);
@@ -29,7 +29,7 @@ final sortedJointArticles = StateProvider.autoDispose.family<List<Article>, Join
 });
 
 final sortedSymptomDisorderArticles =
-    StateProvider.autoDispose.family<List<Article>, SymptomDisorder>((ref, mode) {
+    StateProvider.family<List<Article>, SymptomDisorder>((ref, mode) {
   var articles = ref.watch(globalArticles).state;
   articles = articles?.where((article) => article.symptomDisorder.isNotEmpty)?.toList();
   final selectArticles = FilterArticles.getSymptomDisorderArticleList(articles, mode);

@@ -14,6 +14,6 @@ class ArticlesController {
   final Reader read;
 
   Future fetch() async {
-    read(globalArticles).state = await read(microCMSRepository).getArticles();
+    read(globalArticles).state = await read(microCMSRepository).getArticleListContents();
   }
 }

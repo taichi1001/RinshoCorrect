@@ -156,7 +156,7 @@ class _ArticleCard extends HookWidget {
             builder: (context) {
               context.read(bookmarkScreenController).incrementSubscribers(_article.id);
               return ProviderScope(
-                overrides: [article.overrideWithValue(_article)],
+                overrides: [id.overrideWithValue(_article.id)],
                 child: const ArticleScreen(),
               );
             },

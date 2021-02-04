@@ -15,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:blockquote/blockquote.dart';
 
-final article = ScopedProvider<Article>(null);
+final id = ScopedProvider<String>(null);
 
 class ArticleScreen extends HookWidget {
   const ArticleScreen({
@@ -24,11 +24,19 @@ class ArticleScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _article = useProvider(article);
+    final _id = useProvider(id);
     useEffect(() {
-      context.read(articleScreenController).init(_article.videoURL);
+      context.read(articleScreenController).init(_id);
       return;
     }, []);
+
+    final _article = useProvider(currentArticle).state;
+
+    if (_article == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
     final controller = SheetController();
     return Scaffold(
@@ -85,7 +93,7 @@ class _Glossary extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _article = useProvider(article);
+    final _article = useProvider(currentArticle).state;
     return ListView.builder(
       shrinkWrap: true,
       itemCount: _article.glossary.length,
@@ -159,7 +167,7 @@ class _Body extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _article = useProvider(article);
+    final _article = useProvider(currentArticle).state;
 
     return SingleChildScrollView(
       child: Column(
@@ -230,7 +238,7 @@ class _Title extends HookWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
       child: Text(
-        useProvider(article).title,
+        useProvider(currentArticle).state.title,
         style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -255,7 +263,7 @@ class _Abstract extends HookWidget {
           ),
         ),
         const Divider(thickness: 1, endIndent: 100),
-        Html(data: useProvider(article).abstract, style: {
+        Html(data: useProvider(currentArticle).state.abstract, style: {
           'ul': Style(
             fontSize: const FontSize(14),
             padding: EdgeInsets.zero,
@@ -282,7 +290,7 @@ class _ApprochTarget extends HookWidget {
           ),
         ),
         const Divider(thickness: 1, endIndent: 100),
-        Html(data: useProvider(article).approchTarget, style: {
+        Html(data: useProvider(currentArticle).state.approchTarget, style: {
           'li': Style(
             fontSize: const FontSize(14),
             padding: EdgeInsets.zero,
@@ -340,7 +348,7 @@ class _Background extends HookWidget {
           ),
           const Divider(thickness: 1, endIndent: 100),
           Html(
-            data: useProvider(article).body,
+            data: useProvider(currentArticle).state.body,
             customRender: {
               'blockquote': (RenderContext context, Widget child, attributes, _) {
                 return BlockQuote(
@@ -382,7 +390,7 @@ class _Document extends HookWidget {
         ),
         const Divider(thickness: 1, endIndent: 100),
         Html(
-          data: useProvider(article).references,
+          data: useProvider(currentArticle).state.references,
           style: {
             'p': Style(
               fontSize: const FontSize(14),
