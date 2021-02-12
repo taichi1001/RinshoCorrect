@@ -9,29 +9,28 @@ import 'package:rinsho_collect/repository/micro_cms_repository.dart';
 import 'package:rinsho_collect/util/filter_articles.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
 
+class ArticleMode {
+  ArticleMode({
+    this.jointMode,
+    this.symptomDisorder,
+  });
+  JointMode jointMode;
+  SymptomDisorder symptomDisorder;
+}
+
 final sortType = StateProvider((ref) => SortType.asc);
 
 final displayMode = StateProvider((ref) => DisplayMode.joint);
 
-final sortedJointArticles = StateProvider.family<List<Article>, JointMode>((ref, mode) {
+final sortedArticles = StateProvider.family<List<Article>, ArticleMode>((ref, mode) {
   var articles = ref.watch(globalArticles).state;
   articles = articles?.where((article) => article.tags.isNotEmpty)?.toList();
-  final selectArticles = FilterArticles.getJointModeArticleList(articles, mode);
-  final sort = ref.watch(sortType).state;
-
-  if (sort == SortType.asc) {
-    selectArticles?.sort((a, b) => a.publishedAt.compareTo(b.publishedAt));
-  } else {
-    selectArticles?.sort((a, b) => b.publishedAt.compareTo(a.publishedAt));
+  List<Article> selectArticles;
+  if (mode.jointMode != null) {
+    selectArticles = FilterArticles.getJointModeArticleList(articles, mode.jointMode);
+  } else if (mode.symptomDisorder != null) {
+    selectArticles = FilterArticles.getSymptomDisorderArticleList(articles, mode.symptomDisorder);
   }
-  return selectArticles;
-});
-
-final sortedSymptomDisorderArticles =
-    StateProvider.family<List<Article>, SymptomDisorder>((ref, mode) {
-  var articles = ref.watch(globalArticles).state;
-  articles = articles?.where((article) => article.symptomDisorder.isNotEmpty)?.toList();
-  final selectArticles = FilterArticles.getSymptomDisorderArticleList(articles, mode);
   final sort = ref.watch(sortType).state;
 
   if (sort == SortType.asc) {

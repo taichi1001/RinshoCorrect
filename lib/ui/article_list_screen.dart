@@ -88,8 +88,8 @@ class ArticleListScreen extends HookWidget {
         for (final value in JointMode.values)
           _ArticlesListView(
             key: PageStorageKey(value),
-            jointMode: value,
             refreshController: RefreshController(),
+            articleMode: ArticleMode(jointMode: value),
           ),
       ];
     } else if (mode == DisplayMode.symptomDisorder) {
@@ -97,8 +97,8 @@ class ArticleListScreen extends HookWidget {
         for (final value in SymptomDisorder.values)
           _ArticlesListView(
             key: PageStorageKey(value),
-            symptomDisorder: value,
             refreshController: RefreshController(),
+            articleMode: ArticleMode(symptomDisorder: value),
           ),
       ];
     } else {
@@ -109,14 +109,12 @@ class ArticleListScreen extends HookWidget {
 
 class _ArticlesListView extends HookWidget {
   const _ArticlesListView({
+    @required this.articleMode,
     @required this.refreshController,
-    this.jointMode,
-    this.symptomDisorder,
     Key key,
   }) : super(key: key);
 
-  final JointMode jointMode;
-  final SymptomDisorder symptomDisorder;
+  final ArticleMode articleMode;
   final RefreshController refreshController;
 
   Future _onRefresh(BuildContext context) async {
@@ -128,13 +126,7 @@ class _ArticlesListView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Article> _articles;
-    if (jointMode != null) {
-      _articles = useProvider(sortedJointArticles(jointMode)).state;
-    } else {
-      _articles = useProvider(sortedSymptomDisorderArticles(symptomDisorder)).state;
-    }
-
+    final _articles = useProvider(sortedArticles(articleMode)).state;
     if (_articles == null) {
       return const Center(
         child: CircularProgressIndicator(),
