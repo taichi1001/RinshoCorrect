@@ -3,11 +3,9 @@ import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/sort_type.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rinsho_collect/entity/article.dart';
-import 'package:rinsho_collect/entity/bookmark.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
 import 'package:rinsho_collect/model/bookmark_controller.dart';
 import 'package:rinsho_collect/repository/firebase_repository.dart';
-import 'package:rinsho_collect/repository/bookmark_repository.dart';
 import 'package:rinsho_collect/util/filter_articles.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
 
@@ -75,15 +73,6 @@ final currentTest = StateProvider.family<int, String>((ref, id) {
   return result ?? 0;
 });
 
-// final _bookmarkList = StateProvider<List<Bookmark>>((ref) => null);
-
-// final currentBookmark = StateProvider.family<bool, String>((ref, id) {
-//   final bookmarkList = ref.watch(_bookmarkList).state;
-//   final result =
-//       bookmarkList?.firstWhere((bookmark) => bookmark.id == id, orElse: () => null)?.isBookmark;
-//   return result ?? false;
-// });
-
 final bookmarkScreenController =
     Provider.autoDispose((ref) => BookmarkScreenController(read: ref.read));
 
@@ -112,34 +101,4 @@ class BookmarkScreenController {
   Future fetchSubscribers() async {
     read(_test).state = await read(firebaseRepository).getSubscribers();
   }
-
-  // Future fetchBookmarkList() async {
-  //   // read(_bookmarkList).state = await read(firebaseRepository).getBookmarkList();
-  //   read(_bookmarkList).state = await read(bookmarkRepository).getAll();
-  // }
-
-  // void changeIsBookmark(String id) {
-  //   final bookmarkList = read(_bookmarkList).state;
-  //   final target = bookmarkList.firstWhere((bookmark) => bookmark.id == id, orElse: () => null);
-  //   if (bookmarkList.isEmpty || target == null) {
-  //     _newBookmark(id, true, bookmarkList);
-  //     return;
-  //   }
-  //   final updateBookmark = target.isBookmark
-  //       ? Bookmark(id: id, isBookmark: false)
-  //       : Bookmark(id: id, isBookmark: true);
-  //   final targetIndex = bookmarkList.indexWhere((bookmark) => bookmark.id == id);
-  //   bookmarkList[targetIndex] = updateBookmark;
-  //   read(_bookmarkList).state = bookmarkList;
-  //   read(bookmarkRepository).update(updateBookmark);
-  //   read(firebaseRepository).incrementBookmark(updateBookmark);
-  // }
-
-  // void _newBookmark(String id, bool isBookmark, List<Bookmark> list) {
-  //   final updateBookmark = Bookmark(id: id, isBookmark: isBookmark);
-  //   list.add(updateBookmark);
-  //   read(_bookmarkList).state = list;
-  //   read(bookmarkRepository).create(updateBookmark);
-  //   read(firebaseRepository).incrementBookmark(updateBookmark);
-  // }
 }
