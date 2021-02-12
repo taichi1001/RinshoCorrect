@@ -18,6 +18,7 @@ class ArticlesController {
     final articles = await read(microCMSRepository).getArticleListContents();
     read(globalArticles).state = articles;
     cache = articles;
+    // read(globalArticles).state = await read(microCMSRepository).getArticleListContents();
   }
 
   void restoreFromeCache() {

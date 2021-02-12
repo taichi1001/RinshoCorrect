@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/entity/term.dart';
+import 'package:rinsho_collect/model/article_list_screen_controller.dart';
 import 'package:rinsho_collect/model/article_screen_controller.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/html_parser.dart';
 import 'package:flutter_html/style.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rinsho_collect/model/bookmark_controller.dart';
 import 'package:rinsho_collect/ui/parts/term_view.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -168,6 +170,7 @@ class _Body extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle).state;
+    final _isFavorite = useProvider(currentBookmark(_article.id)).state;
 
     return SingleChildScrollView(
       child: Column(
@@ -188,7 +191,18 @@ class _Body extends HookWidget {
                     const SizedBox(width: 16),
                   ],
                 ),
-                const Icon(Icons.bookmark_border_outlined),
+                if (_isFavorite)
+                  IconButton(
+                    icon: const Icon(Icons.bookmark, color: Colors.amber),
+                    color: Colors.amber,
+                    onPressed: () => context.read(bookmarkController).changeIsBookmark(_article.id),
+                  )
+                else
+                  IconButton(
+                    icon: const Icon(Icons.bookmark_border_outlined, color: Colors.grey),
+                    color: Colors.grey,
+                    onPressed: () => context.read(bookmarkController).changeIsBookmark(_article.id),
+                  ),
               ],
             ),
           ),

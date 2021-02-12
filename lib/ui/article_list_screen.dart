@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
+import 'package:rinsho_collect/model/bookmark_controller.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,7 +25,7 @@ class ArticleListScreen extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       context.read(articleListScreenController).fetchSubscribers();
-      context.read(articleListScreenController).fetchBookmarkList();
+      context.read(bookmarkController).fetchBookmarkList();
       return;
     }, []);
 
@@ -121,7 +122,7 @@ class _ArticlesListView extends HookWidget {
   Future _onRefresh(BuildContext context) async {
     await context.read(articlesController).fetch();
     await context.read(articleListScreenController).fetchSubscribers();
-    await context.read(articleListScreenController).fetchBookmarkList();
+    await context.read(bookmarkController).fetchBookmarkList();
     refreshController.refreshCompleted();
   }
 
@@ -218,14 +219,14 @@ class _ArticleCard extends HookWidget {
                         icon: const Icon(Icons.favorite, color: Colors.red),
                         color: Colors.red,
                         onPressed: () =>
-                            context.read(articleListScreenController).changeIsBookmark(_article.id),
+                            context.read(bookmarkController).changeIsBookmark(_article.id),
                       )
                     else
                       IconButton(
                         icon: const Icon(Icons.favorite, color: Colors.grey),
                         color: Colors.grey,
                         onPressed: () =>
-                            context.read(articleListScreenController).changeIsBookmark(_article.id),
+                            context.read(bookmarkController).changeIsBookmark(_article.id),
                       )
                   ],
                 )

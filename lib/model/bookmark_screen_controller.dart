@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/entity/bookmark.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
+import 'package:rinsho_collect/model/bookmark_controller.dart';
 import 'package:rinsho_collect/repository/firebase_repository.dart';
 import 'package:rinsho_collect/repository/bookmark_repository.dart';
 import 'package:rinsho_collect/util/filter_articles.dart';
@@ -18,10 +19,10 @@ final sortedBookmarkJointArticles =
     StateProvider.autoDispose.family<List<Article>, JointMode>((ref, mode) {
   var articles = ref.watch(globalArticles).state;
   articles = articles?.where((article) => article.tags.isNotEmpty)?.toList();
-  final bookmarkList = ref.watch(_bookmarkList).state;
+  final _bookmarkList = ref.watch(bookmarkList).state;
   final List<Article> bookmarkArticles = [];
-  if (bookmarkList != null) {
-    for (final bookmark in bookmarkList) {
+  if (_bookmarkList != null) {
+    for (final bookmark in _bookmarkList) {
       for (final article in articles) {
         if (bookmark.id == article.id && bookmark.isBookmark == true) {
           bookmarkArticles.add(article);
@@ -44,10 +45,10 @@ final sortedBookmarkSymptomDisorderArticles =
     StateProvider.autoDispose.family<List<Article>, SymptomDisorder>((ref, mode) {
   var articles = ref.watch(globalArticles).state;
   articles = articles?.where((article) => article.symptomDisorder.isNotEmpty)?.toList();
-  final bookmarkList = ref.watch(_bookmarkList).state;
+  final _bookmarkList = ref.watch(bookmarkList).state;
   final List<Article> bookmarkArticles = [];
-  if (bookmarkList != null) {
-    for (final bookmark in bookmarkList) {
+  if (_bookmarkList != null) {
+    for (final bookmark in _bookmarkList) {
       for (final article in articles) {
         if (bookmark.id == article.id && bookmark.isBookmark == true) {
           bookmarkArticles.add(article);
@@ -74,14 +75,14 @@ final currentTest = StateProvider.family<int, String>((ref, id) {
   return result ?? 0;
 });
 
-final _bookmarkList = StateProvider<List<Bookmark>>((ref) => null);
+// final _bookmarkList = StateProvider<List<Bookmark>>((ref) => null);
 
-final currentBookmark = StateProvider.family<bool, String>((ref, id) {
-  final bookmarkList = ref.watch(_bookmarkList).state;
-  final result =
-      bookmarkList?.firstWhere((bookmark) => bookmark.id == id, orElse: () => null)?.isBookmark;
-  return result ?? false;
-});
+// final currentBookmark = StateProvider.family<bool, String>((ref, id) {
+//   final bookmarkList = ref.watch(_bookmarkList).state;
+//   final result =
+//       bookmarkList?.firstWhere((bookmark) => bookmark.id == id, orElse: () => null)?.isBookmark;
+//   return result ?? false;
+// });
 
 final bookmarkScreenController =
     Provider.autoDispose((ref) => BookmarkScreenController(read: ref.read));
@@ -112,33 +113,33 @@ class BookmarkScreenController {
     read(_test).state = await read(firebaseRepository).getSubscribers();
   }
 
-  Future fetchBookmarkList() async {
-    // read(_bookmarkList).state = await read(firebaseRepository).getBookmarkList();
-    read(_bookmarkList).state = await read(bookmarkRepository).getAll();
-  }
+  // Future fetchBookmarkList() async {
+  //   // read(_bookmarkList).state = await read(firebaseRepository).getBookmarkList();
+  //   read(_bookmarkList).state = await read(bookmarkRepository).getAll();
+  // }
 
-  void changeIsBookmark(String id) {
-    final bookmarkList = read(_bookmarkList).state;
-    final target = bookmarkList.firstWhere((bookmark) => bookmark.id == id, orElse: () => null);
-    if (bookmarkList.isEmpty || target == null) {
-      _newBookmark(id, true, bookmarkList);
-      return;
-    }
-    final updateBookmark = target.isBookmark
-        ? Bookmark(id: id, isBookmark: false)
-        : Bookmark(id: id, isBookmark: true);
-    final targetIndex = bookmarkList.indexWhere((bookmark) => bookmark.id == id);
-    bookmarkList[targetIndex] = updateBookmark;
-    read(_bookmarkList).state = bookmarkList;
-    read(bookmarkRepository).update(updateBookmark);
-    read(firebaseRepository).incrementBookmark(updateBookmark);
-  }
+  // void changeIsBookmark(String id) {
+  //   final bookmarkList = read(_bookmarkList).state;
+  //   final target = bookmarkList.firstWhere((bookmark) => bookmark.id == id, orElse: () => null);
+  //   if (bookmarkList.isEmpty || target == null) {
+  //     _newBookmark(id, true, bookmarkList);
+  //     return;
+  //   }
+  //   final updateBookmark = target.isBookmark
+  //       ? Bookmark(id: id, isBookmark: false)
+  //       : Bookmark(id: id, isBookmark: true);
+  //   final targetIndex = bookmarkList.indexWhere((bookmark) => bookmark.id == id);
+  //   bookmarkList[targetIndex] = updateBookmark;
+  //   read(_bookmarkList).state = bookmarkList;
+  //   read(bookmarkRepository).update(updateBookmark);
+  //   read(firebaseRepository).incrementBookmark(updateBookmark);
+  // }
 
-  void _newBookmark(String id, bool isBookmark, List<Bookmark> list) {
-    final updateBookmark = Bookmark(id: id, isBookmark: isBookmark);
-    list.add(updateBookmark);
-    read(_bookmarkList).state = list;
-    read(bookmarkRepository).create(updateBookmark);
-    read(firebaseRepository).incrementBookmark(updateBookmark);
-  }
+  // void _newBookmark(String id, bool isBookmark, List<Bookmark> list) {
+  //   final updateBookmark = Bookmark(id: id, isBookmark: isBookmark);
+  //   list.add(updateBookmark);
+  //   read(_bookmarkList).state = list;
+  //   read(bookmarkRepository).create(updateBookmark);
+  //   read(firebaseRepository).incrementBookmark(updateBookmark);
+  // }
 }
