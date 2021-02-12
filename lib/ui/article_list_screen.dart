@@ -29,43 +29,76 @@ class ArticleListScreen extends HookWidget {
     }, []);
 
     final _displayMode = useProvider(displayMode).state;
-    return DefaultTabController(
-      length: _getTabs(_displayMode).length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('記事'),
-          leading: IconButton(
-            icon: const Icon(Icons.ac_unit),
-            onPressed: () {
-              context.read(articleListScreenController).changeSortType();
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.deck),
+    final _textEditingController = useProvider(textEditingController).state;
+    return GestureDetector(
+      onTap: () {
+        final currentScope = FocusScope.of(context);
+        if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+          FocusManager.instance.primaryFocus.unfocus();
+        }
+      },
+      child: DefaultTabController(
+        length: _getTabs(_displayMode).length,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Container(
+              height: 40,
+              child: Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  TextField(
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: _textEditingController.text.isEmpty
+                          ? null
+                          : InkWell(
+                              onTap: context.read(articleListScreenController).textClear,
+                              child: const Icon(Icons.clear),
+                            ),
+                      contentPadding: EdgeInsets.all(10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.sort),
               onPressed: () {
-                context.read(articleListScreenController).changeDisplayMode();
+                context.read(articleListScreenController).changeSortType();
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.rotate_90_degrees_ccw_sharp),
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.model_training),
+                onPressed: () {
+                  context.read(articleListScreenController).changeDisplayMode();
+                },
+              ),
+              // IconButton(
+              //   icon: const Icon(Icons.rotate_90_degrees_ccw_sharp),
+              //   onPressed: () {
+              //     FirebaseAuth.instance.signOut();
+              //   },
+              // ),
+            ],
+            bottom: TabBar(
+              isScrollable: true,
+              indicator: const BubbleTabIndicator(
+                indicatorHeight: 25,
+                indicatorColor: Colors.blueAccent,
+                tabBarIndicatorSize: TabBarIndicatorSize.tab,
+              ),
+              tabs: _getTabs(_displayMode),
             ),
-          ],
-          bottom: TabBar(
-            isScrollable: true,
-            indicator: const BubbleTabIndicator(
-              indicatorHeight: 25,
-              indicatorColor: Colors.blueAccent,
-              tabBarIndicatorSize: TabBarIndicatorSize.tab,
-            ),
-            tabs: _getTabs(_displayMode),
           ),
-        ),
-        body: TabBarView(
-          children: _getTabBatView(_displayMode),
+          body: TabBarView(
+            children: _getTabBatView(_displayMode),
+          ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/sort_type.dart';
@@ -60,6 +61,9 @@ final currentBookmark = StateProvider.family<bool, String>((ref, id) {
   return result ?? false;
 });
 
+final textEditingController =
+    StateProvider.autoDispose<TextEditingController>((ref) => TextEditingController());
+
 final articleListScreenController =
     Provider.autoDispose((ref) => ArticleListScreenController(read: ref.read));
 
@@ -69,6 +73,10 @@ class ArticleListScreenController {
   });
 
   final Reader read;
+
+  void textClear() {
+    read(textEditingController).state.clear();
+  }
 
   void changeSortType() {
     final sort = read(sortType).state;

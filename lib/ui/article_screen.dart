@@ -33,9 +33,7 @@ class ArticleScreen extends HookWidget {
     final _article = useProvider(currentArticle).state;
 
     if (_article == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Scaffold();
     }
 
     final controller = SheetController();
