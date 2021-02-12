@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rinsho_collect/entity/article_mode.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
 import 'package:rinsho_collect/model/bookmark_controller.dart';
@@ -24,12 +25,12 @@ class ArticleListScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(articleListScreenController).fetchSubscribers();
+      context.read(articlesController).fetchSubscribers();
       context.read(bookmarkController).fetchBookmarkList();
       return;
     }, []);
 
-    final _displayMode = useProvider(displayMode).state;
+    final _displayMode = useProvider(articleListDisplayMode).state;
     return DefaultTabController(
       length: _getTabs(_displayMode).length,
       child: Scaffold(
@@ -119,7 +120,7 @@ class _ArticlesListView extends HookWidget {
 
   Future _onRefresh(BuildContext context) async {
     await context.read(articlesController).fetch();
-    await context.read(articleListScreenController).fetchSubscribers();
+    await context.read(articlesController).fetchSubscribers();
     await context.read(bookmarkController).fetchBookmarkList();
     refreshController.refreshCompleted();
   }
@@ -134,7 +135,7 @@ class _ArticlesListView extends HookWidget {
     }
 
     return AnimationLimiter(
-      key: ObjectKey(useProvider(sortType).state),
+      key: ObjectKey(useProvider(articleListSortType).state),
       child: SmartRefresher(
         header: const ClassicHeader(),
         controller: refreshController,

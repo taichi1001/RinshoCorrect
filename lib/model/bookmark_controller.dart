@@ -22,8 +22,8 @@ class BookmarkController {
   final Reader read;
 
   Future fetchBookmarkList() async {
-    // read(bookmarkList).state = await read(firebaseRepository).getBookmarkList();
-    read(bookmarkList).state = await read(bookmarkRepository).getAll();
+    read(bookmarkList).state = await read(firebaseRepository).getBookmarkList();
+    // read(bookmarkList).state = await read(bookmarkRepository).getAll();
   }
 
   void changeIsBookmark(String id) {
@@ -39,8 +39,8 @@ class BookmarkController {
     final targetIndex = _bookmarkList.indexWhere((bookmark) => bookmark.id == id);
     _bookmarkList[targetIndex] = updateBookmark;
     read(bookmarkList).state = _bookmarkList;
-    read(bookmarkRepository).update(updateBookmark);
-    // read(firebaseRepository).changeIsBookmark(updateBookmark);
+    // read(bookmarkRepository).update(updateBookmark);
+    read(firebaseRepository).changeIsBookmark(updateBookmark);
     read(firebaseRepository).incrementBookmark(updateBookmark);
   }
 
@@ -48,8 +48,8 @@ class BookmarkController {
     final updateBookmark = Bookmark(id: id, isBookmark: isBookmark);
     list.add(updateBookmark);
     read(bookmarkList).state = list;
-    read(bookmarkRepository).create(updateBookmark);
-    // read(firebaseRepository).changeIsBookmark(updateBookmark);
+    // read(bookmarkRepository).create(updateBookmark);
+    read(firebaseRepository).changeIsBookmark(updateBookmark);
     read(firebaseRepository).incrementBookmark(updateBookmark);
   }
 }
