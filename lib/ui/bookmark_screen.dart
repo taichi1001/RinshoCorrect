@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rinsho_collect/entity/article_mode.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
+import 'package:rinsho_collect/model/article_list_screen_controller.dart';
+import 'package:rinsho_collect/model/articles_controller.dart';
+import 'package:rinsho_collect/model/bookmark_controller.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -19,12 +23,12 @@ class BookmarkScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(bookmarkScreenController).fetchSubscribers();
-      context.read(bookmarkScreenController).fetchBookmarkList();
+      context.read(articlesController).fetchSubscribers();
+      context.read(bookmarkController).fetchBookmarkList();
       return;
     }, []);
 
-    final _displayMode = useProvider(displayMode).state;
+    final _displayMode = useProvider(bookmarkListDisplayMode).state;
     return DefaultTabController(
       length: _getTabs(_displayMode).length,
       child: Scaffold(
@@ -33,14 +37,14 @@ class BookmarkScreen extends HookWidget {
           leading: IconButton(
             icon: const Icon(Icons.ac_unit),
             onPressed: () {
-              context.read(bookmarkScreenController).changeSortType();
+              context.read(articleListScreenController).changeSortType();
             },
           ),
           actions: [
             IconButton(
               icon: const Icon(Icons.deck),
               onPressed: () {
-                context.read(bookmarkScreenController).changeDisplayMode();
+                context.read(articleListScreenController).changeDisplayMode();
               },
             ),
           ],
@@ -77,7 +81,7 @@ class BookmarkScreen extends HookWidget {
         for (final value in JointMode.values)
           _ArticlesListView(
             key: PageStorageKey(value),
-            jointMode: value,
+            articleMode: ArticleMode(jointMode: value),
           ),
       ];
     } else if (mode == DisplayMode.symptomDisorder) {
@@ -85,7 +89,7 @@ class BookmarkScreen extends HookWidget {
         for (final value in SymptomDisorder.values)
           _ArticlesListView(
             key: PageStorageKey(value),
-            symptomDisorder: value,
+            articleMode: ArticleMode(symptomDisorder: value),
           ),
       ];
     } else {
@@ -96,22 +100,15 @@ class BookmarkScreen extends HookWidget {
 
 class _ArticlesListView extends HookWidget {
   const _ArticlesListView({
-    this.jointMode,
-    this.symptomDisorder,
+    this.articleMode,
     Key key,
   }) : super(key: key);
 
-  final JointMode jointMode;
-  final SymptomDisorder symptomDisorder;
+  final ArticleMode articleMode;
 
   @override
   Widget build(BuildContext context) {
-    List<Article> _articles;
-    if (jointMode != null) {
-      _articles = useProvider(sortedBookmarkJointArticles(jointMode)).state;
-    } else {
-      _articles = useProvider(sortedBookmarkSymptomDisorderArticles(symptomDisorder)).state;
-    }
+    final _articles = useProvider(sortedBookmarkArticles(articleMode)).state;
 
     if (_articles == null) {
       return const Center(
@@ -120,7 +117,7 @@ class _ArticlesListView extends HookWidget {
     }
 
     return AnimationLimiter(
-      key: ObjectKey(useProvider(sortType).state),
+      key: ObjectKey(useProvider(articleListSortType).state),
       child: ListView.builder(
         itemCount: _articles.length,
         itemBuilder: (context, index) => ProviderScope(
@@ -147,14 +144,14 @@ class _ArticleCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
-    final _count = useProvider(currentTest(_article.id)).state;
+    final _count = useProvider(currentSubscriber(_article.id)).state;
     final _isBookmark = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              context.read(bookmarkScreenController).incrementSubscribers(_article.id);
+              context.read(articleListScreenController).incrementSubscribers(_article.id);
               return ProviderScope(
                 overrides: [id.overrideWithValue(_article.id)],
                 child: const ArticleScreen(),
@@ -192,14 +189,14 @@ class _ArticleCard extends HookWidget {
                         icon: const Icon(Icons.bookmark, color: Colors.red),
                         color: Colors.red,
                         onPressed: () =>
-                            context.read(bookmarkScreenController).changeIsBookmark(_article.id),
+                            context.read(bookmarkController).changeIsBookmark(_article.id),
                       )
                     else
                       IconButton(
                         icon: const Icon(Icons.bookmark, color: Colors.grey),
                         color: Colors.grey,
                         onPressed: () =>
-                            context.read(bookmarkScreenController).changeIsBookmark(_article.id),
+                            context.read(bookmarkController).changeIsBookmark(_article.id),
                       )
                   ],
                 )

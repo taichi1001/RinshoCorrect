@@ -11,6 +11,7 @@ final microCMSRepository =
 
 abstract class MicroCMSRepository {
   Future<List<Article>> getArticleListContents();
+  Future<List<Article>> searchArticleListContents(String word);
   Future<Article> getArticleContents(String id);
   Future<List<Term>> getGlossary();
 }
@@ -23,6 +24,14 @@ class MicroCMSRepositoryImpl implements MicroCMSRepository {
   Future<List<Article>> getArticleListContents() async {
     final MicroCMSClient prefs = read(microCMSClient);
     final Response result = await prefs.getArticlesListContents() ?? [];
+    final List contents = jsonDecode(result.body)['contents'];
+    return contents.map((json) => Article.fromJson(json)).toList();
+  }
+
+  @override
+  Future<List<Article>> searchArticleListContents(String word) async {
+    final MicroCMSClient prefs = read(microCMSClient);
+    final Response result = await prefs.searchArticlesListContents(word) ?? [];
     final List contents = jsonDecode(result.body)['contents'];
     return contents.map((json) => Article.fromJson(json)).toList();
   }

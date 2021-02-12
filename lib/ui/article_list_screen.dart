@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rinsho_collect/entity/article_mode.dart';
 import 'package:rinsho_collect/enum/display_mode.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
+import 'package:rinsho_collect/model/bookmark_controller.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -23,12 +25,12 @@ class ArticleListScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(articleListScreenController).fetchSubscribers();
-      context.read(articleListScreenController).fetchBookmarkList();
+      context.read(articlesController).fetchSubscribers();
+      context.read(bookmarkController).fetchBookmarkList();
       return;
     }, []);
 
-    final _displayMode = useProvider(displayMode).state;
+    final _displayMode = useProvider(articleListDisplayMode).state;
     final _textEditingController = useProvider(textEditingController).state;
     return GestureDetector(
       onTap: () {
@@ -120,8 +122,8 @@ class ArticleListScreen extends HookWidget {
         for (final value in JointMode.values)
           _ArticlesListView(
             key: PageStorageKey(value),
-            jointMode: value,
             refreshController: RefreshController(),
+            articleMode: ArticleMode(jointMode: value),
           ),
       ];
     } else if (mode == DisplayMode.symptomDisorder) {
@@ -129,8 +131,8 @@ class ArticleListScreen extends HookWidget {
         for (final value in SymptomDisorder.values)
           _ArticlesListView(
             key: PageStorageKey(value),
-            symptomDisorder: value,
             refreshController: RefreshController(),
+            articleMode: ArticleMode(symptomDisorder: value),
           ),
       ];
     } else {
@@ -141,32 +143,24 @@ class ArticleListScreen extends HookWidget {
 
 class _ArticlesListView extends HookWidget {
   const _ArticlesListView({
+    @required this.articleMode,
     @required this.refreshController,
-    this.jointMode,
-    this.symptomDisorder,
     Key key,
   }) : super(key: key);
 
-  final JointMode jointMode;
-  final SymptomDisorder symptomDisorder;
+  final ArticleMode articleMode;
   final RefreshController refreshController;
 
   Future _onRefresh(BuildContext context) async {
     await context.read(articlesController).fetch();
-    await context.read(articleListScreenController).fetchSubscribers();
-    await context.read(articleListScreenController).fetchBookmarkList();
+    await context.read(articlesController).fetchSubscribers();
+    await context.read(bookmarkController).fetchBookmarkList();
     refreshController.refreshCompleted();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Article> _articles;
-    if (jointMode != null) {
-      _articles = useProvider(sortedJointArticles(jointMode)).state;
-    } else {
-      _articles = useProvider(sortedSymptomDisorderArticles(symptomDisorder)).state;
-    }
-
+    final _articles = useProvider(sortedArticles(articleMode)).state;
     if (_articles == null) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -174,7 +168,7 @@ class _ArticlesListView extends HookWidget {
     }
 
     return AnimationLimiter(
-      key: ObjectKey(useProvider(sortType).state),
+      key: ObjectKey(useProvider(articleListSortType).state),
       child: SmartRefresher(
         header: const ClassicHeader(),
         controller: refreshController,
@@ -206,7 +200,7 @@ class _ArticleCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
-    final _count = useProvider(currentTest(_article.id)).state;
+    final _count = useProvider(currentSubscriber(_article.id)).state;
     final _isFavorite = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
       onTap: () async {
@@ -251,14 +245,14 @@ class _ArticleCard extends HookWidget {
                         icon: const Icon(Icons.favorite, color: Colors.red),
                         color: Colors.red,
                         onPressed: () =>
-                            context.read(articleListScreenController).changeIsBookmark(_article.id),
+                            context.read(bookmarkController).changeIsBookmark(_article.id),
                       )
                     else
                       IconButton(
                         icon: const Icon(Icons.favorite, color: Colors.grey),
                         color: Colors.grey,
                         onPressed: () =>
-                            context.read(articleListScreenController).changeIsBookmark(_article.id),
+                            context.read(bookmarkController).changeIsBookmark(_article.id),
                       )
                   ],
                 )
