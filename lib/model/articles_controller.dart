@@ -12,8 +12,15 @@ class ArticlesController {
   });
 
   final Reader read;
+  List<Article> cache;
 
   Future fetch() async {
-    read(globalArticles).state = await read(microCMSRepository).getArticleListContents();
+    final articles = await read(microCMSRepository).getArticleListContents();
+    read(globalArticles).state = articles;
+    cache = articles;
+  }
+
+  void restoreFromeCache() {
+    read(globalArticles).state = cache;
   }
 }

@@ -7,6 +7,7 @@ import 'package:rinsho_collect/entity/bookmark.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
 import 'package:rinsho_collect/repository/firebase_repository.dart';
 import 'package:rinsho_collect/repository/bookmark_repository.dart';
+import 'package:rinsho_collect/repository/micro_cms_repository.dart';
 import 'package:rinsho_collect/util/filter_articles.dart';
 import 'package:rinsho_collect/model/articles_controller.dart';
 
@@ -117,5 +118,15 @@ class ArticleListScreenController {
     read(_bookmarkList).state = list;
     read(bookmarkRepository).create(updateBookmark);
     read(firebaseRepository).incrementBookmark(updateBookmark);
+  }
+
+  Future searchArticle(String word) async {
+    if (word.isEmpty || word == '') {
+      read(articlesController).restoreFromeCache();
+      return;
+    }
+    read(globalArticles).state = null;
+    final articles = await read(microCMSRepository).searchArticleListContents(word);
+    read(globalArticles).state = articles;
   }
 }

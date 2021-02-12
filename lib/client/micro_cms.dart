@@ -16,6 +16,12 @@ class MicroCMSClient {
         headers: {'X-API-KEY': '3b36eb63-bfa1-493e-91be-64543308ba3c'},
       );
 
+  /// 検索ワードを含む要素取得
+  Future searchArticlesListContents(String word) => http.get(
+        'https://rinshotest.microcms.io/api/v1/article?limit=200&fields=id,publishedAt,eyecatch,tag,symptom_disorder,title&q=$word',
+        headers: {'X-API-KEY': '3b36eb63-bfa1-493e-91be-64543308ba3c'},
+      );
+
   /// IDで指定された記事の要素をすべて取得
   Future getArticleContents(String id) => http.get(
         'https://rinshotest.microcms.io/api/v1/article/$id',
