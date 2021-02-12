@@ -63,10 +63,10 @@ final sortedBookmarkArticles =
   return selectArticles;
 });
 
-final _test = StateProvider<List<Subscribes>>((ref) => null);
+final _subscribes = StateProvider<List<Subscribes>>((ref) => null);
 
-final currentTest = StateProvider.family<int, String>((ref, id) {
-  final test = ref.watch(_test).state;
+final currentSubscriber = StateProvider.family<int, String>((ref, id) {
+  final test = ref.watch(_subscribes).state;
   final result = test?.firstWhere((element) => element.id == id, orElse: () => null)?.count;
   return result ?? 0;
 });
@@ -96,16 +96,6 @@ class ArticlesController {
   }
 
   Future fetchSubscribers() async {
-    read(_test).state = await read(firebaseRepository).getSubscribers();
-  }
-
-  Future searchArticle(String word) async {
-    if (word.isEmpty || word == '') {
-      read(articlesController).restoreFromeCache();
-      return;
-    }
-    read(allArticles).state = null;
-    final articles = await read(microCMSRepository).searchArticleListContents(word);
-    read(allArticles).state = articles;
+    read(_subscribes).state = await read(firebaseRepository).getSubscribers();
   }
 }

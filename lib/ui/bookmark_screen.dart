@@ -144,7 +144,7 @@ class _ArticleCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
-    final _count = useProvider(currentTest(_article.id)).state;
+    final _count = useProvider(currentSubscriber(_article.id)).state;
     final _isBookmark = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
       onTap: () async {
