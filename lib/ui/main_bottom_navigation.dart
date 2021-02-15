@@ -21,6 +21,7 @@ class MainBottomNavigation extends HookWidget {
         child: _selectedView,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFFf4f9f7),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.ac_unit),

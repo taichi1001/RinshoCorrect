@@ -33,7 +33,8 @@ class MyApp extends HookWidget {
         primaryColor: materialWhite,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        canvasColor: Color(0xFFf4f9f7),
+        // canvasColor: const Color(0xFFf4f9f7),
+        canvasColor: const Color(0xFFe7f2ee),
       ),
       home: const AuthCheck(),
     );

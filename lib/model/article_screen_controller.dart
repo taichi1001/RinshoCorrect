@@ -13,8 +13,7 @@ final currentArticle = StateProvider.autoDispose<Article>((ref) => null);
 
 final chewieController = StateProvider<ChewieController>((ref) => null);
 
-final articleScreenController =
-    Provider.autoDispose((ref) => ArticleScreenController(read: ref.read));
+final articleScreenController = Provider((ref) => ArticleScreenController(read: ref.read));
 
 class ArticleScreenController {
   ArticleScreenController({

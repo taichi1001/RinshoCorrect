@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/entity/term.dart';
-import 'package:rinsho_collect/model/article_list_screen_controller.dart';
 import 'package:rinsho_collect/model/article_screen_controller.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/html_parser.dart';
@@ -43,6 +41,7 @@ class ArticleScreen extends HookWidget {
       body: SafeArea(
         bottom: false,
         child: SlidingSheet(
+          color: Theme.of(context).canvasColor,
           controller: controller,
           elevation: 8,
           cornerRadius: 16,

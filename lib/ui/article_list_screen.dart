@@ -45,27 +45,23 @@ class ArticleListScreen extends HookWidget {
           appBar: AppBar(
             title: Container(
               height: 40,
-              child: Stack(
-                alignment: Alignment.centerRight,
-                children: [
-                  TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: _textEditingController.text.isEmpty
-                          ? null
-                          : InkWell(
-                              onTap: context.read(articleListScreenController).textClear,
-                              child: const Icon(Icons.clear),
-                            ),
-                      contentPadding: EdgeInsets.all(10),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(),
-                    ),
+              child: TextField(
+                onSubmitted: context.read(articleListScreenController).searchArticle,
+                controller: _textEditingController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  suffixIcon: _textEditingController.text.isEmpty
+                      ? null
+                      : InkWell(
+                          onTap: context.read(articleListScreenController).textClear,
+                          child: const Icon(Icons.clear),
+                        ),
+                  contentPadding: EdgeInsets.all(10),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                ],
+                  focusedBorder: OutlineInputBorder(),
+                ),
               ),
             ),
             leading: IconButton(

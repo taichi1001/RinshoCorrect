@@ -12,7 +12,7 @@ class MicroCMSClient {
 
   ///　記事リストに必要な要素だけを取得
   Future getArticlesListContents() => http.get(
-        'https://rinshotest.microcms.io/api/v1/article?limit=200&fields=id,publishedAt,eyecatch,tag,symptom_disorder,title',
+        'https://rinshotest.microcms.io/api/v1/article?limit=200&fields=id,publishedAt,eyecatch,tag,symptom_disorder,title,author',
         headers: {'X-API-KEY': '3b36eb63-bfa1-493e-91be-64543308ba3c'},
       );
 

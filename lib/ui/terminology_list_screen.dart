@@ -1,78 +1,457 @@
+// import 'package:flutter/material.dart';
+// import 'package:flutter_hooks/flutter_hooks.dart';
+// import 'package:hooks_riverpod/hooks_riverpod.dart';
+// import 'package:rinsho_collect/entity/term.dart';
+// import 'package:rinsho_collect/model/terminology_list_screen_controller.dart';
+// import 'package:rinsho_collect/ui/terminology_screen.dart';
+//
+// class TerminologyListScreen extends HookWidget {
+//   const TerminologyListScreen({Key key}) : super(key: key);
+//   @override
+//   Widget build(BuildContext context) {
+//     useEffect(() {
+//       context.read(terminologyScreenController).fetch();
+//       return;
+//     }, []);
+//
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('用語'),
+//       ),
+//       body: const _TerminologyList(),
+//     );
+//   }
+// }
+//
+// class _TerminologyList extends HookWidget {
+//   const _TerminologyList({Key key}) : super(key: key);
+//   @override
+//   Widget build(BuildContext context) {
+//     final _terminologies = useProvider(sortedTerminologies).state;
+//
+//     if (_terminologies == null) {
+//       return const Center(
+//         child: CircularProgressIndicator(),
+//       );
+//     }
+//
+//     return ListView.builder(
+//       itemCount: _terminologies.length,
+//       itemBuilder: (context, index) => ProviderScope(
+//         overrides: [
+//           currentTerminology.overrideWithValue(_terminologies[index]),
+//         ],
+//         child: const _TerminologyCard(),
+//       ),
+//     );
+//   }
+// }
+//
+// final currentTerminology = ScopedProvider<Term>(null);
+//
+// class _TerminologyCard extends HookWidget {
+//   const _TerminologyCard({
+//     Key key,
+//   }) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final _term = useProvider(currentTerminology);
+//     return GestureDetector(
+//       onTap: () {
+//         Navigator.of(context).push(
+//           MaterialPageRoute(
+//             builder: (context) {
+//               return TerminologyScreen(
+//                 term: _term,
+//               );
+//             },
+//           ),
+//         );
+//       },
+//       child: Card(
+//         child: ListTile(
+//           title: Text(_term.term),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rinsho_collect/entity/article_mode.dart';
+import 'package:rinsho_collect/enum/display_mode.dart';
+import 'package:rinsho_collect/model/articles_controller.dart';
+import 'package:rinsho_collect/model/bookmark_controller.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rinsho_collect/entity/term.dart';
-import 'package:rinsho_collect/model/terminology_list_screen_controller.dart';
-import 'package:rinsho_collect/ui/terminology_screen.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rinsho_collect/entity/article.dart';
+import 'package:rinsho_collect/enum/joint.dart';
+import 'package:rinsho_collect/enum/symptom_disorder.dart';
+import 'package:rinsho_collect/model/article_list_screen_controller.dart';
+import 'package:rinsho_collect/model/article_screen_controller.dart';
+import 'package:rinsho_collect/ui/article_screen.dart';
 
 class TerminologyListScreen extends HookWidget {
   const TerminologyListScreen({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(terminologyScreenController).fetch();
+      context.read(articlesController).fetchSubscribers();
+      context.read(bookmarkController).fetchBookmarkList();
       return;
     }, []);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('用語'),
+    final _displayMode = useProvider(articleListDisplayMode).state;
+    final _textEditingController = useProvider(textEditingController).state;
+    return GestureDetector(
+      onTap: () {
+        final currentScope = FocusScope.of(context);
+        if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+          FocusManager.instance.primaryFocus.unfocus();
+        }
+      },
+      child: DefaultTabController(
+        length: _getTabs(_displayMode).length,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: const Color(0xFFf4f9f7),
+            title: Container(
+              height: 40,
+              child: TextField(
+                onSubmitted: context.read(articleListScreenController).searchArticle,
+                controller: _textEditingController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  suffixIcon: _textEditingController.text.isEmpty
+                      ? null
+                      : InkWell(
+                          onTap: context.read(articleListScreenController).textClear,
+                          child: const Icon(Icons.clear),
+                        ),
+                  contentPadding: EdgeInsets.all(10),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.sort),
+              onPressed: () {
+                context.read(articleListScreenController).changeSortType();
+              },
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.model_training),
+                onPressed: () {
+                  context.read(articleListScreenController).changeDisplayMode();
+                },
+              ),
+              // IconButton(
+              //   icon: const Icon(Icons.rotate_90_degrees_ccw_sharp),
+              //   onPressed: () {
+              //     FirebaseAuth.instance.signOut();
+              //   },
+              // ),
+            ],
+            bottom: TabBar(
+              isScrollable: true,
+              indicator: const BubbleTabIndicator(
+                indicatorHeight: 25,
+                indicatorColor: Colors.blueAccent,
+                tabBarIndicatorSize: TabBarIndicatorSize.tab,
+              ),
+              tabs: _getTabs(_displayMode),
+            ),
+          ),
+          body: TabBarView(
+            children: _getTabBatView(_displayMode),
+          ),
+        ),
       ),
-      body: const _TerminologyList(),
     );
+  }
+
+  List<Tab> _getTabs(DisplayMode mode) {
+    if (mode == DisplayMode.joint) {
+      return [for (final value in JointMode.values) Tab(child: Text(value.typeName))];
+    } else if (mode == DisplayMode.symptomDisorder) {
+      return [for (final value in SymptomDisorder.values) Tab(child: Text(value.typeName))];
+    } else {
+      return [];
+    }
+  }
+
+  List<Widget> _getTabBatView(DisplayMode mode) {
+    if (mode == DisplayMode.joint) {
+      return [
+        for (final value in JointMode.values)
+          _ArticlesListView(
+            key: PageStorageKey(value),
+            refreshController: RefreshController(),
+            articleMode: ArticleMode(jointMode: value),
+          ),
+      ];
+    } else if (mode == DisplayMode.symptomDisorder) {
+      return [
+        for (final value in SymptomDisorder.values)
+          _ArticlesListView(
+            key: PageStorageKey(value),
+            refreshController: RefreshController(),
+            articleMode: ArticleMode(symptomDisorder: value),
+          ),
+      ];
+    } else {
+      return [];
+    }
   }
 }
 
-class _TerminologyList extends HookWidget {
-  const _TerminologyList({Key key}) : super(key: key);
+class _ArticlesListView extends HookWidget {
+  const _ArticlesListView({
+    @required this.articleMode,
+    @required this.refreshController,
+    Key key,
+  }) : super(key: key);
+
+  final ArticleMode articleMode;
+  final RefreshController refreshController;
+
+  Future _onRefresh(BuildContext context) async {
+    await context.read(articlesController).fetch();
+    await context.read(articlesController).fetchSubscribers();
+    await context.read(bookmarkController).fetchBookmarkList();
+    refreshController.refreshCompleted();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _terminologies = useProvider(sortedTerminologies).state;
-
-    if (_terminologies == null) {
+    final _articles = useProvider(sortedArticles(articleMode)).state;
+    if (_articles == null) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
 
-    return ListView.builder(
-      itemCount: _terminologies.length,
-      itemBuilder: (context, index) => ProviderScope(
-        overrides: [
-          currentTerminology.overrideWithValue(_terminologies[index]),
-        ],
-        child: const _TerminologyCard(),
+    return AnimationLimiter(
+      key: ObjectKey(useProvider(articleListSortType).state),
+      child: SmartRefresher(
+        header: const ClassicHeader(),
+        controller: refreshController,
+        onRefresh: () => _onRefresh(context),
+        child: ListView.builder(
+          itemCount: _articles.length,
+          itemBuilder: (context, index) => ProviderScope(
+            overrides: [currentArticle.overrideWithValue(_articles[index])],
+            child: const AnimationConfiguration.synchronized(
+              duration: Duration(milliseconds: 600),
+              child: FadeInAnimation(
+                child: _ArticleCard(),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-final currentTerminology = ScopedProvider<Term>(null);
+final currentArticle = ScopedProvider<Article>(null);
 
-class _TerminologyCard extends HookWidget {
-  const _TerminologyCard({
+class _ArticleCard extends HookWidget {
+  const _ArticleCard({
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _term = useProvider(currentTerminology);
+    final _article = useProvider(currentArticle);
+    final _count = useProvider(currentSubscriber(_article.id)).state;
+    final _isFavorite = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: () async {
+        await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return TerminologyScreen(
-                term: _term,
+              context.read(articleListScreenController).incrementSubscribers(_article.id);
+              return ProviderScope(
+                overrides: [id.overrideWithValue(_article.id)],
+                child: const ArticleScreen(),
               );
             },
           ),
         );
+        await context.read(chewieController).state?.pause();
       },
-      child: Card(
-        child: ListTile(
-          title: Text(_term.term),
+      child: const Padding(
+        padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+        child: Card(
+          margin: EdgeInsets.zero,
+          color: Color(0xFFf4f9f7),
+          child: _test2(),
         ),
+      ),
+    );
+  }
+}
+
+class _test extends HookWidget {
+  const _test({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final _article = useProvider(currentArticle);
+    final _count = useProvider(currentSubscriber(_article.id)).state;
+    final _isFavorite = useProvider(currentBookmark(_article.id)).state;
+    return Column(
+      children: [
+        SizedBox(height: 125.h, child: const _EyeCatch()),
+        Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              if (_count != null) Text(_count.toString()) else const Text(''),
+              const SizedBox(height: 8),
+              SizedBox(width: 270.w, child: const _Title()),
+              const SizedBox(height: 8),
+              const Text(
+                '#タグ',
+                style: TextStyle(fontSize: 12),
+              ),
+            ]),
+            if (_isFavorite)
+              IconButton(
+                icon: const Icon(Icons.favorite, color: Colors.red),
+                color: Colors.red,
+                onPressed: () => context.read(bookmarkController).changeIsBookmark(_article.id),
+              )
+            else
+              IconButton(
+                icon: const Icon(Icons.favorite, color: Colors.grey),
+                color: Colors.grey,
+                onPressed: () => context.read(bookmarkController).changeIsBookmark(_article.id),
+              )
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class _test2 extends HookWidget {
+  const _test2({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Container(
+            width: 230,
+            child: _Info(),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: 100,
+            child: _EyeCatch(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Info extends HookWidget {
+  const _Info({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final _article = useProvider(currentArticle);
+    final _date = _article.publishedAt;
+    final _count = useProvider(currentSubscriber(_article.id)).state;
+    final _isFavorite = useProvider(currentBookmark(_article.id)).state;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _Title(),
+        Row(
+          children: [
+            Text(_article.author),
+            const SizedBox(width: 8),
+            Text('${_date.year}/${_date.month}/${_date.day}'),
+            const SizedBox(width: 8),
+            if (_isFavorite)
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                ),
+                color: Colors.red,
+                onPressed: () => context.read(bookmarkController).changeIsBookmark(_article.id),
+              )
+            else
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(Icons.favorite, color: Colors.grey),
+                color: Colors.grey,
+                onPressed: () => context.read(bookmarkController).changeIsBookmark(_article.id),
+              ),
+          ],
+        ),
+        const Text(
+          '#タグ',
+          style: TextStyle(fontSize: 12),
+        ),
+        if (_count != null)
+          Text(
+            '閲覧数：${_count.toString()}',
+            style: const TextStyle(fontSize: 12),
+          )
+        else
+          const Text(
+            '',
+            style: TextStyle(fontSize: 12),
+          ),
+      ],
+    );
+  }
+}
+
+class _EyeCatch extends HookWidget {
+  const _EyeCatch({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return FadeInImage.memoryNetwork(
+      placeholder: kTransparentImage,
+      image: useProvider(currentArticle).eyecatch.toString(),
+    );
+  }
+}
+
+class _Title extends HookWidget {
+  const _Title({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      useProvider(currentArticle).title,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 3,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
       ),
     );
   }

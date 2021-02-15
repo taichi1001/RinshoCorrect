@@ -72,7 +72,7 @@ dependencies:
   url_launcher: ^5.7.10
 
   # 引っ張って更新するやつ
-  pull_to_refresh: ^1.6.3
+  pull_to_refresh: 1.6.3
   
   # 検索バー
   flappy_search_bar: ^1.7.2
