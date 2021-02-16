@@ -266,14 +266,28 @@ class _Abstract extends HookWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 16, right: 16),
-          child: Text(
-            '概要',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFFe7f2ee)),
+            color: const Color(0xFFe7f2ee),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 16, right: 16),
+                child: Text(
+                  '概要',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const Divider(thickness: 1, endIndent: 100),
+            ],
           ),
         ),
-        const Divider(thickness: 1, endIndent: 100),
         Html(data: useProvider(currentArticle).state.abstract, style: {
           'ul': Style(
             fontSize: const FontSize(14),
@@ -301,13 +315,16 @@ class _ApprochTarget extends HookWidget {
           ),
         ),
         const Divider(thickness: 1, endIndent: 100),
-        Html(data: useProvider(currentArticle).state.approchTarget, style: {
-          'li': Style(
-            fontSize: const FontSize(14),
-            padding: EdgeInsets.zero,
-            margin: EdgeInsets.zero,
-          ),
-        }),
+        Html(
+          data: useProvider(currentArticle).state.approchTarget,
+          style: {
+            'li': Style(
+              fontSize: const FontSize(14),
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
+            ),
+          },
+        ),
       ],
     );
   }

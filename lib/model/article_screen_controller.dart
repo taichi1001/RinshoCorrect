@@ -69,6 +69,4 @@ class ArticleScreenController {
     final result = await read(microCMSRepository).getArticleContents(id);
     read(currentArticle).state = result;
   }
-
-  // void dispose
 }

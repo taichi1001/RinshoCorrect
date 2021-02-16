@@ -277,8 +277,6 @@ class _ArticleCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
-    final _count = useProvider(currentSubscriber(_article.id)).state;
-    final _isFavorite = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context).push(
@@ -356,6 +354,7 @@ class _test2 extends HookWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
             width: 230,
