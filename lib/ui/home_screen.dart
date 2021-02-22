@@ -50,18 +50,20 @@ class _ArticleList extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _articles = useProvider(sortedArticles(ArticleMode(jointMode: JointMode.all))).state;
+
+    if (_articles == null) {
+      return Text('ロード中');
+    }
     return Container(
       height: 100,
-      child: Expanded(
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: _articles.length,
-          itemBuilder: (context, index) => ProviderScope(
-            overrides: [_currentArticle.overrideWithValue(_articles[index])],
-            child: const Padding(
-              padding: EdgeInsets.only(right: 8, left: 8),
-              child: _EyeCatch(),
-            ),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _articles.length,
+        itemBuilder: (context, index) => ProviderScope(
+          overrides: [_currentArticle.overrideWithValue(_articles[index])],
+          child: const Padding(
+            padding: EdgeInsets.only(right: 8, left: 8),
+            child: _EyeCatch(),
           ),
         ),
       ),
