@@ -86,6 +86,8 @@ dependencies:
   # 文の先頭に縦線引くやつ
   blockquote: ^0.0.1
 
+  scroll_snap_list: ^0.6.0
+
   # RiverPod関連
   flutter_hooks: ^0.15.0
   hooks_riverpod: ^0.12.1

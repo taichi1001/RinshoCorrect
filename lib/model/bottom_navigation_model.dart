@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rinsho_collect/ui/article_list_screen.dart';
 import 'package:rinsho_collect/ui/bookmark_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rinsho_collect/ui/home_screen.dart';
 import 'package:rinsho_collect/ui/terminology_list_screen.dart';
 
 final bottomNavigationController =
@@ -14,6 +15,7 @@ class BottomNavigationController extends ChangeNotifier {
   Reader read;
 
   final List<Widget> views = [
+    const HomeScreen(),
     const ArticleListScreen(),
     const TerminologyListScreen(),
     const BookmarkScreen(),
@@ -22,7 +24,7 @@ class BottomNavigationController extends ChangeNotifier {
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
 
-  Widget _selectedView = const ArticleListScreen();
+  Widget _selectedView = const HomeScreen();
   Widget get selectedView => _selectedView;
 
   void change(int index) {

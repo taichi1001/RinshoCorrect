@@ -21,18 +21,22 @@ class MainBottomNavigation extends HookWidget {
         child: _selectedView,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFFf4f9f7),
+        // backgroundColor: const Color(0xFFf4f9f7),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.ac_unit),
+            icon: Icon(Icons.home),
+            label: 'ホーム',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
             label: '記事',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart),
+            icon: Icon(Icons.article),
             label: '用語',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.input),
+            icon: Icon(Icons.bookmarks),
             label: 'ブックマーク',
           ),
         ],

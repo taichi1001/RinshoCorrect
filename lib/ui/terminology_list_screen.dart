@@ -123,7 +123,7 @@ class TerminologyListScreen extends HookWidget {
         length: _getTabs(_displayMode).length,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: const Color(0xFFf4f9f7),
+            // backgroundColor: const Color(0xFFf4f9f7),
             title: Container(
               height: 40,
               child: TextField(
@@ -296,7 +296,7 @@ class _ArticleCard extends HookWidget {
         padding: EdgeInsets.only(top: 16, left: 16, right: 16),
         child: Card(
           margin: EdgeInsets.zero,
-          color: Color(0xFFf4f9f7),
+          // color: Color(0xFFf4f9f7),
           child: _test2(),
         ),
       ),
@@ -357,12 +357,12 @@ class _test2 extends HookWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            width: 230,
+            width: 220.w,
             child: _Info(),
           ),
           const SizedBox(width: 8),
           Container(
-            width: 100,
+            width: 99.w,
             child: _EyeCatch(),
           ),
         ],
