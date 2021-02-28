@@ -24,9 +24,11 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   Future incrementSubscribers(String id) async {
     await specifiedArticleUnregistered(id);
     unawaited(
-      FirebaseFirestore.instance.collection('articles').doc(id)
-          // .collection('count')
-          // .doc('all')
+      FirebaseFirestore.instance
+          .collection('articles')
+          .doc(id)
+          .collection('count')
+          .doc('all')
           .update({'count': FieldValue.increment(1)}),
     );
   }
@@ -107,7 +109,14 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
       await FirebaseFirestore.instance
           .collection('articles')
           .doc(id)
-          .set({'id': id, 'count': 0, 'bookmark': 0});
+          .set({'id': id, 'bookmark': 0});
+
+      await FirebaseFirestore.instance
+          .collection('articles')
+          .doc(id)
+          .collection('count')
+          .doc('all')
+          .set({'count': 0});
     }
   }
 }
