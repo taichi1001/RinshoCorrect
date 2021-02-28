@@ -1,83 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_hooks/flutter_hooks.dart';
-// import 'package:hooks_riverpod/hooks_riverpod.dart';
-// import 'package:rinsho_collect/entity/term.dart';
-// import 'package:rinsho_collect/model/terminology_list_screen_controller.dart';
-// import 'package:rinsho_collect/ui/terminology_screen.dart';
-//
-// class TerminologyListScreen extends HookWidget {
-//   const TerminologyListScreen({Key key}) : super(key: key);
-//   @override
-//   Widget build(BuildContext context) {
-//     useEffect(() {
-//       context.read(terminologyScreenController).fetch();
-//       return;
-//     }, []);
-//
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('用語'),
-//       ),
-//       body: const _TerminologyList(),
-//     );
-//   }
-// }
-//
-// class _TerminologyList extends HookWidget {
-//   const _TerminologyList({Key key}) : super(key: key);
-//   @override
-//   Widget build(BuildContext context) {
-//     final _terminologies = useProvider(sortedTerminologies).state;
-//
-//     if (_terminologies == null) {
-//       return const Center(
-//         child: CircularProgressIndicator(),
-//       );
-//     }
-//
-//     return ListView.builder(
-//       itemCount: _terminologies.length,
-//       itemBuilder: (context, index) => ProviderScope(
-//         overrides: [
-//           currentTerminology.overrideWithValue(_terminologies[index]),
-//         ],
-//         child: const _TerminologyCard(),
-//       ),
-//     );
-//   }
-// }
-//
-// final currentTerminology = ScopedProvider<Term>(null);
-//
-// class _TerminologyCard extends HookWidget {
-//   const _TerminologyCard({
-//     Key key,
-//   }) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final _term = useProvider(currentTerminology);
-//     return GestureDetector(
-//       onTap: () {
-//         Navigator.of(context).push(
-//           MaterialPageRoute(
-//             builder: (context) {
-//               return TerminologyScreen(
-//                 term: _term,
-//               );
-//             },
-//           ),
-//         );
-//       },
-//       child: Card(
-//         child: ListTile(
-//           title: Text(_term.term),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -91,7 +11,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rinsho_collect/entity/article.dart';
 import 'package:rinsho_collect/enum/joint.dart';
 import 'package:rinsho_collect/enum/symptom_disorder.dart';
@@ -105,7 +24,6 @@ class TerminologyListScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(articlesController).fetchSubscribers();
       context.read(bookmarkController).fetchBookmarkList();
       return;
     }, []);
@@ -130,18 +48,18 @@ class TerminologyListScreen extends HookWidget {
                 onSubmitted: context.read(articleListScreenController).searchArticle,
                 controller: _textEditingController,
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   suffixIcon: _textEditingController.text.isEmpty
                       ? null
                       : InkWell(
                           onTap: context.read(articleListScreenController).textClear,
                           child: const Icon(Icons.clear),
                         ),
-                  contentPadding: EdgeInsets.all(10),
+                  contentPadding: const EdgeInsets.all(10),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  focusedBorder: OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(),
                 ),
               ),
             ),
@@ -230,7 +148,6 @@ class _ArticlesListView extends HookWidget {
 
   Future _onRefresh(BuildContext context) async {
     await context.read(articlesController).fetch();
-    await context.read(articlesController).fetchSubscribers();
     await context.read(bookmarkController).fetchBookmarkList();
     refreshController.refreshCompleted();
   }
@@ -297,73 +214,30 @@ class _ArticleCard extends HookWidget {
         child: Card(
           margin: EdgeInsets.zero,
           // color: Color(0xFFf4f9f7),
-          child: _test2(),
+          child: _Tes(),
         ),
       ),
     );
   }
 }
 
-class _test extends HookWidget {
-  const _test({Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    final _article = useProvider(currentArticle);
-    final _count = useProvider(currentSubscriber(_article.id)).state;
-    final _isFavorite = useProvider(currentBookmark(_article.id)).state;
-    return Column(
-      children: [
-        SizedBox(height: 125.h, child: const _EyeCatch()),
-        Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              if (_count != null) Text(_count.toString()) else const Text(''),
-              const SizedBox(height: 8),
-              SizedBox(width: 270.w, child: const _Title()),
-              const SizedBox(height: 8),
-              const Text(
-                '#タグ',
-                style: TextStyle(fontSize: 12),
-              ),
-            ]),
-            if (_isFavorite)
-              IconButton(
-                icon: const Icon(Icons.favorite, color: Colors.red),
-                color: Colors.red,
-                onPressed: () => context.read(bookmarkController).changeIsBookmark(_article.id),
-              )
-            else
-              IconButton(
-                icon: const Icon(Icons.favorite, color: Colors.grey),
-                color: Colors.grey,
-                onPressed: () => context.read(bookmarkController).changeIsBookmark(_article.id),
-              )
-          ],
-        )
-      ],
-    );
-  }
-}
-
-class _test2 extends HookWidget {
-  const _test2({Key key}) : super(key: key);
+class _Tes extends HookWidget {
+  const _Tes({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
             width: 220.w,
-            child: _Info(),
+            child: const _Info(),
           ),
           const SizedBox(width: 8),
           Container(
             width: 99.w,
-            child: _EyeCatch(),
+            child: const _EyeCatch(),
           ),
         ],
       ),
@@ -377,7 +251,6 @@ class _Info extends HookWidget {
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
     final _date = _article.publishedAt;
-    final _count = useProvider(currentSubscriber(_article.id)).state;
     final _isFavorite = useProvider(currentBookmark(_article.id)).state;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,16 +287,11 @@ class _Info extends HookWidget {
           '#タグ',
           style: TextStyle(fontSize: 12),
         ),
-        if (_count != null)
-          Text(
-            '閲覧数：${_count.toString()}',
-            style: const TextStyle(fontSize: 12),
-          )
-        else
-          const Text(
-            '',
-            style: TextStyle(fontSize: 12),
-          ),
+        // if (_count != null)
+        Text(
+          '閲覧数：${_article.subscriber.toString()}',
+          style: const TextStyle(fontSize: 12),
+        )
       ],
     );
   }

@@ -63,14 +63,6 @@ final sortedBookmarkArticles =
   return selectArticles;
 });
 
-final _subscribes = StateProvider<List<Subscribes>>((ref) => null);
-
-final currentSubscriber = StateProvider.family<int, String>((ref, id) {
-  final test = ref.watch(_subscribes).state;
-  final result = test?.firstWhere((element) => element.id == id, orElse: () => null)?.count;
-  return result ?? 0;
-});
-
 final articlesController = Provider((ref) => ArticlesController(read: ref.read));
 
 class ArticlesController {
@@ -83,7 +75,15 @@ class ArticlesController {
 
   Future fetch() async {
     final articles = await read(microCMSRepository).getArticleListContents();
-    read(allArticles).state = articles;
+    final subscribes = await read(firebaseRepository).getSubscribers();
+    final List<Article> result = [];
+    for (final article in articles) {
+      final currentSubscriber =
+          subscribes?.firstWhere((element) => element.id == article.id, orElse: () => null)?.count;
+      final resultArticle = article.copyWith(subscriber: currentSubscriber ?? 0);
+      result.add(resultArticle);
+    }
+    read(allArticles).state = result;
     cache = articles;
   }
 
@@ -93,9 +93,6 @@ class ArticlesController {
 
   Future incrementSubscribers(String id) async {
     await read(firebaseRepository).incrementSubscribers(id);
-  }
-
-  Future fetchSubscribers() async {
-    read(_subscribes).state = await read(firebaseRepository).getSubscribers();
+    // await read(firebaseRepository).incrementByDaySubscribers(id);
   }
 }

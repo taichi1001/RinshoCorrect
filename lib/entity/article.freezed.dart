@@ -39,7 +39,11 @@ class _$ArticleTearOff {
       String twitter,
       String instagram,
       String webURL,
-      String references}) {
+      String references,
+      @JsonKey(ignore: true, defaultValue: 0)
+          int subscriber,
+      bool recommended,
+      bool notice}) {
     return _Article(
       id: id,
       publishedAt: publishedAt,
@@ -57,6 +61,9 @@ class _$ArticleTearOff {
       instagram: instagram,
       webURL: webURL,
       references: references,
+      subscriber: subscriber,
+      recommended: recommended,
+      notice: notice,
     );
   }
 
@@ -95,8 +102,13 @@ mixin _$Article {
   String get instagram;
   String get webURL;
   String get references;
+  @JsonKey(ignore: true, defaultValue: 0)
+  int get subscriber;
+  bool get recommended;
+  bool get notice;
 
   Map<String, dynamic> toJson();
+  @JsonKey(ignore: true)
   $ArticleCopyWith<Article> get copyWith;
 }
 
@@ -126,7 +138,11 @@ abstract class $ArticleCopyWith<$Res> {
       String twitter,
       String instagram,
       String webURL,
-      String references});
+      String references,
+      @JsonKey(ignore: true, defaultValue: 0)
+          int subscriber,
+      bool recommended,
+      bool notice});
 }
 
 /// @nodoc
@@ -155,6 +171,9 @@ class _$ArticleCopyWithImpl<$Res> implements $ArticleCopyWith<$Res> {
     Object instagram = freezed,
     Object webURL = freezed,
     Object references = freezed,
+    Object subscriber = freezed,
+    Object recommended = freezed,
+    Object notice = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed ? _value.id : id as String,
@@ -179,6 +198,10 @@ class _$ArticleCopyWithImpl<$Res> implements $ArticleCopyWith<$Res> {
       webURL: webURL == freezed ? _value.webURL : webURL as String,
       references:
           references == freezed ? _value.references : references as String,
+      subscriber: subscriber == freezed ? _value.subscriber : subscriber as int,
+      recommended:
+          recommended == freezed ? _value.recommended : recommended as bool,
+      notice: notice == freezed ? _value.notice : notice as bool,
     ));
   }
 }
@@ -210,7 +233,11 @@ abstract class _$ArticleCopyWith<$Res> implements $ArticleCopyWith<$Res> {
       String twitter,
       String instagram,
       String webURL,
-      String references});
+      String references,
+      @JsonKey(ignore: true, defaultValue: 0)
+          int subscriber,
+      bool recommended,
+      bool notice});
 }
 
 /// @nodoc
@@ -240,6 +267,9 @@ class __$ArticleCopyWithImpl<$Res> extends _$ArticleCopyWithImpl<$Res>
     Object instagram = freezed,
     Object webURL = freezed,
     Object references = freezed,
+    Object subscriber = freezed,
+    Object recommended = freezed,
+    Object notice = freezed,
   }) {
     return _then(_Article(
       id: id == freezed ? _value.id : id as String,
@@ -264,6 +294,10 @@ class __$ArticleCopyWithImpl<$Res> extends _$ArticleCopyWithImpl<$Res>
       webURL: webURL == freezed ? _value.webURL : webURL as String,
       references:
           references == freezed ? _value.references : references as String,
+      subscriber: subscriber == freezed ? _value.subscriber : subscriber as int,
+      recommended:
+          recommended == freezed ? _value.recommended : recommended as bool,
+      notice: notice == freezed ? _value.notice : notice as bool,
     ));
   }
 }
@@ -294,7 +328,11 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       this.twitter,
       this.instagram,
       this.webURL,
-      this.references});
+      this.references,
+      @JsonKey(ignore: true, defaultValue: 0)
+          this.subscriber,
+      this.recommended,
+      this.notice});
 
   factory _$_Article.fromJson(Map<String, dynamic> json) =>
       _$_$_ArticleFromJson(json);
@@ -337,10 +375,17 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
   final String webURL;
   @override
   final String references;
+  @override
+  @JsonKey(ignore: true, defaultValue: 0)
+  final int subscriber;
+  @override
+  final bool recommended;
+  @override
+  final bool notice;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Article(id: $id, publishedAt: $publishedAt, title: $title, tags: $tags, symptomDisorder: $symptomDisorder, abstract: $abstract, approchTarget: $approchTarget, body: $body, eyecatch: $eyecatch, videoURL: $videoURL, glossary: $glossary, author: $author, twitter: $twitter, instagram: $instagram, webURL: $webURL, references: $references)';
+    return 'Article(id: $id, publishedAt: $publishedAt, title: $title, tags: $tags, symptomDisorder: $symptomDisorder, abstract: $abstract, approchTarget: $approchTarget, body: $body, eyecatch: $eyecatch, videoURL: $videoURL, glossary: $glossary, author: $author, twitter: $twitter, instagram: $instagram, webURL: $webURL, references: $references, subscriber: $subscriber, recommended: $recommended, notice: $notice)';
   }
 
   @override
@@ -363,7 +408,10 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       ..add(DiagnosticsProperty('twitter', twitter))
       ..add(DiagnosticsProperty('instagram', instagram))
       ..add(DiagnosticsProperty('webURL', webURL))
-      ..add(DiagnosticsProperty('references', references));
+      ..add(DiagnosticsProperty('references', references))
+      ..add(DiagnosticsProperty('subscriber', subscriber))
+      ..add(DiagnosticsProperty('recommended', recommended))
+      ..add(DiagnosticsProperty('notice', notice));
   }
 
   @override
@@ -411,7 +459,15 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
                 const DeepCollectionEquality().equals(other.webURL, webURL)) &&
             (identical(other.references, references) ||
                 const DeepCollectionEquality()
-                    .equals(other.references, references)));
+                    .equals(other.references, references)) &&
+            (identical(other.subscriber, subscriber) ||
+                const DeepCollectionEquality()
+                    .equals(other.subscriber, subscriber)) &&
+            (identical(other.recommended, recommended) ||
+                const DeepCollectionEquality()
+                    .equals(other.recommended, recommended)) &&
+            (identical(other.notice, notice) ||
+                const DeepCollectionEquality().equals(other.notice, notice)));
   }
 
   @override
@@ -432,8 +488,12 @@ class _$_Article with DiagnosticableTreeMixin implements _Article {
       const DeepCollectionEquality().hash(twitter) ^
       const DeepCollectionEquality().hash(instagram) ^
       const DeepCollectionEquality().hash(webURL) ^
-      const DeepCollectionEquality().hash(references);
+      const DeepCollectionEquality().hash(references) ^
+      const DeepCollectionEquality().hash(subscriber) ^
+      const DeepCollectionEquality().hash(recommended) ^
+      const DeepCollectionEquality().hash(notice);
 
+  @JsonKey(ignore: true)
   @override
   _$ArticleCopyWith<_Article> get copyWith =>
       __$ArticleCopyWithImpl<_Article>(this, _$identity);
@@ -467,7 +527,11 @@ abstract class _Article implements Article {
       String twitter,
       String instagram,
       String webURL,
-      String references}) = _$_Article;
+      String references,
+      @JsonKey(ignore: true, defaultValue: 0)
+          int subscriber,
+      bool recommended,
+      bool notice}) = _$_Article;
 
   factory _Article.fromJson(Map<String, dynamic> json) = _$_Article.fromJson;
 
@@ -510,5 +574,13 @@ abstract class _Article implements Article {
   @override
   String get references;
   @override
+  @JsonKey(ignore: true, defaultValue: 0)
+  int get subscriber;
+  @override
+  bool get recommended;
+  @override
+  bool get notice;
+  @override
+  @JsonKey(ignore: true)
   _$ArticleCopyWith<_Article> get copyWith;
 }

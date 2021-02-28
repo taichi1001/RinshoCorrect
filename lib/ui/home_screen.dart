@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rinsho_collect/entity/article.dart';
-import 'package:rinsho_collect/entity/article_mode.dart';
-import 'package:rinsho_collect/enum/joint.dart';
-import 'package:rinsho_collect/model/articles_controller.dart';
+import 'package:rinsho_collect/model/home_screen_controller.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class HomeScreen extends HookWidget {
@@ -18,23 +16,21 @@ class HomeScreen extends HookWidget {
       appBar: AppBar(
         title: const Text('臨床コレクト'),
       ),
-      body: Container(
-        child: ListView(
-          children: const [
-            Text('今週の閲覧数ランキング'),
-            Text('全て'),
-            SizedBox(height: 16),
-            _ArticleList(),
-            SizedBox(height: 32),
-            Text('関節別'),
-            SizedBox(height: 16),
-            _ArticleList(),
-            SizedBox(height: 32),
-            Text('症状・障害別'),
-            SizedBox(height: 16),
-            _ArticleList(),
-          ],
-        ),
+      body: ListView(
+        children: const [
+          Text('今週の閲覧数ランキング'),
+          Text('全て'),
+          SizedBox(height: 16),
+          _ArticleList(),
+          SizedBox(height: 32),
+          Text('関節別'),
+          SizedBox(height: 16),
+          _ArticleList(),
+          SizedBox(height: 32),
+          Text('症状・障害別'),
+          SizedBox(height: 16),
+          _ArticleList(),
+        ],
       ),
     );
   }
@@ -49,14 +45,19 @@ class _ArticleList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _articles = useProvider(sortedArticles(ArticleMode(jointMode: JointMode.all))).state;
+    // final _articles = useProvider(newArticles).state;
+    // final _articles = useProvider(popularArticles).state;
+    // final _articles = useProvider(allViewsRankingArticles).state;
+    // final _articles = useProvider(recommendedArticles).state;
+    final _articles = useProvider(noticeArticles).state;
 
     if (_articles == null) {
-      return Text('ロード中');
+      return Container(height: 100, child: const Text('ロード中'));
     }
     return Container(
       height: 100,
       child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
         itemCount: _articles.length,
         itemBuilder: (context, index) => ProviderScope(
@@ -68,18 +69,6 @@ class _ArticleList extends HookWidget {
         ),
       ),
     );
-    // return Expanded(
-    //   child: ScrollSnapList(
-    //     reverse: true,
-    //     onItemFocus: null,
-    //     itemSize: 100,
-    //     itemCount: _articles.length,
-    //     itemBuilder: (context, index) => ProviderScope(
-    //       overrides: [_currentArticle.overrideWithValue(_articles[index])],
-    //       child: const _EyeCatch(),
-    //     ),
-    //   ),
-    // );
   }
 }
 

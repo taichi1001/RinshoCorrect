@@ -23,7 +23,6 @@ class BookmarkScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(articlesController).fetchSubscribers();
       context.read(bookmarkController).fetchBookmarkList();
       return;
     }, []);
@@ -144,7 +143,6 @@ class _ArticleCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
-    final _count = useProvider(currentSubscriber(_article.id)).state;
     final _isBookmark = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
       onTap: () async {
@@ -171,11 +169,10 @@ class _ArticleCard extends HookWidget {
               children: [
                 SizedBox(height: 125.h, child: const _EyeCatch()),
                 Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      if (_count != null) Text(_count.toString()) else const Text(''),
+                      Text(_article.subscriber.toString()),
                       const SizedBox(height: 8),
                       SizedBox(width: 270.w, child: const _Title()),
                       const SizedBox(height: 8),

@@ -9,6 +9,7 @@ final firebaseRepository =
 
 abstract class FirebaseRepository {
   Future incrementSubscribers(String id);
+  Future incrementByDaySubscribers(String id);
   Future incrementBookmark(Bookmark bookmark);
   Future<List<Subscribes>> getSubscribers();
   Future<List<Bookmark>> getBookmarkList();
@@ -23,9 +24,24 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   Future incrementSubscribers(String id) async {
     await specifiedArticleUnregistered(id);
     unawaited(
+      FirebaseFirestore.instance.collection('articles').doc(id)
+          // .collection('count')
+          // .doc('all')
+          .update({'count': FieldValue.increment(1)}),
+    );
+  }
+
+  @override
+  Future incrementByDaySubscribers(String id) async {
+    final today = DateTime.now();
+    final stringToday = '${today.year}/${today.month}/${today.day}';
+    await specifiedArticleUnregistered(id);
+    unawaited(
       FirebaseFirestore.instance
           .collection('articles')
           .doc(id)
+          .collection('count')
+          .doc(stringToday)
           .update({'count': FieldValue.increment(1)}),
     );
   }

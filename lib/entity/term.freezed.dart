@@ -49,6 +49,7 @@ mixin _$Term {
   String get detail;
 
   Map<String, dynamic> toJson();
+  @JsonKey(ignore: true)
   $TermCopyWith<Term> get copyWith;
 }
 
@@ -188,6 +189,7 @@ class _$_Term with DiagnosticableTreeMixin implements _Term {
       const DeepCollectionEquality().hash(term) ^
       const DeepCollectionEquality().hash(detail);
 
+  @JsonKey(ignore: true)
   @override
   _$TermCopyWith<_Term> get copyWith =>
       __$TermCopyWithImpl<_Term>(this, _$identity);
@@ -217,5 +219,6 @@ abstract class _Term implements Term {
   @JsonKey(name: 'body')
   String get detail;
   @override
+  @JsonKey(ignore: true)
   _$TermCopyWith<_Term> get copyWith;
 }

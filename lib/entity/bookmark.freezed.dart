@@ -44,6 +44,7 @@ mixin _$Bookmark {
   bool get isBookmark;
 
   Map<String, dynamic> toJson();
+  @JsonKey(ignore: true)
   $BookmarkCopyWith<Bookmark> get copyWith;
 }
 
@@ -160,6 +161,7 @@ class _$_Bookmark with DiagnosticableTreeMixin implements _Bookmark {
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(isBookmark);
 
+  @JsonKey(ignore: true)
   @override
   _$BookmarkCopyWith<_Bookmark> get copyWith =>
       __$BookmarkCopyWithImpl<_Bookmark>(this, _$identity);
@@ -184,5 +186,6 @@ abstract class _Bookmark implements Bookmark {
   @JsonKey(fromJson: _isBookmarkFromJson, toJson: _isBookmarkToJson)
   bool get isBookmark;
   @override
+  @JsonKey(ignore: true)
   _$BookmarkCopyWith<_Bookmark> get copyWith;
 }

@@ -275,8 +275,8 @@ class _Abstract extends HookWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
+            children: const [
+              Padding(
                 padding: EdgeInsets.only(left: 16, right: 16),
                 child: Text(
                   '概要',
@@ -286,7 +286,7 @@ class _Abstract extends HookWidget {
                   ),
                 ),
               ),
-              const Divider(thickness: 1, endIndent: 100),
+              Divider(thickness: 1, endIndent: 100),
             ],
           ),
         ),

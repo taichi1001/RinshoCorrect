@@ -26,6 +26,9 @@ abstract class Article with _$Article {
     String instagram,
     String webURL,
     String references,
+    @JsonKey(ignore: true, defaultValue: 0) int subscriber,
+    bool recommended,
+    bool notice,
   }) = _Article;
   factory Article.fromJson(Map<String, dynamic> json) => _$ArticleFromJson(json);
 }

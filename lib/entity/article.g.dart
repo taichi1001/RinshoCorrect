@@ -24,6 +24,8 @@ _$_Article _$_$_ArticleFromJson(Map<String, dynamic> json) {
     instagram: json['instagram'] as String,
     webURL: json['webURL'] as String,
     references: json['references'] as String,
+    recommended: json['recommended'] as bool,
+    notice: json['notice'] as bool,
   );
 }
 
@@ -44,4 +46,6 @@ Map<String, dynamic> _$_$_ArticleToJson(_$_Article instance) => <String, dynamic
       'instagram': instance.instagram,
       'webURL': instance.webURL,
       'references': instance.references,
+      'recommended': instance.recommended,
+      'notice': instance.notice,
     };

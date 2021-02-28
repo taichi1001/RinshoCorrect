@@ -25,7 +25,6 @@ class ArticleListScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      context.read(articlesController).fetchSubscribers();
       context.read(bookmarkController).fetchBookmarkList();
       return;
     }, []);
@@ -49,18 +48,18 @@ class ArticleListScreen extends HookWidget {
                 onSubmitted: context.read(articleListScreenController).searchArticle,
                 controller: _textEditingController,
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   suffixIcon: _textEditingController.text.isEmpty
                       ? null
                       : InkWell(
                           onTap: context.read(articleListScreenController).textClear,
                           child: const Icon(Icons.clear),
                         ),
-                  contentPadding: EdgeInsets.all(10),
+                  contentPadding: const EdgeInsets.all(10),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  focusedBorder: OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(),
                 ),
               ),
             ),
@@ -149,7 +148,6 @@ class _ArticlesListView extends HookWidget {
 
   Future _onRefresh(BuildContext context) async {
     await context.read(articlesController).fetch();
-    await context.read(articlesController).fetchSubscribers();
     await context.read(bookmarkController).fetchBookmarkList();
     refreshController.refreshCompleted();
   }
@@ -196,7 +194,6 @@ class _ArticleCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _article = useProvider(currentArticle);
-    final _count = useProvider(currentSubscriber(_article.id)).state;
     final _isFavorite = useProvider(currentBookmark(_article.id)).state;
     return GestureDetector(
       onTap: () async {
@@ -223,11 +220,10 @@ class _ArticleCard extends HookWidget {
               children: [
                 SizedBox(height: 125.h, child: const _EyeCatch()),
                 Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      if (_count != null) Text(_count.toString()) else const Text(''),
+                      Text(_article.subscriber.toString()),
                       const SizedBox(height: 8),
                       SizedBox(width: 270.w, child: const _Title()),
                       const SizedBox(height: 8),
