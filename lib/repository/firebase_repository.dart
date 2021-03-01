@@ -35,15 +35,14 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
 
   @override
   Future incrementByDaySubscribers(String id) async {
-    final today = DateTime.now();
-    final stringToday = '${today.year}/${today.month}/${today.day}';
-    await specifiedArticleUnregistered(id);
+    await specifiedArticleUnregisteredByDay(id);
+    final today = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
     unawaited(
       FirebaseFirestore.instance
           .collection('articles')
           .doc(id)
           .collection('count')
-          .doc(stringToday)
+          .doc(today)
           .update({'count': FieldValue.increment(1)}),
     );
   }
@@ -119,16 +118,28 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
           .set({'count': 0});
     }
   }
+
+  Future specifiedArticleUnregisteredByDay(String id) async {
+    final today = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+    final byDay = await FirebaseFirestore.instance
+        .collection('articles')
+        .doc(id)
+        .collection('count')
+        .doc(today)
+        .get();
+    if (byDay.data() == null) {
+      await FirebaseFirestore.instance
+          .collection('articles')
+          .doc(id)
+          .collection('count')
+          .doc(today)
+          .set({'count': 0});
+    }
+  }
 }
 
 class Subscribes {
   String id;
-  int count;
+  List<Map<String, int>> count;
   Subscribes({this.id, this.count});
 }
-
-// class Favorite {
-//   Favorite({this.id, this.isFavorite});
-//   String id;
-//   bool isFavorite;
-// }

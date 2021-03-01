@@ -78,8 +78,10 @@ class ArticlesController {
     final subscribes = await read(firebaseRepository).getSubscribers();
     final List<Article> result = [];
     for (final article in articles) {
-      final currentSubscriber =
-          subscribes?.firstWhere((element) => element.id == article.id, orElse: () => null)?.count;
+      final currentSubscriber = subscribes
+          ?.firstWhere((element) => element.id == article.id, orElse: () => null)
+          ?.count
+          ?.last['count'];
       final resultArticle = article.copyWith(subscriber: currentSubscriber ?? 0);
       result.add(resultArticle);
     }
@@ -89,10 +91,5 @@ class ArticlesController {
 
   void restoreFromeCache() {
     read(allArticles).state = cache;
-  }
-
-  Future incrementSubscribers(String id) async {
-    await read(firebaseRepository).incrementSubscribers(id);
-    // await read(firebaseRepository).incrementByDaySubscribers(id);
   }
 }

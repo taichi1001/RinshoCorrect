@@ -40,6 +40,7 @@ class ArticleListScreenController {
 
   Future incrementSubscribers(String id) async {
     await read(firebaseRepository).incrementSubscribers(id);
+    await read(firebaseRepository).incrementByDaySubscribers(id);
   }
 
   Future searchArticle(String word) async {
