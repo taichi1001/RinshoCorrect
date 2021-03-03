@@ -45,6 +45,7 @@ class TerminologyListScreen extends HookWidget {
             title: Container(
               height: 40,
               child: TextField(
+                textInputAction: TextInputAction.search,
                 onSubmitted: context.read(articleListScreenController).searchArticle,
                 controller: _textEditingController,
                 decoration: InputDecoration(
